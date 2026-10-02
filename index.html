@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MCAA Tokyo 2026 - Central Organization & Budget Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     :root {
       --navy: #0e3672;
@@ -89,9 +90,13 @@
       <h1>MCAA Asia Connect "Konnichiwa Tokyo 2026"</h1>
       <p>November 4–5, 2026 | Tokyo, Japan | Headcount: <strong>19 Confirmed Attendees</strong> (17 MCAA / Org. Committee + 2 General)</p>
     </div>
-    <div>
-      <button class="btn btn-outline" onclick="window.print()">Print / Export PDF</button>
-      <a class="btn" href="MCAA_Tokyo2026_Master_Centralizer.csv" download>Download CSV Roster</a>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+      <label class="btn" style="background:#059669; cursor:pointer;" title="Import new CSV exported from Microsoft Forms">
+        <span>📥 Import Responses (CSV)</span>
+        <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleFileUpload(event)">
+      </label>
+      <button class="btn btn-outline" onclick="exportCurrentCSV()">📤 Export CSV</button>
+      <button class="btn" onclick="window.print()">🖨️ Print Report</button>
     </div>
   </div>
 
@@ -568,6 +573,29 @@
   const EUR_RATE = 165; // 1 EUR = 165 JPY
 
   function recalc() {
+    const rows = document.querySelectorAll("#rosterTable tbody tr");
+    let total = 0, bento1Count = 0, dinnerCount = 0, bento2Count = 0, transitCount = 0, visaCount = 0;
+
+    rows.forEach(tr => {
+      total++;
+      const tds = tr.querySelectorAll("td");
+      if (tds.length >= 11) {
+        if (tds[5].innerText.includes("Yes")) bento1Count++;
+        if (tds[6].innerText.includes("Yes")) dinnerCount++;
+        if (tds[7].innerText.includes("Yes")) bento2Count++;
+        if (tds[8].innerText.includes("Yes") || tds[8].innerText.includes("Host")) transitCount++;
+        if (tds[10].innerText.includes("Yes")) visaCount++;
+      }
+    });
+
+    // Update KPI card numbers
+    const kpiTotal = document.getElementById('kpi-total'); if (kpiTotal) kpiTotal.innerText = total;
+    const kpiBento1 = document.getElementById('kpi-bento1'); if (kpiBento1) kpiBento1.innerText = bento1Count;
+    const kpiDinner = document.getElementById('kpi-dinner'); if (kpiDinner) kpiDinner.innerText = dinnerCount;
+    const kpiBento2 = document.getElementById('kpi-bento2'); if (kpiBento2) kpiBento2.innerText = bento2Count;
+    const kpiVisit = document.getElementById('kpi-visit'); if (kpiVisit) kpiVisit.innerText = transitCount;
+    const kpiVisa = document.getElementById('kpi-visa'); if (kpiVisa) kpiVisa.innerText = visaCount;
+
     const bento1Price = parseFloat(document.getElementById('cost-bento1').value) || 0;
     const coffee1Price = parseFloat(document.getElementById('cost-coffee1').value) || 0;
     const dinnerPrice = parseFloat(document.getElementById('cost-dinner').value) || 0;
@@ -578,14 +606,13 @@
     const bannerPrice = parseFloat(document.getElementById('cost-banner').value) || 0;
     const venuePrice = parseFloat(document.getElementById('cost-venue').value) || 0;
 
-    // Quantities based on 19 attendees
-    const subBento1 = 19 * bento1Price;
-    const subCoffee1 = 19 * coffee1Price;
-    const subDinner = 17 * dinnerPrice; // 17 confirmed dinner
-    const subCoffee2 = 16 * coffee2Price; // 16 attending day 2
-    const subBento2 = 16 * bento2Price; // 16 attending day 2
-    const subTransit = 16 * transitPrice; // 16 transit to Iidabashi
-    const subBadges = 25 * badgesPrice; // 25 badge kits (buffer)
+    const subBento1 = bento1Count * bento1Price;
+    const subCoffee1 = total * coffee1Price;
+    const subDinner = dinnerCount * dinnerPrice;
+    const subCoffee2 = bento2Count * coffee2Price;
+    const subBento2 = bento2Count * b2Price;
+    const subTransit = transitCount * transitPrice;
+    const subBadges = Math.max(total + 5, 25) * badgesPrice;
     const subBanner = bannerPrice;
     const subVenue = venuePrice;
 
@@ -608,6 +635,78 @@
 
     document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
     document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
+  }
+
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (file && typeof Papa !== 'undefined') {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          if (results.data && results.data.length > 0) {
+            populateTableFromCSV(results.data);
+          }
+        }
+      });
+    }
+  }
+
+  function populateTableFromCSV(data) {
+    const tbody = document.querySelector("#rosterTable tbody");
+    tbody.innerHTML = '';
+    data.forEach((row, i) => {
+      const id = row['ID'] || `REC-${i+1}`;
+      const name = row['Full Name'] || row['Name'] || Object.values(row)[1] || 'Attendee';
+      const badge = row['Badge Name'] || row['Badge'] || name;
+      const chapter = row['Chapter / Affiliation'] || row['Affiliation'] || row['Chapter'] || 'General';
+      const role = row['Role / Title'] || row['Role'] || row['Title'] || '';
+      const type = (row['Registration Type'] || '').toUpperCase().includes('MCAA') || chapter.includes('Chapter') ? 'MCAA' : 'General';
+      const day1 = (row['Day 1 Attend'] || row['Day 1'] || 'Yes').includes('Y') ? 'Yes' : 'No';
+      const dinner = (row['Day 1 Dinner (Monjayaki)'] || row['Dinner'] || 'Yes').includes('Y') ? 'Yes' : 'No';
+      const day2 = (row['Day 2 Attend'] || row['Day 2'] || 'Yes').includes('Y') ? 'Yes' : 'No';
+      const site = (row['Day 2 Site Visit (Iidabashi)'] || row['Site Visit'] || 'Yes').includes('Y') || (row['Day 2 Site Visit (Iidabashi)'] || '').includes('Host') ? 'Yes' : 'No';
+      const dietary = row['Dietary Requirements'] || row['Dietary'] || 'None';
+      const visa = (row['Visa Letter Needed'] || row['Visa'] || 'No').includes('Y') ? 'Yes' : 'No';
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${id}</strong></td>
+        <td><strong>${name}</strong><br><small>${badge}</small></td>
+        <td>${chapter}</td>
+        <td>${role}</td>
+        <td><span class="tag ${type === 'MCAA' ? 'tag-mcaa' : 'tag-gen'}">${type}</span></td>
+        <td><span class="tag ${day1 === 'Yes' ? 'tag-yes' : 'tag-no'}">${day1}</span></td>
+        <td><span class="tag ${dinner === 'Yes' ? 'tag-yes' : 'tag-no'}">${dinner}</span></td>
+        <td><span class="tag ${day2 === 'Yes' ? 'tag-yes' : 'tag-no'}">${day2}</span></td>
+        <td><span class="tag ${site === 'Yes' ? 'tag-yes' : 'tag-no'}">${site}</span></td>
+        <td>${dietary}</td>
+        <td><span class="tag ${visa === 'Yes' ? 'tag-alert' : 'tag-no'}">${visa}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+    recalc();
+    alert(`Successfully loaded ${data.length} responses into the dashboard!`);
+  }
+
+  function exportCurrentCSV() {
+    const rows = document.querySelectorAll("#rosterTable tr");
+    let csv = [];
+    rows.forEach(tr => {
+      const cols = tr.querySelectorAll("th, td");
+      let row = [];
+      cols.forEach(col => {
+        let text = col.innerText.replace(/"/g, '""').replace(/\n/g, ' ');
+        row.push(`"${text}"`);
+      });
+      csv.push(row.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MCAA_Tokyo2026_Live_Roster_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
   }
 
   function filterTable() {
