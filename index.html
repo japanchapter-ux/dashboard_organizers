@@ -92,49 +92,58 @@
       <p>November 4–5, 2026 | Tokyo, Japan | Headcount: <strong>28 Roster Total</strong> (21 In Person &bull; 7 Online)</p>
     </div>
     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-      <label class="btn" style="background:#059669; cursor:pointer;" title="Import new CSV exported from Microsoft Forms">
-        <span>📥 Import Responses (CSV)</span>
+      <span id="save-status-badge" style="font-size:11px; padding:6px 12px; border-radius:12px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
+        💾 Auto-guardado local
+      </span>
+      <button class="btn btn-outline" style="border-color:#cbd5e1; color:#334155; font-size:11px; padding:6px 10px;" onclick="exportBackupJSON()" title="Descargar archivo JSON con todos los datos y cambios">💾 Guardar Backup (JSON)</button>
+      <label class="btn btn-outline" style="border-color:#cbd5e1; color:#334155; font-size:11px; padding:6px 10px; cursor:pointer;" title="Restaurar archivo JSON de copia de seguridad">
+        <span>📂 Cargar Backup</span>
+        <input type="file" id="jsonBackupInput" accept=".json" style="display:none;" onchange="importBackupJSON(event)">
+      </label>
+      <button class="btn btn-outline" style="border-color:#fca5a5; color:#b91c1c; font-size:11px; padding:6px 10px;" onclick="resetToDefaults()" title="Restaurar todos los costos y noches de hotel al original">🔄 Reset</button>
+      <label class="btn" style="background:#059669; cursor:pointer; font-size:11px; padding:6px 12px;" title="Import new CSV exported from Microsoft Forms">
+        <span>📥 Import CSV</span>
         <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleFileUpload(event)">
       </label>
-      <button class="btn btn-outline" onclick="exportCurrentCSV()">📤 Export CSV</button>
-      <button class="btn" onclick="window.print()">🖨️ Print Report</button>
+      <button class="btn btn-outline" style="font-size:11px; padding:6px 10px;" onclick="exportCurrentCSV()">📤 Export CSV</button>
+      <button class="btn" style="font-size:11px; padding:6px 12px;" onclick="window.print()">🖨️ Print</button>
     </div>
   </div>
 
   <!-- KPI SUMMARY CARDS -->
   <div class="kpi-grid">
     <div class="kpi-card">
-      <div class="kpi-val" id="kpi-total">19</div>
+      <div class="kpi-val" id="kpi-total">28</div>
       <div class="kpi-lbl">Total Registered</div>
-      <div class="kpi-sub">17 MCAA &bull; 2 General</div>
+      <div class="kpi-sub">21 In Person &bull; 7 Online</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-val" id="kpi-bento1">19</div>
+      <div class="kpi-val" id="kpi-bento1">21</div>
       <div class="kpi-lbl">Day 1 Bento Lunch</div>
       <div class="kpi-sub">Seated Themed Tables</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-val" id="kpi-dinner">17</div>
+      <div class="kpi-val" id="kpi-dinner">20</div>
       <div class="kpi-lbl">Monjayaki Dinner</div>
       <div class="kpi-sub">Nov 4 Evening (Tokyo)</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-val" id="kpi-bento2">16</div>
+      <div class="kpi-val" id="kpi-bento2">19</div>
       <div class="kpi-lbl">Day 2 Bento Lunch</div>
       <div class="kpi-sub">Prior to Site Visit</div>
     </div>
     <div class="kpi-card gold">
-      <div class="kpi-val" id="kpi-visit">16</div>
+      <div class="kpi-val" id="kpi-visit">19</div>
       <div class="kpi-lbl">Leave a Nest Visit</div>
       <div class="kpi-sub">Iidabashi Deep-Tech HQ</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-val" id="kpi-hotel">8</div>
+      <div class="kpi-val" id="kpi-hotel">11</div>
       <div class="kpi-lbl">Hotel Rooms (11 Pax)</div>
       <div class="kpi-sub">33 Nights (Nov 3-6) &bull; &yen;495K</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-val" id="kpi-visa">7</div>
+      <div class="kpi-val" id="kpi-visa">10</div>
       <div class="kpi-lbl">Visa Letters Needed</div>
       <div class="kpi-sub">Support docs required</div>
     </div>
@@ -160,7 +169,7 @@
         <label>Day 1 Bento Lunch (21 in-person pax)</label>
         <div class="input-wrap">
           <span>&yen;</span>
-          <input type="number" id="cost-bento1" value="0" oninput="recalc()">
+          <input type="number" id="cost-bento1" value="2200" oninput="recalc()">
           <span class="subtotal" id="sub-bento1">&yen;41,800</span>
         </div>
       </div>
@@ -180,7 +189,7 @@
         <label>Day 1 Monjayaki Dinner (17 pax)</label>
         <div class="input-wrap">
           <span>&yen;</span>
-          <input type="number" id="cost-dinner" value="1500" oninput="recalc()">
+          <input type="number" id="cost-dinner" value="5500" oninput="recalc()">
           <span class="subtotal" id="sub-dinner">&yen;93,500</span>
         </div>
       </div>
@@ -237,7 +246,7 @@
 
       <!-- Item 9: Venue / AV -->
       <div class="calc-row">
-        <label>Venue </label>
+        <label>Venue / Tech AV (Europa House / Univ.)</label>
         <div class="input-wrap">
           <span>&yen;</span>
           <input type="number" id="cost-venue" value="0" oninput="recalc()">
@@ -830,7 +839,7 @@
         </tr>
         <tr>
           <td><strong>INST-04</strong></td>
-          <td><strong>Dr. Twan van Erp</strong><br><small>Twan van Erp</small></td>
+          <td><strong>Twan van Erp</strong></td>
           <td>EU Delegation India</td>
           <td>EU Counsellor R&I (EU Del India)</td>
           <td><span class="tag tag-mcaa">MCAA</span></td>
@@ -1303,6 +1312,149 @@
 
     if (document.getElementById('grand-total-jpy')) document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
     if (document.getElementById('grand-total-eur')) document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
+
+    saveStateToLocalStorage();
+  }
+
+  // --- AUTOMATIC PERSISTENCE & BACKUP MANAGEMENT ---
+  const STORAGE_KEY = 'mcaa_tokyo2026_budget_state';
+  let isRestoring = false;
+
+  function getDashboardState() {
+    const unitCosts = {
+      bento1: document.getElementById('cost-bento1')?.value,
+      coffee1: document.getElementById('cost-coffee1')?.value,
+      dinner: document.getElementById('cost-dinner')?.value,
+      coffee2: document.getElementById('cost-coffee2')?.value,
+      bento2: document.getElementById('cost-bento2')?.value,
+      transit: document.getElementById('cost-transit')?.value,
+      badges: document.getElementById('cost-badges')?.value,
+      banner: document.getElementById('cost-banner')?.value,
+      venue: document.getElementById('cost-venue')?.value,
+      hotelRate: document.getElementById('global-hotel-rate')?.value,
+      toggleTravel: document.getElementById('toggle-travel')?.checked
+    };
+
+    const travelRows = [];
+    document.querySelectorAll('#travelSimTable tbody tr').forEach((tr, i) => {
+      const travelVal = tr.querySelector('.ind-travel-cost')?.value;
+      const nightsVal = tr.querySelector('.ind-hotel-nights')?.value;
+      travelRows.push({ i, travelVal, nightsVal });
+    });
+
+    return {
+      version: 1,
+      savedAt: new Date().toISOString(),
+      unitCosts,
+      travelRows
+    };
+  }
+
+  function saveStateToLocalStorage() {
+    if (isRestoring) return;
+    try {
+      const state = getDashboardState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateSaveBadge(`Guardado (${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})})`);
+    } catch (e) {
+      console.warn("Storage not available:", e);
+    }
+  }
+
+  function updateSaveBadge(text, isAlert = false) {
+    const badge = document.getElementById('save-status-badge');
+    if (badge) {
+      badge.innerHTML = (isAlert ? '⚠️ ' : '💾 ') + text;
+      badge.style.background = isAlert ? '#fef3c7' : '#ecfdf5';
+      badge.style.color = isAlert ? '#92400e' : '#065f46';
+      badge.style.borderColor = isAlert ? '#fde68a' : '#a7f3d0';
+    }
+  }
+
+  function restoreStateFromLocalStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const state = JSON.parse(raw);
+      applyState(state);
+      const timeStr = new Date(state.savedAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      updateSaveBadge(`Restaurado (${timeStr})`);
+      return true;
+    } catch (e) {
+      console.error("Error restoring state:", e);
+      return false;
+    }
+  }
+
+  function applyState(state) {
+    if (!state) return;
+    isRestoring = true;
+    try {
+      if (state.unitCosts) {
+        if (state.unitCosts.bento1 !== undefined) document.getElementById('cost-bento1').value = state.unitCosts.bento1;
+        if (state.unitCosts.coffee1 !== undefined) document.getElementById('cost-coffee1').value = state.unitCosts.coffee1;
+        if (state.unitCosts.dinner !== undefined) document.getElementById('cost-dinner').value = state.unitCosts.dinner;
+        if (state.unitCosts.coffee2 !== undefined) document.getElementById('cost-coffee2').value = state.unitCosts.coffee2;
+        if (state.unitCosts.bento2 !== undefined) document.getElementById('cost-bento2').value = state.unitCosts.bento2;
+        if (state.unitCosts.transit !== undefined) document.getElementById('cost-transit').value = state.unitCosts.transit;
+        if (state.unitCosts.badges !== undefined) document.getElementById('cost-badges').value = state.unitCosts.badges;
+        if (state.unitCosts.banner !== undefined) document.getElementById('cost-banner').value = state.unitCosts.banner;
+        if (state.unitCosts.venue !== undefined) document.getElementById('cost-venue').value = state.unitCosts.venue;
+        if (state.unitCosts.hotelRate !== undefined) document.getElementById('global-hotel-rate').value = state.unitCosts.hotelRate;
+        if (state.unitCosts.toggleTravel !== undefined) document.getElementById('toggle-travel').checked = state.unitCosts.toggleTravel;
+      }
+
+      if (state.travelRows && Array.isArray(state.travelRows)) {
+        const rows = document.querySelectorAll('#travelSimTable tbody tr');
+        state.travelRows.forEach((item, idx) => {
+          const row = rows[idx];
+          if (row) {
+            const travelInput = row.querySelector('.ind-travel-cost');
+            const nightsInput = row.querySelector('.ind-hotel-nights');
+            if (travelInput && item.travelVal !== undefined) travelInput.value = item.travelVal;
+            if (nightsInput && item.nightsVal !== undefined) nightsInput.value = item.nightsVal;
+          }
+        });
+      }
+    } finally {
+      isRestoring = false;
+    }
+  }
+
+  function resetToDefaults() {
+    if (!confirm("¿Deseas restaurar todos los precios, viáticos y noches de hotel a sus valores originales por defecto?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  function exportBackupJSON() {
+    const state = getDashboardState();
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MCAA_Tokyo2026_Dashboard_Backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    updateSaveBadge("Backup descargado");
+  }
+
+  function importBackupJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const state = JSON.parse(e.target.result);
+        applyState(state);
+        recalc();
+        saveStateToLocalStorage();
+        alert("¡Copia de seguridad restaurada y aplicada con éxito!");
+      } catch (err) {
+        alert("Error al leer el archivo JSON: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
   }
 
   function handleFileUpload(event) {
@@ -1379,7 +1531,6 @@
     a.click();
   }
 
-  
   function exportTravelCSV() {
     const table = document.getElementById("travelSimTable");
     let csv = [];
@@ -1411,6 +1562,8 @@
     });
   }
 
+  // Restore saved modifications on startup, then calculate
+  restoreStateFromLocalStorage();
   recalc();
 </script>
 
