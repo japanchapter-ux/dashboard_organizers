@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MCAA Tokyo 2026 - Central Organization & Budget Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
     :root {
       --navy: #0e3672;
@@ -1168,7 +1170,7 @@
 <script>
   const EUR_RATE = 165; // 1 EUR = 165 JPY
 
-  function recalc() {
+  function recalc(triggerCloud = true) {
     const rows = document.querySelectorAll("#rosterTable tbody tr");
     let total = 0, bento1Count = 0, dinnerCount = 0, bento2Count = 0, transitCount = 0, hotelCount = 0, visaCount = 0;
 
@@ -1314,6 +1316,9 @@
     if (document.getElementById('grand-total-eur')) document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
 
     saveStateToLocalStorage();
+    if (triggerCloud) {
+      saveStateToCloud();
+    }
   }
 
   // --- AUTOMATIC PERSISTENCE & BACKUP MANAGEMENT ---
@@ -1369,6 +1374,77 @@
       badge.style.color = isAlert ? '#92400e' : '#065f46';
       badge.style.borderColor = isAlert ? '#fde68a' : '#a7f3d0';
     }
+  }
+
+  // --- FIREBASE REALTIME DATABASE LIVE CLOUD SYNCHRONIZATION ---
+  const FIREBASE_CONFIG = {
+    databaseURL: "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "mcaa-asia-2026"
+  };
+
+  let dbRef = null;
+  let isRemoteSyncing = false;
+  let syncDebounceTimer = null;
+
+  function initFirebase() {
+    try {
+      if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        const db = firebase.database();
+        dbRef = db.ref('budget_state');
+
+        // Listen for live updates from any connected organizer in real time
+        dbRef.on('value', (snapshot) => {
+          const val = snapshot.val();
+          if (val && !isRestoring) {
+            isRemoteSyncing = true;
+            try {
+              applyState(val);
+              recalc(false); // recalc locally without echoing back to cloud
+              const timeStr = new Date(val.savedAt || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+              updateSaveBadge(`🟢 En Vivo (Cloud ${timeStr})`);
+            } finally {
+              isRemoteSyncing = false;
+            }
+          }
+        }, (error) => {
+          console.warn("Firebase RTDB status:", error);
+          if (error.code === 'PERMISSION_DENIED') {
+            updateSaveBadge("⚠️ Firebase: Permiso denegado (Revisa Reglas)", true);
+          } else {
+            updateSaveBadge("💾 Modo Local (Navegador)");
+          }
+        });
+      }
+    } catch (e) {
+      console.warn("Firebase initialization notice:", e);
+      updateSaveBadge("💾 Modo Local (Navegador)");
+    }
+  }
+
+  function saveStateToCloud() {
+    if (isRemoteSyncing || isRestoring || !dbRef) return;
+    clearTimeout(syncDebounceTimer);
+    syncDebounceTimer = setTimeout(() => {
+      try {
+        const state = getDashboardState();
+        dbRef.set(state, (error) => {
+          if (error) {
+            console.warn("Cloud save notice:", error);
+            if (error.code === 'PERMISSION_DENIED') {
+              updateSaveBadge("⚠️ Permiso denegado en Firebase (Ver Reglas)", true);
+            }
+          } else {
+            const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+            updateSaveBadge(`🟢 Guardado en Nube (${timeStr})`);
+          }
+        });
+      } catch (e) {
+        console.warn("Cloud save exception:", e);
+      }
+    }, 350);
   }
 
   function restoreStateFromLocalStorage() {
@@ -1562,9 +1638,10 @@
     });
   }
 
-  // Restore saved modifications on startup, then calculate
+  // Restore saved modifications on startup, then calculate and connect Firebase
   restoreStateFromLocalStorage();
-  recalc();
+  recalc(false);
+  initFirebase();
 </script>
 
 </body>
