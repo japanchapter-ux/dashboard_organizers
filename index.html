@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MCAA Tokyo 2026 - Central Organization & Budget Dashboard</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
   <style>
@@ -142,9 +143,9 @@
       <div class="kpi-sub">Iidabashi Deep-Tech HQ</div>
     </div>
     <div class="kpi-card highlight">
-      <div class="kpi-val" id="kpi-hotel">11</div>
-      <div class="kpi-lbl" id="kpi-hotel-lbl">Hotel Rooms (11 Pax)</div>
-        <div class="kpi-sub" id="kpi-hotel-sub">33 Nights (Nov 3-6) &bull; &yen;495K</div>
+      <div class="kpi-val" id="kpi-hotel">12</div>
+      <div class="kpi-lbl" id="kpi-hotel-lbl">Hotel Rooms (12 Pax)</div>
+        <div class="kpi-sub" id="kpi-hotel-sub">36 Nights (Nov 3-6) &bull; &yen;540K</div>
     </div>
     <div class="kpi-card highlight">
       <div class="kpi-val" id="kpi-visa">10</div>
@@ -152,9 +153,9 @@
       <div class="kpi-sub">Support docs required</div>
     </div>
     <div class="kpi-card gold">
-      <div class="kpi-val" id="kpi-travel-budget">&yen;2.61M</div>
+      <div class="kpi-val" id="kpi-travel-budget">&yen;2.76M</div>
       <div class="kpi-lbl">Travel &amp; Stay Budget</div>
-      <div class="kpi-sub">&euro;15,797 &bull; 17 Claimants</div>
+      <div class="kpi-sub" id="kpi-travel-sub">&euro;16,720 &bull; 18 Claimants</div>
     </div>
   </div>
 
@@ -276,13 +277,13 @@
       <div style="margin-top:14px; padding-top:10px; border-top:2px solid var(--gold);">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
           <h3 style="font-size:13px; font-weight:800; color:var(--gold);">✈️ Travel &amp; Accommodation Subtotal</h3>
-          <span style="font-size:11px; color:var(--text-muted);">(17 Claimants &bull; Nov 3–6)</span>
+          <span style="font-size:11px; color:var(--text-muted);" id="side-travel-badge">(18 Claimants &bull; Nov 3–6)</span>
         </div>
         <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
           Calculated from individual declared costs &amp; &yen;15,000/night hotel:
         </div>
         <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
-          <span>11 Overseas Flights:</span>
+          <span id="side-overseas-lbl">12 Overseas Flights:</span>
           <strong id="side-flight-sum">&yen;1,959,000 (&euro;11,873)</strong>
         </div>
         <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
@@ -329,7 +330,7 @@
       </div>
 
       <!-- HOTEL LOGISTICS & RECOMMENDED OPTIONS -->
-      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;">🏨 Hotel &amp; Lodging Logistics (11 Overseas Delegates)</h3>
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;" id="hotel-logistics-lbl">🏨 Hotel &amp; Lodging Logistics (12 Overseas Delegates)</h3>
       <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 12px; font-size: 11px; margin-top: 4px;">
         <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
           <span><strong>Covered Duration:</strong> Up to 3 Nights (Nov 3–6, 2026)</span>
@@ -861,7 +862,7 @@
         </tbody>
         <tfoot>
           <tr style="background:#fefce8; font-weight:700; border-top:2px solid var(--gold); border-bottom:1px solid var(--gold);">
-            <td colspan="4" style="padding:10px 8px; color:#92400e;">Subtotals (11 Overseas Flights + 6 Domestic [incl. Ueda] + 11 Hotels Nov 3–6):</td>
+            <td colspan="4" style="padding:10px 8px; color:#92400e;" id="travel-subtotal-lbl">Subtotals (12 Overseas Flights + 6 Domestic [incl. Ueda] + 12 Hotels Nov 3–6):</td>
             <td style="padding:10px 8px; color:#92400e;" id="sum-travel-trans">&yen;2,111,568</td>
             <td colspan="2" style="padding:10px 8px; text-align:center; color:#92400e;" id="sum-room-nights">33 Room-Nights</td>
             <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;495,000</td>
@@ -1398,6 +1399,8 @@
 
     let grantClaimants = 0;
     let selfClaimants = 0;
+    let overseasClaimants = 0;
+    let domesticClaimants = 0;
 
     travelRows.forEach((tr, i) => {
       const travelInput = tr.querySelector('.ind-travel-cost');
@@ -1441,6 +1444,7 @@
       }
 
       if (!isSelf) {
+        if (isOverseas) overseasClaimants++; else domesticClaimants++;
         sumTravelTrans += travelVal;
         if (isOverseas) sumOverseasFlight += travelVal;
         else sumDomTravel += travelVal;
@@ -1488,6 +1492,35 @@
 
     const kpiTB = document.getElementById('kpi-travel-budget');
     if (kpiTB) kpiTB.innerText = '¥' + (sumTravelGrand / 1000000).toFixed(2) + 'M';
+    // Update Dynamic Labels
+    const overseasCount = isNaN(overseasClaimants) ? 12 : overseasClaimants;
+    const domCount = isNaN(domesticClaimants) ? 6 : domesticClaimants;
+
+    const elSubtotalLbl = document.getElementById('travel-subtotal-lbl');
+    if (elSubtotalLbl) {
+      elSubtotalLbl.innerText = `Subtotals (${overseasCount} Overseas Flights + ${domCount} Domestic [incl. Ueda] + ${fundedHotelPax} Hotels Nov 3–6):`;
+    }
+
+    const sideOverseasLbl = document.getElementById('side-overseas-lbl');
+    if (sideOverseasLbl) {
+      sideOverseasLbl.innerText = `${overseasCount} Overseas Flights:`;
+    }
+
+    const sideTravelBadge = document.getElementById('side-travel-badge');
+    if (sideTravelBadge) {
+      sideTravelBadge.innerHTML = `(${grantClaimants} Funded • ${selfClaimants} Self • Nov 3–6)`;
+    }
+
+    const kpiTravelSub = document.getElementById('kpi-travel-sub');
+    if (kpiTravelSub) {
+      kpiTravelSub.innerHTML = `&euro;${sumTravelEur.toLocaleString()} &bull; ${grantClaimants} Claimants`;
+    }
+
+    const hotelLogisticsLbl = document.getElementById('hotel-logistics-lbl');
+    if (hotelLogisticsLbl) {
+      hotelLogisticsLbl.innerHTML = `🏨 Hotel &amp; Lodging Logistics (${overseasCount} Overseas Delegates)`;
+    }
+
 
     // Checkbox toggle: Include Travel in Grand Total
     const includeTravel = document.getElementById('toggle-travel')?.checked ?? true;
@@ -1969,122 +2002,6 @@
             </div>
           </td>
           <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
-          <td style="padding:8px; text-align:center;">
-            <input type="number" class="ind-hotel-nights" id="hotel-nights-${travelIdx}" value="${nights}" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
-          </td>
-          <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-${travelIdx}">&yen;${(nights * 15000).toLocaleString()}</td>
-          <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-${travelIdx}">&yen;${(estCostJPY + nights * 15000).toLocaleString()}</td>
-          <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-${travelIdx}">&euro;${Math.round((estCostJPY + nights * 15000)/EUR_RATE).toLocaleString()}</td>
-        `;
-        travelTbody.appendChild(trSim);
-      }
-    });
-
-    recalc(true);
-
-    if (newCount > 0) {
-      alert(`✅ ¡Éxito! Se agregaron ${newCount} nuevos participantes sin duplicados en ambas tablas (Roster y Viajes).\nLos datos se recalcularon y sincronizaron.`);
-    } else {
-      alert(`ℹ️ Todos los participantes del archivo ya estaban registrados en el dashboard. No se generaron duplicados.`);
-    }
-  }
-
-  function exportCurrentCSV() {
-    const rows = document.querySelectorAll("#rosterTable tr");
-    let csv = [];
-    rows.forEach(tr => {
-      const cols = tr.querySelectorAll("th, td");
-      let row = [];
-      cols.forEach(col => {
-        let text = col.innerText.replace(/"/g, '""').replace(/\n/g, ' ');
-        row.push(`"${text}"`);
-      });
-      csv.push(row.join(","));
-    });
-    const blob = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `MCAA_Tokyo2026_Live_Roster_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-  }
-
-  function exportTravelCSV() {
-    const table = document.getElementById("travelSimTable");
-    let csv = [];
-    const rows = table.querySelectorAll("tr");
-    rows.forEach(tr => {
-      let row = [];
-      tr.querySelectorAll("th, td").forEach(cell => {
-        let select = cell.querySelector("select");
-        let input = cell.querySelector("input");
-        let text = select ? (select.options[select.selectedIndex]?.text || select.value) : (input ? input.value : cell.innerText);
-        text = text.replace(/"/g, '""').replace(/\n/g, ' ').trim();
-        row.push(`"${text}"`);
-      });
-      csv.push(row.join(","));
-    });
-    const blob = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `MCAA_Tokyo2026_Travel_Budget_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-  }
-
-  function filterTable() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const rows = document.querySelectorAll("#rosterTable tbody tr");
-    rows.forEach(row => {
-      const text = row.innerText.toLowerCase();
-      row.style.display = text.includes(input) ? "" : "none";
-    });
-  }
-
-  // Restore saved modifications on startup, then calculate and connect Firebase
-  restoreStateFromLocalStorage();
-  recalc(false);
-  initFirebase();
-</script>
-
-</body>
-</html>
-)) {
-        const num = parseFloat(rawCostStr.replace(/[^0-9.]/g, '')) || 0;
-        estCostJPY = Math.round(num * 150);
-      } else {
-        estCostJPY = parseFloat(rawCostStr.replace(/[^0-9.]/g, '')) || 0;
-      }
-
-      const isOverseas = !chapter.includes('Japan') && !chapter.includes('Tokyo');
-      const nights = hotel.includes('Yes') ? 3 : 0;
-      const travelIdx = document.querySelectorAll("#travelSimTable tbody tr").length;
-
-      // Add to Travel Sim if MCAA and (needs hotel OR stated cost OR international)
-      const needsTravelSim = type === 'MCAA' && (estCostJPY > 0 || nights > 0 || rawCostStr !== '' || isOverseas);
-
-      if (travelTbody && needsTravelSim) {
-        const trSim = document.createElement('tr');
-        trSim.style.borderBottom = '1px solid var(--border)';
-        trSim.setAttribute('data-overseas', isOverseas ? 'true' : 'false');
-        trSim.innerHTML = `
-          <td style="padding:8px;"><strong>${name}</strong><br><small style="color:var(--text-muted);">${id}</small></td>
-          <td style="padding:8px;">${chapter}</td>
-          <td style="padding:8px; text-align:center;">
-            <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
-              <option value="grant">Grant Funded</option>
-              <option value="self">Self-Funded</option>
-            </select>
-          </td>
-          <td style="padding:8px;"><span class="tag ${isOverseas ? 'tag-mcaa' : 'tag-yes'}">${transportMode || (isOverseas ? "Int'l Flight" : "Domestic")}</span></td>
-          <td style="padding:8px; font-weight:600; color:var(--navy);">${rawCostStr || (estCostJPY ? `¥${estCostJPY.toLocaleString()}` : "-")}</td>
-          <td style="padding:8px;">
-            <div style="display:flex; align-items:center; gap:3px;">
-              <span>&yen;</span>
-              <input type="number" class="ind-travel-cost" id="travel-cost-${travelIdx}" value="${estCostJPY}" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
-            </div>
-          </td>
-          <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">${findVal(row, 'arrival') || 'Nov 3'}–${findVal(row, 'departure') || '6'}</span></td>
           <td style="padding:8px; text-align:center;">
             <input type="number" class="ind-hotel-nights" id="hotel-nights-${travelIdx}" value="${nights}" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
           </td>
