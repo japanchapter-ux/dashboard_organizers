@@ -130,8 +130,8 @@
     </div>
     <div class="kpi-card highlight">
       <div class="kpi-val" id="kpi-hotel">8</div>
-      <div class="kpi-lbl">Hotel Rooms (8 Pax)</div>
-      <div class="kpi-sub">16 Room-Nights &bull; &yen;208K</div>
+      <div class="kpi-lbl">Hotel Rooms (11 Pax)</div>
+      <div class="kpi-sub">33 Nights (Nov 3-6) &bull; &yen;495K</div>
     </div>
     <div class="kpi-card highlight">
       <div class="kpi-val" id="kpi-visa">7</div>
@@ -139,9 +139,9 @@
       <div class="kpi-sub">Support docs required</div>
     </div>
     <div class="kpi-card gold">
-      <div class="kpi-val" id="kpi-travel-budget">&yen;1.10M</div>
-      <div class="kpi-lbl">Travel &amp; Stay Grants</div>
-      <div class="kpi-sub">&euro;6,655 &bull; 7 Int'l + 8 Hotels</div>
+      <div class="kpi-val" id="kpi-travel-budget">&yen;2.61M</div>
+      <div class="kpi-lbl">Travel &amp; Stay Budget</div>
+      <div class="kpi-sub">&euro;15,797 &bull; 17 Claimants</div>
     </div>
   </div>
 
@@ -259,50 +259,30 @@
         <span id="subtotal-local-ops">&yen;251,284 (&euro;1,523)</span>
       </div>
 
-      <!-- TRAVEL & ACCOMMODATION GRANTS SECTION -->
-      <div style="margin-top:16px; padding-top:12px; border-top:2px solid var(--gold);">
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-          <h3 style="font-size:14px; font-weight:800; color:var(--gold);">✈️ Travel &amp; Accommodation Budget</h3>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); cursor:pointer;">
-            <input type="checkbox" id="toggle-travel" checked onchange="recalc()"> Include in Grand Total
-          </label>
+      <!-- TRAVEL & ACCOMMODATION SUMMARY IN LOCAL PANEL -->
+      <div style="margin-top:14px; padding-top:10px; border-top:2px solid var(--gold);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <h3 style="font-size:13px; font-weight:800; color:var(--gold);">✈️ Travel &amp; Accommodation Subtotal</h3>
+          <span style="font-size:11px; color:var(--text-muted);">(17 Claimants &bull; Nov 3–6)</span>
         </div>
-
-        <!-- Travel Item 1: International Flight Grants -->
-        <div class="calc-row">
-          <label>Int'l Travel Grants (Flights)</label>
-          <div class="input-wrap">
-            <input type="number" id="qty-travel-grant" value="11" style="width:45px;" title="Number of delegates" oninput="recalc()"> pax &times; &yen;
-            <input type="number" id="cost-travel-grant" value="120000" style="width:80px;" oninput="recalc()">
-            <span class="subtotal" id="sub-travel-grant">&yen;840,000</span>
-          </div>
+        <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+          Calculated from individual declared costs &amp; &yen;15,000/night hotel:
         </div>
-
-        <!-- Travel Item 2: Hotel Nights -->
-        <div class="calc-row">
-          <label>Hotel Accommodation (Tokyo)</label>
-          <div class="input-wrap">
-            <input type="number" id="qty-hotel" value="11" style="width:40px;" title="Delegates" oninput="recalc()"> pax &times;
-            <input type="number" id="qty-hotel-nights" value="2" style="width:35px;" title="Nights" oninput="recalc()"> nts &times; &yen;
-            <input type="number" id="cost-hotel" value="13000" style="width:70px;" oninput="recalc()">
-            <span class="subtotal" id="sub-hotel">&yen;208,000</span>
-          </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+          <span>11 Overseas Flights:</span>
+          <strong id="side-flight-sum">&yen;1,959,000 (&euro;11,873)</strong>
         </div>
-
-        <!-- Travel Item 3: Domestic Travel / Shinkansen -->
-        <div class="calc-row">
-          <label>Domestic Shinkansen / Trains</label>
-          <div class="input-wrap">
-            <input type="number" id="qty-domestic" value="2" style="width:45px;" oninput="recalc()"> pax &times; &yen;
-            <input type="number" id="cost-domestic" value="25000" style="width:75px;" oninput="recalc()">
-            <span class="subtotal" id="sub-domestic">&yen;50,000</span>
-          </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+          <span>Hotel (33 Nts @ &yen;15k, Nov 3–6):</span>
+          <strong id="side-hotel-sum">&yen;495,000 (&euro;3,000)</strong>
         </div>
-
-        <!-- TRAVEL SUBTOTAL -->
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-weight:700; color:var(--gold); border-top:1px dashed var(--border);">
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+          <span>6 Domestic (incl. Ueda Shinkansen):</span>
+          <strong id="side-dom-sum">&yen;152,568 (&euro;925)</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-weight:800; color:var(--gold); border-top:1px dashed var(--border);">
           <span>Travel &amp; Stay Subtotal:</span>
-          <span id="subtotal-travel">&yen;1,098,000 (&euro;6,655)</span>
+          <span id="subtotal-travel">&yen;2,606,568 (&euro;15,797)</span>
         </div>
       </div>
 
@@ -366,6 +346,387 @@
       </div>
     </div>
 
+  </div>
+
+  
+  <!-- TRAVEL & ACCOMMODATION LIVE SIMULATOR (PERSON-BY-PERSON CLAIMS) -->
+  <div class="panel" style="margin-top: 18px; border: 2px solid var(--gold); background: #ffffff;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:14px;">
+      <div>
+        <h2 style="margin:0; font-size:18px; color:var(--navy); display:flex; align-items:center; gap:8px;">
+          <span>✈️ Delegate Travel &amp; Accommodation Live Simulator</span>
+          <span style="font-size:11px; background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:12px; font-weight:700;">Individual Stated Claims</span>
+        </h2>
+        <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">
+          Calculated directly from each participant's submitted flight/train estimates. Hotel covered at <strong>&yen;15,000 / night</strong> strictly for <strong>Nov 3–6</strong> (max 3 nights). All amounts editable in real-time.
+        </p>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div style="font-size:12px; display:flex; align-items:center; gap:6px;">
+          <label style="font-weight:700; color:var(--navy);">Hotel Rate / Night:</label>
+          <span>&yen;</span>
+          <input type="number" id="global-hotel-rate" value="15000" style="width:75px; padding:4px 6px; border:1px solid var(--border); border-radius:6px; font-weight:700; font-size:12px;" oninput="recalc()">
+        </div>
+        <label style="font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; background:#f0f4fa; padding:6px 12px; border-radius:8px; display:flex; align-items:center; gap:6px;">
+          <input type="checkbox" id="toggle-travel" checked onchange="recalc()"> Include Travel in Grand Total
+        </label>
+        <button class="btn btn-outline" onclick="exportTravelCSV()" style="font-size:11px; padding:6px 12px;">📤 Export Travel Budget (CSV)</button>
+      </div>
+    </div>
+
+    <div style="overflow-x:auto;">
+      <table id="travelSimTable" style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#f8fafc; border-bottom:2px solid var(--border); text-align:left;">
+            <th style="padding:8px;">Delegate Name</th>
+            <th style="padding:8px;">Chapter / Route</th>
+            <th style="padding:8px;">Transport Mode</th>
+            <th style="padding:8px;">Stated in Form</th>
+            <th style="padding:8px;">Travel Cost (&yen;)</th>
+            <th style="padding:8px;">Stay Dates</th>
+            <th style="padding:8px; text-align:center;">Covered Nts (Nov 3-6)</th>
+            <th style="padding:8px; text-align:right;">Hotel Subtotal (&yen;)</th>
+            <th style="padding:8px; text-align:right;">Total (&yen; JPY)</th>
+            <th style="padding:8px; text-align:right;">Total (&euro; EUR)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="border-bottom:1px solid var(--border); background:#fafcff;" data-overseas="false">
+            <td style="padding:8px;"><strong>Prof. Dr. Eugenio Otal</strong><br><small style="color:var(--text-muted);">ORG-01</small></td>
+            <td style="padding:8px;">Japan Chapter (Ueda)</td>
+            <td style="padding:8px;"><span class="tag tag-yes">Hokuriku Shinkansen (Ueda <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">Round-trip Shinkansen (Ueda)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-0" value="13500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 4–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-0" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-0">&yen;0</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-0">&yen;13,500</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-0">&euro;82</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); background:#fafcff;" data-overseas="false">
+            <td style="padding:8px;"><strong>Dr. Manuela Leticia Kim</strong><br><small style="color:var(--text-muted);">ORG-02</small></td>
+            <td style="padding:8px;">Japan Chapter (Ueda)</td>
+            <td style="padding:8px;"><span class="tag tag-yes">Hokuriku Shinkansen (Ueda <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">Round-trip Shinkansen (Ueda)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-1" value="13500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 4–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-1" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-1">&yen;0</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-1">&yen;13,500</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-1">&euro;82</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Prof. Dr. Fan Mo</strong><br><small style="color:var(--text-muted);">DEL-03</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,000 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-2" value="165000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–7</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-2" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-2">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-2">&yen;210,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-2">&euro;1,273</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Shaoshan Mai</strong><br><small style="color:var(--text-muted);">DEL-04</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">800 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-3" value="132000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-3" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-3">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-3">&yen;177,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-3">&euro;1,073</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Christopher Hales</strong><br><small style="color:var(--text-muted);">DEL-05</small></td>
+            <td style="padding:8px;">Oceania Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">2,000 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-4" value="330000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6+</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-4" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-4">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-4">&yen;375,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-4">&euro;2,273</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Yuening Li</strong><br><small style="color:var(--text-muted);">DEL-08</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,500 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-5" value="247500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 2–12</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-5" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-5">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-5">&yen;292,500</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-5">&euro;1,773</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Pengfei Wang</strong><br><small style="color:var(--text-muted);">DEL-09</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,000 USD</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-6" value="150000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–9</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-6" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-6">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-6">&yen;195,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-6">&euro;1,182</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Dr. Xiuxiu Han</strong><br><small style="color:var(--text-muted);">DEL-11</small></td>
+            <td style="padding:8px;">China & UK Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">Flight (~1,000 EUR)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-7" value="165000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 1–20</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-7" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-7">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-7">&yen;210,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-7">&euro;1,273</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Tao Yang</strong><br><small style="color:var(--text-muted);">DEL-12</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">500 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-8" value="82500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-8" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-8">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-8">&yen;127,500</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-8">&euro;773</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Yuanyuan Wei</strong><br><small style="color:var(--text-muted);">DEL-13</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">700 EUR (flight)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-9" value="115500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 1–7</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-9" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-9">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-9">&yen;160,500</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-9">&euro;973</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Tejaswini Gowda</strong><br><small style="color:var(--text-muted);">DEL-14</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,500 USD</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-10" value="225000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 1–7</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-10" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-10">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-10">&yen;270,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-10">&euro;1,636</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Praveen Kumar</strong><br><small style="color:var(--text-muted);">DEL-16</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,400 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-11" value="231000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-11" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-11">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-11">&yen;276,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-11">&euro;1,673</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="true">
+            <td style="padding:8px;"><strong>Dr. Ashwani Kumar Tiwari</strong><br><small style="color:var(--text-muted);">DEL-18</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">700 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-12" value="115500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–8</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-12" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-12">&yen;45,000</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-12">&yen;160,500</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-12">&euro;973</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="false">
+            <td style="padding:8px;"><strong>Matteo Tarsi</strong><br><small style="color:var(--text-muted);">DEL-01</small></td>
+            <td style="padding:8px;">Japan Chapter (Kyoto)</td>
+            <td style="padding:8px;"><span class="tag tag-gen">Shinkansen Nozomi (Kyoto <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥27,000 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-13" value="27000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-13" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-13">&yen;0</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-13">&yen;27,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-13">&euro;164</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="false">
+            <td style="padding:8px;"><strong>Motoko Akashi</strong><br><small style="color:var(--text-muted);">DEL-02</small></td>
+            <td style="padding:8px;">Japan Chapter (Kansai)</td>
+            <td style="padding:8px;"><span class="tag tag-gen">Domestic Flight (Kansai <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥24,000 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-14" value="24000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 2–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-14" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-14">&yen;0</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-14">&yen;24,000</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-14">&euro;145</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="false">
+            <td style="padding:8px;"><strong>Kazutsugu Matsukawa</strong><br><small style="color:var(--text-muted);">DEL-10</small></td>
+            <td style="padding:8px;">Japan Chapter (Kochi)</td>
+            <td style="padding:8px;"><span class="tag tag-gen">Domestic Flight (Kochi <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥48,608 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-15" value="48608" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 4–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-15" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-15">&yen;0</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-15">&yen;48,608</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-15">&euro;295</td>
+          </tr>
+          <tr style="border-bottom:1px solid var(--border); " data-overseas="false">
+            <td style="padding:8px;"><strong>Keisuke HATADA</strong><br><small style="color:var(--text-muted);">DEL-17</small></td>
+            <td style="padding:8px;">Japan Chapter (Toyama)</td>
+            <td style="padding:8px;"><span class="tag tag-gen">Shinkansen (Toyama <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥25,960 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-16" value="25960" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-16" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:600;" id="ind-hotel-sub-16">&yen;0</td>
+            <td style="padding:8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-total-jpy-16">&yen;25,960</td>
+            <td style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-total-eur-16">&euro;157</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:#fefce8; font-weight:700; border-top:2px solid var(--gold); border-bottom:1px solid var(--gold);">
+            <td colspan="4" style="padding:10px 8px; color:#92400e;">Subtotals (11 Overseas Flights + 6 Domestic [incl. Ueda] + 11 Hotels Nov 3–6):</td>
+            <td style="padding:10px 8px; color:#92400e;" id="sum-travel-trans">&yen;2,111,568</td>
+            <td colspan="2" style="padding:10px 8px; text-align:center; color:#92400e;" id="sum-room-nights">33 Room-Nights</td>
+            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;495,000</td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:14px;" id="sum-travel-grand">&yen;2,606,568</td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:13px;" id="sum-travel-eur">&euro;15,797 EUR</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
   </div>
 
   <!-- FULL ATTENDEE CENTRAL ROSTER TABLE -->
@@ -821,15 +1182,16 @@
     const kpiHotel = document.getElementById('kpi-hotel'); if (kpiHotel) kpiHotel.innerText = hotelCount;
     const kpiVisa = document.getElementById('kpi-visa'); if (kpiVisa) kpiVisa.innerText = visaCount;
 
-    const bento1Price = parseFloat(document.getElementById('cost-bento1').value) || 0;
-    const coffee1Price = parseFloat(document.getElementById('cost-coffee1').value) || 0;
-    const dinnerPrice = parseFloat(document.getElementById('cost-dinner').value) || 0;
-    const coffee2Price = parseFloat(document.getElementById('cost-coffee2').value) || 0;
-    const bento2Price = parseFloat(document.getElementById('cost-bento2').value) || 0;
-    const transitPrice = parseFloat(document.getElementById('cost-transit').value) || 0;
-    const badgesPrice = parseFloat(document.getElementById('cost-badges').value) || 0;
-    const bannerPrice = parseFloat(document.getElementById('cost-banner').value) || 0;
-    const venuePrice = parseFloat(document.getElementById('cost-venue').value) || 0;
+    // Local Operations calculation
+    const bento1Price = parseFloat(document.getElementById('cost-bento1')?.value) || 0;
+    const coffee1Price = parseFloat(document.getElementById('cost-coffee1')?.value) || 0;
+    const dinnerPrice = parseFloat(document.getElementById('cost-dinner')?.value) || 0;
+    const coffee2Price = parseFloat(document.getElementById('cost-coffee2')?.value) || 0;
+    const bento2Price = parseFloat(document.getElementById('cost-bento2')?.value) || 0;
+    const transitPrice = parseFloat(document.getElementById('cost-transit')?.value) || 0;
+    const badgesPrice = parseFloat(document.getElementById('cost-badges')?.value) || 0;
+    const bannerPrice = parseFloat(document.getElementById('cost-banner')?.value) || 0;
+    const venuePrice = parseFloat(document.getElementById('cost-venue')?.value) || 0;
 
     const subBento1 = bento1Count * bento1Price;
     const subCoffee1 = total * coffee1Price;
@@ -841,64 +1203,103 @@
     const subBanner = bannerPrice;
     const subVenue = venuePrice;
 
-    document.getElementById('sub-bento1').innerText = '¥' + subBento1.toLocaleString();
-    document.getElementById('sub-coffee1').innerText = '¥' + subCoffee1.toLocaleString();
-    document.getElementById('sub-dinner').innerText = '¥' + subDinner.toLocaleString();
-    document.getElementById('sub-coffee2').innerText = '¥' + subCoffee2.toLocaleString();
-    document.getElementById('sub-bento2').innerText = '¥' + subBento2.toLocaleString();
-    document.getElementById('sub-transit').innerText = '¥' + subTransit.toLocaleString();
-    document.getElementById('sub-badges').innerText = '¥' + subBadges.toLocaleString();
-    document.getElementById('sub-banner').innerText = '¥' + subBanner.toLocaleString();
-    document.getElementById('sub-venue').innerText = '¥' + subVenue.toLocaleString();
+    if (document.getElementById('sub-bento1')) document.getElementById('sub-bento1').innerText = '¥' + subBento1.toLocaleString();
+    if (document.getElementById('sub-coffee1')) document.getElementById('sub-coffee1').innerText = '¥' + subCoffee1.toLocaleString();
+    if (document.getElementById('sub-dinner')) document.getElementById('sub-dinner').innerText = '¥' + subDinner.toLocaleString();
+    if (document.getElementById('sub-coffee2')) document.getElementById('sub-coffee2').innerText = '¥' + subCoffee2.toLocaleString();
+    if (document.getElementById('sub-bento2')) document.getElementById('sub-bento2').innerText = '¥' + subBento2.toLocaleString();
+    if (document.getElementById('sub-transit')) document.getElementById('sub-transit').innerText = '¥' + subTransit.toLocaleString();
+    if (document.getElementById('sub-badges')) document.getElementById('sub-badges').innerText = '¥' + subBadges.toLocaleString();
+    if (document.getElementById('sub-banner')) document.getElementById('sub-banner').innerText = '¥' + subBanner.toLocaleString();
+    if (document.getElementById('sub-venue')) document.getElementById('sub-venue').innerText = '¥' + subVenue.toLocaleString();
 
     const directSum = subBento1 + subCoffee1 + subDinner + subCoffee2 + subBento2 + subTransit + subBadges + subBanner + subVenue;
     const contingency = Math.round(directSum * 0.10);
-    document.getElementById('sub-contingency').innerText = '¥' + contingency.toLocaleString();
+    if (document.getElementById('sub-contingency')) document.getElementById('sub-contingency').innerText = '¥' + contingency.toLocaleString();
 
     const localOpsTotal = directSum + contingency;
     const localOpsEur = Math.round(localOpsTotal / EUR_RATE);
     const subLocalEl = document.getElementById('subtotal-local-ops');
     if (subLocalEl) subLocalEl.innerText = `¥${localOpsTotal.toLocaleString()} (€${localOpsEur.toLocaleString()})`;
 
-    // Travel & Stay Calculations
-    const qtyTravel = parseFloat(document.getElementById('qty-travel-grant')?.value) || 0;
-    const costTravel = parseFloat(document.getElementById('cost-travel-grant')?.value) || 0;
-    const subTravelGrant = qtyTravel * costTravel;
-    const elSubTG = document.getElementById('sub-travel-grant'); if (elSubTG) elSubTG.innerText = '¥' + subTravelGrant.toLocaleString();
+    // --- Person-by-Person Travel & Accommodation Calculation ---
+    const globalHotelRate = parseFloat(document.getElementById('global-hotel-rate')?.value) || 15000;
+    const travelRows = document.querySelectorAll("#travelSimTable tbody tr");
 
-    const qtyHotel = parseFloat(document.getElementById('qty-hotel')?.value) || 0;
-    const ntsHotel = parseFloat(document.getElementById('qty-hotel-nights')?.value) || 0;
-    const costHotel = parseFloat(document.getElementById('cost-hotel')?.value) || 0;
-    const subHotel = qtyHotel * ntsHotel * costHotel;
-    const elSubH = document.getElementById('sub-hotel'); if (elSubH) elSubH.innerText = '¥' + subHotel.toLocaleString();
+    let sumTravelTrans = 0;
+    let sumOverseasFlight = 0;
+    let sumDomTravel = 0;
+    let sumHotelNights = 0;
+    let sumHotelCost = 0;
+    let sumTravelGrand = 0;
 
-    const qtyDom = parseFloat(document.getElementById('qty-domestic')?.value) || 0;
-    const costDom = parseFloat(document.getElementById('cost-domestic')?.value) || 0;
-    const subDom = qtyDom * costDom;
-    const elSubD = document.getElementById('sub-domestic'); if (elSubD) elSubD.innerText = '¥' + subDom.toLocaleString();
+    travelRows.forEach((tr, i) => {
+      const travelInput = tr.querySelector('.ind-travel-cost');
+      const nightsInput = tr.querySelector('.ind-hotel-nights');
+      const isOverseas = tr.getAttribute('data-overseas') === 'true';
 
-    const travelSubtotal = subTravelGrant + subHotel + subDom;
-    const travelEur = Math.round(travelSubtotal / EUR_RATE);
+      const travelVal = parseFloat(travelInput?.value) || 0;
+      const nightsVal = parseFloat(nightsInput?.value) || 0;
+      const indHotelTotal = nightsVal * globalHotelRate;
+      const indTotalJpy = travelVal + indHotelTotal;
+      const indTotalEur = Math.round(indTotalJpy / EUR_RATE);
+
+      const elHotelSub = document.getElementById('ind-hotel-sub-' + i);
+      if (elHotelSub) elHotelSub.innerText = '¥' + indHotelTotal.toLocaleString();
+
+      const elTotJpy = document.getElementById('ind-total-jpy-' + i);
+      if (elTotJpy) elTotJpy.innerText = '¥' + indTotalJpy.toLocaleString();
+
+      const elTotEur = document.getElementById('ind-total-eur-' + i);
+      if (elTotEur) elTotEur.innerText = '€' + indTotalEur.toLocaleString();
+
+      sumTravelTrans += travelVal;
+      if (isOverseas) sumOverseasFlight += travelVal;
+      else sumDomTravel += travelVal;
+
+      sumHotelNights += nightsVal;
+      sumHotelCost += indHotelTotal;
+      sumTravelGrand += indTotalJpy;
+    });
+
+    const sumTravelEur = Math.round(sumTravelGrand / EUR_RATE);
+
+    // Update Travel Simulator Footer
+    const elSumTT = document.getElementById('sum-travel-trans'); if (elSumTT) elSumTT.innerText = '¥' + sumTravelTrans.toLocaleString();
+    const elSumRN = document.getElementById('sum-room-nights'); if (elSumRN) elSumRN.innerText = sumHotelNights + ' Room-Nights';
+    const elSumTH = document.getElementById('sum-travel-hotel'); if (elSumTH) elSumTH.innerText = '¥' + sumHotelCost.toLocaleString();
+    const elSumTG = document.getElementById('sum-travel-grand'); if (elSumTG) elSumTG.innerText = '¥' + sumTravelGrand.toLocaleString();
+    const elSumTE = document.getElementById('sum-travel-eur'); if (elSumTE) elSumTE.innerText = '€' + sumTravelEur.toLocaleString() + ' EUR';
+
+    // Update Travel Summary Box in left panel
+    const sideFlight = document.getElementById('side-flight-sum');
+    if (sideFlight) sideFlight.innerText = `¥${sumOverseasFlight.toLocaleString()} (€${Math.round(sumOverseasFlight/EUR_RATE).toLocaleString()})`;
+    const sideHotel = document.getElementById('side-hotel-sum');
+    if (sideHotel) sideHotel.innerText = `¥${sumHotelCost.toLocaleString()} (€${Math.round(sumHotelCost/EUR_RATE).toLocaleString()})`;
+    const sideDom = document.getElementById('side-dom-sum');
+    if (sideDom) sideDom.innerText = `¥${sumDomTravel.toLocaleString()} (€${Math.round(sumDomTravel/EUR_RATE).toLocaleString()})`;
+
     const subTravelEl = document.getElementById('subtotal-travel');
-    if (subTravelEl) subTravelEl.innerText = `¥${travelSubtotal.toLocaleString()} (€${travelEur.toLocaleString()})`;
+    if (subTravelEl) subTravelEl.innerText = `¥${sumTravelGrand.toLocaleString()} (€${sumTravelEur.toLocaleString()})`;
+
     const kpiTB = document.getElementById('kpi-travel-budget');
-    if (kpiTB) kpiTB.innerText = '¥' + (travelSubtotal / 1000000).toFixed(2) + 'M';
+    if (kpiTB) kpiTB.innerText = '¥' + (sumTravelGrand / 1000000).toFixed(2) + 'M';
 
     // Checkbox toggle: Include Travel in Grand Total
     const includeTravel = document.getElementById('toggle-travel')?.checked ?? true;
-    const grandTotal = includeTravel ? (localOpsTotal + travelSubtotal) : localOpsTotal;
+    const grandTotal = includeTravel ? (localOpsTotal + sumTravelGrand) : localOpsTotal;
     const totalEur = Math.round(grandTotal / EUR_RATE);
 
     const lblTotal = document.getElementById('grand-total-label');
-    if (lblTotal) lblTotal.innerText = includeTravel ? "TOTAL ESTIMATED BUDGET (Operations + Travel)" : "TOTAL ESTIMATED BUDGET (Local Operations Only)";
+    if (lblTotal) lblTotal.innerText = includeTravel ? "TOTAL ESTIMATED BUDGET (Operations + Travel & Accom.)" : "TOTAL ESTIMATED BUDGET (Local Operations Only)";
 
     const bdSub = document.getElementById('total-breakdown-sub');
     if (bdSub) bdSub.innerText = includeTravel 
-      ? `Local Ops: ¥${localOpsTotal.toLocaleString()} | Travel: ¥${travelSubtotal.toLocaleString()}`
-      : `Local Ops only (Travel budget excluded)`;
+      ? `Local Ops: ¥${localOpsTotal.toLocaleString()} | Travel & Accom: ¥${sumTravelGrand.toLocaleString()}`
+      : `Local Ops only (Travel & Accommodation excluded)`;
 
-    document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
-    document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
+    if (document.getElementById('grand-total-jpy')) document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
+    if (document.getElementById('grand-total-eur')) document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
   }
 
   function handleFileUpload(event) {
@@ -972,6 +1373,29 @@
     const a = document.createElement("a");
     a.href = url;
     a.download = `MCAA_Tokyo2026_Live_Roster_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  
+  function exportTravelCSV() {
+    const table = document.getElementById("travelSimTable");
+    let csv = [];
+    const rows = table.querySelectorAll("tr");
+    rows.forEach(tr => {
+      let row = [];
+      tr.querySelectorAll("th, td").forEach(cell => {
+        let input = cell.querySelector("input");
+        let text = input ? input.value : cell.innerText;
+        text = text.replace(/"/g, '""').replace(/\n/g, ' ').trim();
+        row.push(`"${text}"`);
+      });
+      csv.push(row.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MCAA_Tokyo2026_Travel_Budget_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
   }
 
