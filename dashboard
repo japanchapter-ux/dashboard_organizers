@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCAA Tokyo 2026 - Central Organization & Budget Dashboard</title>
+  <style>
+    :root {
+      --navy: #0e3672;
+      --navy-dark: #09244f;
+      --gold: #c38214;
+      --red: #bc002d;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --green: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    /* HEADER */
+    .header { background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; padding: 26px 28px; border-radius: 14px; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .header h1 { font-size: 24px; font-weight: 800; }
+    .header p { font-size: 13px; color: #cbd5e1; margin-top: 4px; }
+    .header-badge { background: rgba(195,130,20,0.3); border: 1px solid var(--gold); color: #ffd875; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+
+    /* KPI METRICS GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .kpi-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .kpi-val { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1.1; margin-bottom: 4px; }
+    .kpi-card.highlight .kpi-val { color: var(--red); }
+    .kpi-card.gold .kpi-val { color: var(--gold); }
+    .kpi-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+    .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* TWO-COL MAIN */
+    .main-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; margin-bottom: 22px; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .panel { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 22px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .panel h2 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 14px; border-bottom: 2px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* BUDGET SIMULATOR */
+    .calc-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+    .calc-row label { font-weight: 600; color: var(--text); }
+    .calc-row .input-wrap { display: flex; align-items: center; gap: 6px; }
+    .calc-row input[type="number"] { width: 85px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-weight: 700; text-align: right; }
+    .calc-row .subtotal { font-weight: 700; min-width: 80px; text-align: right; color: var(--navy); }
+    
+    .total-box { background: #f0f4fa; border: 2px solid var(--navy); border-radius: 10px; padding: 14px 16px; margin-top: 16px; text-align: center; }
+    .total-jpy { font-size: 26px; font-weight: 800; color: var(--navy); }
+    .total-eur { font-size: 16px; font-weight: 700; color: var(--gold); margin-top: 2px; }
+
+    /* TABLE SECTION */
+    .table-container { overflow-x: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .table-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .search-input { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; width: 250px; }
+    .btn { background: var(--navy); color: white; padding: 7px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: var(--navy-dark); }
+    .btn-outline { background: white; color: var(--navy); border: 1px solid var(--navy); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+    th { background: #f8fafc; padding: 10px 8px; font-weight: 700; color: var(--text-muted); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 10px; }
+    td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
+    tr:hover { background: #fafcff; }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+    .tag-mcaa { background: #e0edff; color: var(--navy); }
+    .tag-gen { background: #fef3c7; color: var(--gold); }
+    .tag-yes { background: #d1fae5; color: #065f46; font-weight: bold; }
+    .tag-no { background: #f1f5f9; color: var(--text-muted); }
+    .tag-alert { background: #fee2e2; color: var(--red); font-weight: bold; }
+
+    /* DIETARY SUMMARY */
+    .diet-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .diet-item { background: #f8fafc; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 12px; display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <span class="header-badge">Central Management Console</span>
+      <h1>MCAA Asia Connect "Konnichiwa Tokyo 2026"</h1>
+      <p>November 4–5, 2026 | Tokyo, Japan | Headcount: <strong>19 Confirmed Attendees</strong> (17 MCAA / Org. Committee + 2 General)</p>
+    </div>
+    <div>
+      <button class="btn btn-outline" onclick="window.print()">Print / Export PDF</button>
+      <a class="btn" href="MCAA_Tokyo2026_Master_Centralizer.csv" download>Download CSV Roster</a>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-total">19</div>
+      <div class="kpi-lbl">Total Registered</div>
+      <div class="kpi-sub">17 MCAA &bull; 2 General</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-bento1">19</div>
+      <div class="kpi-lbl">Day 1 Bento Lunch</div>
+      <div class="kpi-sub">Seated Themed Tables</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-val" id="kpi-dinner">17</div>
+      <div class="kpi-lbl">Monjayaki Dinner</div>
+      <div class="kpi-sub">Nov 4 Evening (Tokyo)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-bento2">16</div>
+      <div class="kpi-lbl">Day 2 Bento Lunch</div>
+      <div class="kpi-sub">Prior to Site Visit</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-val" id="kpi-visit">16</div>
+      <div class="kpi-lbl">Leave a Nest Visit</div>
+      <div class="kpi-sub">Iidabashi Deep-Tech HQ</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-val" id="kpi-visa">7</div>
+      <div class="kpi-lbl">Visa Letters Needed</div>
+      <div class="kpi-sub">Support docs required</div>
+    </div>
+  </div>
+
+  <!-- MAIN SECTION: BUDGET & LOGISTICS -->
+  <div class="main-grid">
+
+    <!-- BUDGET CALCULATOR & SIMULATOR -->
+    <div class="panel">
+      <h2>
+        <span>Live Budget Simulator</span>
+        <span style="font-size: 11px; font-weight: 500; color: var(--text-muted);">(Rate: 1 EUR = 165 JPY)</span>
+      </h2>
+
+      <!-- Item 1: Bento 1 -->
+      <div class="calc-row">
+        <label>Day 1 Bento Lunch (19 pax)</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-bento1" value="2200" oninput="recalc()">
+          <span class="subtotal" id="sub-bento1">&yen;41,800</span>
+        </div>
+      </div>
+
+      <!-- Item 2: Snacks & Coffee Day 1 -->
+      <div class="calc-row">
+        <label>Day 1 Coffee &amp; Snack Exchange</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-coffee1" value="500" oninput="recalc()">
+          <span class="subtotal" id="sub-coffee1">&yen;9,500</span>
+        </div>
+      </div>
+
+      <!-- Item 3: Monjayaki Dinner -->
+      <div class="calc-row">
+        <label>Day 1 Monjayaki Dinner (17 pax)</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-dinner" value="5500" oninput="recalc()">
+          <span class="subtotal" id="sub-dinner">&yen;93,500</span>
+        </div>
+      </div>
+
+      <!-- Item 4: Coffee Day 2 -->
+      <div class="calc-row">
+        <label>Day 2 Morning Coffee Break</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-coffee2" value="400" oninput="recalc()">
+          <span class="subtotal" id="sub-coffee2">&yen;6,400</span>
+        </div>
+      </div>
+
+      <!-- Item 5: Bento 2 -->
+      <div class="calc-row">
+        <label>Day 2 Bento Lunch (16 pax)</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-bento2" value="2200" oninput="recalc()">
+          <span class="subtotal" id="sub-bento2">&yen;35,200</span>
+        </div>
+      </div>
+
+      <!-- Item 6: Metro Transit -->
+      <div class="calc-row">
+        <label>Tokyo Metro Transit (16 pax to Iidabashi)</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-transit" value="440" oninput="recalc()">
+          <span class="subtotal" id="sub-transit">&yen;7,040</span>
+        </div>
+      </div>
+
+      <!-- Item 7: Badges, Lanyards & Prints -->
+      <div class="calc-row">
+        <label>Badges, Lanyards &amp; Programs (25 sets)</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-badges" value="800" oninput="recalc()">
+          <span class="subtotal" id="sub-badges">&yen;20,000</span>
+        </div>
+      </div>
+
+      <!-- Item 8: Banner & Miscellaneous -->
+      <div class="calc-row">
+        <label>30th Anniversary Banner &amp; Supplies</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-banner" value="15000" oninput="recalc()">
+          <span class="subtotal" id="sub-banner">&yen;15,000</span>
+        </div>
+      </div>
+
+      <!-- Item 9: Venue / AV -->
+      <div class="calc-row">
+        <label>Venue / Tech AV (Europa House / Univ.)</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-venue" value="0" oninput="recalc()">
+          <span class="subtotal" id="sub-venue">&yen;0</span>
+        </div>
+      </div>
+
+      <!-- Item 10: Contingency (10%) -->
+      <div class="calc-row" style="background:#fafcff;">
+        <label><strong>Contingency Buffer (10%)</strong></label>
+        <div class="input-wrap">
+          <span class="subtotal" id="sub-contingency">&yen;22,844</span>
+        </div>
+      </div>
+
+      <!-- GRAND TOTAL BOX -->
+      <div class="total-box">
+        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--navy-dark); letter-spacing: 0.8px;">Estimated Local Operating Budget</div>
+        <div class="total-jpy" id="grand-total-jpy">&yen;251,284</div>
+        <div class="total-eur" id="grand-total-eur">&euro;1,523 EUR</div>
+      </div>
+
+      <div style="margin-top: 14px; font-size: 11px; color: var(--text-muted); line-height: 1.4;">
+        * <em>Note:</em> International travel/flight grants and hotel nights for funded delegates are usually handled via individual chapter allocations or central MCAA grants. If subsidized locally, each grant can be added at approx. &yen;100,000 - &yen;150,000 per delegate.
+      </div>
+    </div>
+
+    <!-- LOGISTICS, DIETARY & VISA OVERVIEW -->
+    <div class="panel">
+      <h2>Logistical Requirements Breakdown</h2>
+
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">Dietary &amp; Meal Specifications</h3>
+      <div class="diet-list">
+        <div class="diet-item"><span>Standard (Regular Bento)</span><strong>15</strong></div>
+        <div class="diet-item"><span>Vegetarian</span><strong>2</strong></div>
+        <div class="diet-item"><span>Halal Certified</span><strong>1</strong></div>
+        <div class="diet-item"><span>Halal / Vegetarian</span><strong>1</strong></div>
+      </div>
+
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;">Administrative &amp; Speaker Demographics</h3>
+      <div class="diet-list">
+        <div class="diet-item"><span>Official Visa Support Letters</span><strong style="color:var(--red);">7 delegates</strong></div>
+        <div class="diet-item"><span>Hotel Reservation Assistance</span><strong>8 delegates</strong></div>
+        <div class="diet-item"><span>Oral Presentations / Pitches</span><strong>12 speakers</strong></div>
+        <div class="diet-item"><span>Snack Exchange Contributors</span><strong>14 delegates</strong></div>
+      </div>
+
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;">Affiliation Distribution</h3>
+      <div class="diet-list">
+        <div class="diet-item"><span>Japan Chapter / Local Team</span><strong>4</strong></div>
+        <div class="diet-item"><span>China Chapter</span><strong>3</strong></div>
+        <div class="diet-item"><span>India Chapter</span><strong>3</strong></div>
+        <div class="diet-item"><span>Southeast Asia Chapter</span><strong>2</strong></div>
+        <div class="diet-item"><span>MSCA GLOPOL &bull; EURAXESS</span><strong>1</strong></div>
+        <div class="diet-item"><span>Oceania Chapter</span><strong>1</strong></div>
+        <div class="diet-item"><span>EU Institutions / Mercari / L-Nest</span><strong>3</strong></div>
+        <div class="diet-item"><span>General Attendees (Guests)</span><strong>2</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FULL ATTENDEE CENTRAL ROSTER TABLE -->
+  <div class="table-container">
+    <div class="table-tools">
+      <h2 style="font-size: 16px; font-weight: 800; color: var(--navy);">Master Attendee Roster (19 Records)</h2>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search by name, chapter, role..." onkeyup="filterTable()">
+    </div>
+
+    <table id="rosterTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name / Badge</th>
+          <th>Chapter / Affiliation</th>
+          <th>Role</th>
+          <th>Type</th>
+          <th>Day 1 (Bento)</th>
+          <th>Dinner</th>
+          <th>Day 2 (Bento)</th>
+          <th>Site Visit</th>
+          <th>Dietary</th>
+          <th>Visa</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 17 MCAA / Organizing Committee -->
+        <tr>
+          <td><strong>MCAA-01</strong></td>
+          <td><strong>Dr. Judit Erika Magyar</strong><br><small>Judit Magyar</small></td>
+          <td>MSCA GLOPOL / EURAXESS</td>
+          <td>Regional Liaison Officer</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-02</strong></td>
+          <td><strong>Prof. Dr. Eugenio Otal</strong><br><small>Eugenio Otal</small></td>
+          <td>Japan Chapter</td>
+          <td>MCAA Board / Chair Japan</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-03</strong></td>
+          <td><strong>Prof. Dr. Fan Mo</strong><br><small>Fan Mo</small></td>
+          <td>China Chapter</td>
+          <td>MCAA Board / China Chair</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-04</strong></td>
+          <td><strong>Dr. Twan van Erp</strong><br><small>Twan van Erp</small></td>
+          <td>EU Delegation India</td>
+          <td>Counsellor R&amp;I</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-05</strong></td>
+          <td><strong>Gijs Berends</strong><br><small>Gijs Berends</small></td>
+          <td>EU Delegation Japan</td>
+          <td>Head of Science &amp; Digital</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-06</strong></td>
+          <td><strong>Fumiko Oda</strong><br><small>Fumiko Oda</small></td>
+          <td>Horizon Europe / NCP Japan</td>
+          <td>MSCA NCP</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-07</strong></td>
+          <td><strong>India Delegate 1</strong><br><small>India Del 1</small></td>
+          <td>India Chapter</td>
+          <td>Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-08</strong></td>
+          <td><strong>India Delegate 2</strong><br><small>India Del 2</small></td>
+          <td>India Chapter</td>
+          <td>Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Halal / Veg</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-09</strong></td>
+          <td><strong>China Delegate 1</strong><br><small>China Del 1</small></td>
+          <td>China Chapter</td>
+          <td>Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-10</strong></td>
+          <td><strong>China Delegate 2</strong><br><small>China Del 2</small></td>
+          <td>China Chapter</td>
+          <td>Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-11</strong></td>
+          <td><strong>Southeast Asia Delegate 1</strong><br><small>SEA Del 1</small></td>
+          <td>Southeast Asia Chapter</td>
+          <td>Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Halal</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-12</strong></td>
+          <td><strong>Southeast Asia Delegate 2</strong><br><small>SEA Del 2</small></td>
+          <td>Southeast Asia Chapter</td>
+          <td>Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-13</strong></td>
+          <td><strong>Japan Chapter Officer 1</strong><br><small>Japan Off 1</small></td>
+          <td>Japan Chapter</td>
+          <td>Organizing Team (Tokyo)</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-14</strong></td>
+          <td><strong>Japan Chapter Officer 2</strong><br><small>Japan Off 2</small></td>
+          <td>Japan Chapter</td>
+          <td>Organizing Team (Tokyo)</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-15</strong></td>
+          <td><strong>Dr. Norbert Preining</strong><br><small>Norbert Preining</small></td>
+          <td>Mercari, Inc. / MCAA Japan</td>
+          <td>Tech Scaling Lead</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-16</strong></td>
+          <td><strong>Leave a Nest Tokyo Lead</strong><br><small>Leave a Nest</small></td>
+          <td>Leave a Nest Co., Ltd.</td>
+          <td>Deep-Tech Partner</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Host</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>MCAA-17</strong></td>
+          <td><strong>Oceania Delegate</strong><br><small>Oceania Del</small></td>
+          <td>Oceania Chapter</td>
+          <td>Regional Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+
+        <!-- 2 General Attendees -->
+        <tr>
+          <td><strong>GEN-01</strong></td>
+          <td><strong>General Attendee 1</strong><br><small>Guest 1</small></td>
+          <td>University of Tokyo</td>
+          <td>European Postdoc in Japan</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-02</strong></td>
+          <td><strong>General Attendee 2</strong><br><small>Guest 2</small></td>
+          <td>EU Delegation / Partner</td>
+          <td>Science Policy Fellow</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const EUR_RATE = 165; // 1 EUR = 165 JPY
+
+  function recalc() {
+    const bento1Price = parseFloat(document.getElementById('cost-bento1').value) || 0;
+    const coffee1Price = parseFloat(document.getElementById('cost-coffee1').value) || 0;
+    const dinnerPrice = parseFloat(document.getElementById('cost-dinner').value) || 0;
+    const coffee2Price = parseFloat(document.getElementById('cost-coffee2').value) || 0;
+    const bento2Price = parseFloat(document.getElementById('cost-bento2').value) || 0;
+    const transitPrice = parseFloat(document.getElementById('cost-transit').value) || 0;
+    const badgesPrice = parseFloat(document.getElementById('cost-badges').value) || 0;
+    const bannerPrice = parseFloat(document.getElementById('cost-banner').value) || 0;
+    const venuePrice = parseFloat(document.getElementById('cost-venue').value) || 0;
+
+    // Quantities based on 19 attendees
+    const subBento1 = 19 * bento1Price;
+    const subCoffee1 = 19 * coffee1Price;
+    const subDinner = 17 * dinnerPrice; // 17 confirmed dinner
+    const subCoffee2 = 16 * coffee2Price; // 16 attending day 2
+    const subBento2 = 16 * bento2Price; // 16 attending day 2
+    const subTransit = 16 * transitPrice; // 16 transit to Iidabashi
+    const subBadges = 25 * badgesPrice; // 25 badge kits (buffer)
+    const subBanner = bannerPrice;
+    const subVenue = venuePrice;
+
+    document.getElementById('sub-bento1').innerText = '¥' + subBento1.toLocaleString();
+    document.getElementById('sub-coffee1').innerText = '¥' + subCoffee1.toLocaleString();
+    document.getElementById('sub-dinner').innerText = '¥' + subDinner.toLocaleString();
+    document.getElementById('sub-coffee2').innerText = '¥' + subCoffee2.toLocaleString();
+    document.getElementById('sub-bento2').innerText = '¥' + subBento2.toLocaleString();
+    document.getElementById('sub-transit').innerText = '¥' + subTransit.toLocaleString();
+    document.getElementById('sub-badges').innerText = '¥' + subBadges.toLocaleString();
+    document.getElementById('sub-banner').innerText = '¥' + subBanner.toLocaleString();
+    document.getElementById('sub-venue').innerText = '¥' + subVenue.toLocaleString();
+
+    const directSum = subBento1 + subCoffee1 + subDinner + subCoffee2 + subBento2 + subTransit + subBadges + subBanner + subVenue;
+    const contingency = Math.round(directSum * 0.10);
+    document.getElementById('sub-contingency').innerText = '¥' + contingency.toLocaleString();
+
+    const grandTotal = directSum + contingency;
+    const totalEur = Math.round(grandTotal / EUR_RATE);
+
+    document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
+    document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
+  }
+
+  function filterTable() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const rows = document.querySelectorAll("#rosterTable tbody tr");
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(input) ? "" : "none";
+    });
+  }
+
+  recalc();
+</script>
+
+</body>
+</html>
