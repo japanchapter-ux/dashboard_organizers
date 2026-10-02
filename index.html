@@ -166,16 +166,16 @@
     <div class="panel">
       <h2>
         <span>Live Budget Simulator</span>
-        <span style="font-size: 11px; font-weight: 500; color: var(--text-muted);">(Rate: 1 EUR = 165 JPY)</span>
+        <span style="font-size: 11px; font-weight: 500; color: var(--text-muted);">Rate: 1 EUR = 165 JPY</span>
       </h2>
 
       <!-- Item 1: Bento 1 -->
       <div class="calc-row">
-        <label>Day 1 Bento Lunch (21 in-person pax)</label>
+        <label>Day 1 Bento Lunch</label>
         <div class="input-wrap">
           <span>&yen;</span>
-          <input type="number" id="cost-bento1" value="2200" oninput="recalc()">
-          <span class="subtotal" id="sub-bento1">&yen;41,800</span>
+          <input type="number" id="cost-bento1" value="0" oninput="recalc()">
+          <span class="subtotal" id="sub-bento1">&yen;0</span>
         </div>
       </div>
 
@@ -185,17 +185,17 @@
         <div class="input-wrap">
           <span>&yen;</span>
           <input type="number" id="cost-coffee1" value="500" oninput="recalc()">
-          <span class="subtotal" id="sub-coffee1">&yen;9,500</span>
+          <span class="subtotal" id="sub-coffee1">&yen;14,500</span>
         </div>
       </div>
 
       <!-- Item 3: Monjayaki Dinner -->
       <div class="calc-row">
-        <label>Day 1 Monjayaki Dinner (17 pax)</label>
+        <label>Day 1 Monjayaki Dinner</label>
         <div class="input-wrap">
           <span>&yen;</span>
-          <input type="number" id="cost-dinner" value="5500" oninput="recalc()">
-          <span class="subtotal" id="sub-dinner">&yen;93,500</span>
+          <input type="number" id="cost-dinner" value="1500" oninput="recalc()">
+          <span class="subtotal" id="sub-dinner">&yen;31,500</span>
         </div>
       </div>
 
@@ -205,37 +205,37 @@
         <div class="input-wrap">
           <span>&yen;</span>
           <input type="number" id="cost-coffee2" value="400" oninput="recalc()">
-          <span class="subtotal" id="sub-coffee2">&yen;6,400</span>
+          <span class="subtotal" id="sub-coffee2">&yen;8,000</span>
         </div>
       </div>
 
       <!-- Item 5: Bento 2 -->
       <div class="calc-row">
-        <label>Day 2 Bento Lunch (16 pax)</label>
+        <label>Day 2 Bento Lunch</label>
         <div class="input-wrap">
           <span>&yen;</span>
-          <input type="number" id="cost-bento2" value="2200" oninput="recalc()">
-          <span class="subtotal" id="sub-bento2">&yen;35,200</span>
+          <input type="number" id="cost-bento2" value="1500" oninput="recalc()">
+          <span class="subtotal" id="sub-bento2">&yen;30,000</span>
         </div>
       </div>
 
       <!-- Item 6: Metro Transit -->
       <div class="calc-row">
-        <label>Tokyo Metro Transit (19 pax to Iidabashi)</label>
+        <label>Tokyo Metro Transit</label>
         <div class="input-wrap">
           <span>&yen;</span>
           <input type="number" id="cost-transit" value="440" oninput="recalc()">
-          <span class="subtotal" id="sub-transit">&yen;7,040</span>
+          <span class="subtotal" id="sub-transit">&yen;8,800</span>
         </div>
       </div>
 
       <!-- Item 7: Badges, Lanyards & Prints -->
       <div class="calc-row">
-        <label>Badges, Lanyards &amp; Programs (25 sets)</label>
+        <label>Badges, Lanyards &amp; Programs</label>
         <div class="input-wrap">
           <span>&yen;</span>
           <input type="number" id="cost-badges" value="800" oninput="recalc()">
-          <span class="subtotal" id="sub-badges">&yen;20,000</span>
+          <span class="subtotal" id="sub-badges">&yen;27,200</span>
         </div>
       </div>
 
@@ -244,14 +244,14 @@
         <label>30th Anniversary Banner &amp; Supplies</label>
         <div class="input-wrap">
           <span>&yen;</span>
-          <input type="number" id="cost-banner" value="15000" oninput="recalc()">
-          <span class="subtotal" id="sub-banner">&yen;15,000</span>
+          <input type="number" id="cost-banner" value="50000" oninput="recalc()">
+          <span class="subtotal" id="sub-banner">&yen;50,000</span>
         </div>
       </div>
 
       <!-- Item 9: Venue / AV -->
       <div class="calc-row">
-        <label>Venue / Tech AV (Europa House / Univ.)</label>
+        <label>Venue / Tech AV</label>
         <div class="input-wrap">
           <span>&yen;</span>
           <input type="number" id="cost-venue" value="0" oninput="recalc()">
@@ -259,11 +259,11 @@
         </div>
       </div>
 
-      <!-- Item 10: Contingency (10%) -->
+      <!-- Item 10: Contingency -->
       <div class="calc-row" style="background:#fafcff;">
-        <label><strong>Contingency Buffer (10%)</strong></label>
+        <label><strong>Contingency Buffer</strong></label>
         <div class="input-wrap">
-          <span class="subtotal" id="sub-contingency">&yen;22,844</span>
+          <span class="subtotal" id="sub-contingency">&yen;17,000</span>
         </div>
       </div>
 
@@ -302,7 +302,7 @@
 
       <!-- COMBINED GRAND TOTAL BOX -->
       <div class="total-box">
-        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--navy-dark); letter-spacing: 0.8px;" id="grand-total-label">TOTAL ESTIMATED BUDGET (Operations + Travel)</div>
+        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--navy-dark); letter-spacing: 0.8px;" id="grand-total-label">TOTAL ESTIMATED BUDGET</div>
         <div class="total-jpy" id="grand-total-jpy">&yen;1,349,284</div>
         <div class="total-eur" id="grand-total-eur">&euro;8,178 EUR</div>
         <div style="font-size:11px; color:var(--text-muted); margin-top:4px;" id="total-breakdown-sub">Local Ops: &yen;251,284 | Travel: &yen;1,098,000</div>
@@ -379,6 +379,14 @@
         </p>
       </div>
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div style="font-size:12px; display:flex; align-items:center; gap:6px; background:#fff7ed; padding:4px 10px; border-radius:8px; border:1px solid #fed7aa;">
+          <label style="font-size:12px; font-weight:700; color:#c2410c; cursor:pointer; display:flex; align-items:center; gap:5px;" title="Capping rule: Maximum €930 (¥153,450) per delegate for Travel + Hotel">
+            <input type="checkbox" id="toggle-travel-cap" checked onchange="recalc()"> Max Cap / Person:
+          </label>
+          <span style="font-weight:700; color:#9a3412;">&euro;</span>
+          <input type="number" id="travel-cap-eur" value="930" style="width:65px; padding:3px 6px; border:1px solid #fdba74; border-radius:6px; font-weight:700; font-size:12px; color:#9a3412;" oninput="recalc()">
+          <span style="font-size:11px; color:#9a3412; font-weight:600;" id="travel-cap-jpy-lbl">(&yen;153,450)</span>
+        </div>
         <div style="font-size:12px; display:flex; align-items:center; gap:6px;">
           <label style="font-weight:700; color:var(--navy);">Hotel Rate / Night:</label>
           <span>&yen;</span>
@@ -404,8 +412,8 @@
             <th style="padding:8px;">Stay Dates</th>
             <th style="padding:8px; text-align:center;">Covered Nts (Nov 3-6)</th>
             <th style="padding:8px; text-align:right;">Hotel Subtotal (&yen;)</th>
-            <th style="padding:8px; text-align:right;">Total (&yen; JPY)</th>
-            <th style="padding:8px; text-align:right;">Total (&euro; EUR)</th>
+            <th style="padding:8px; text-align:right;">Approved Grant (&yen;)</th>
+            <th style="padding:8px; text-align:right;">Approved Grant (&euro;)</th>
           </tr>
         </thead>
         <tbody>
@@ -862,12 +870,12 @@
         </tbody>
         <tfoot>
           <tr style="background:#fefce8; font-weight:700; border-top:2px solid var(--gold); border-bottom:1px solid var(--gold);">
-            <td colspan="4" style="padding:10px 8px; color:#92400e;" id="travel-subtotal-lbl">Subtotals (12 Overseas Flights + 6 Domestic [incl. Ueda] + 12 Hotels Nov 3–6):</td>
-            <td style="padding:10px 8px; color:#92400e;" id="sum-travel-trans">&yen;2,111,568</td>
-            <td colspan="2" style="padding:10px 8px; text-align:center; color:#92400e;" id="sum-room-nights">33 Room-Nights</td>
-            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;495,000</td>
-            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:14px;" id="sum-travel-grand">&yen;2,606,568</td>
-            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:13px;" id="sum-travel-eur">&euro;15,797 EUR</td>
+            <td colspan="5" style="padding:10px 8px; color:#92400e;" id="travel-subtotal-lbl">Subtotals (12 Overseas Flights + 6 Domestic [incl. Ueda] + 12 Hotels Nov 3–6):</td>
+            <td style="padding:10px 8px; color:#92400e;" id="sum-travel-trans">&yen;2,218,818</td>
+            <td colspan="2" style="padding:10px 8px; text-align:center; color:#92400e;" id="sum-room-nights">36 Room-Nights</td>
+            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;540,000</td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:14px;" id="sum-travel-grand">&yen;1,966,818</td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:13px;" id="sum-travel-eur">&euro;11,920 EUR</td>
           </tr>
         </tfoot>
       </table>
@@ -1314,6 +1322,7 @@
 
 <script>
   const EUR_RATE = 165; // 1 EUR = 165 JPY
+  const STORAGE_KEY = 'mcaa_tokyo2026_budget_state_v4';
 
   
   function syncFunding(elem, triggerCloud = true) {
@@ -1390,15 +1399,23 @@
     const globalHotelRate = parseFloat(document.getElementById('global-hotel-rate')?.value) || 15000;
     const travelRows = document.querySelectorAll("#travelSimTable tbody tr");
 
+    const applyCap = document.getElementById('toggle-travel-cap')?.checked ?? true;
+    const capEur = parseFloat(document.getElementById('travel-cap-eur')?.value) || 930;
+    const capJPY = Math.round(capEur * EUR_RATE);
+    const capJpyLbl = document.getElementById('travel-cap-jpy-lbl');
+    if (capJpyLbl) capJpyLbl.innerText = '(¥' + capJPY.toLocaleString() + ')';
+
     let sumTravelTrans = 0;
     let sumOverseasFlight = 0;
     let sumDomTravel = 0;
     let sumHotelNights = 0;
     let sumHotelCost = 0;
     let sumTravelGrand = 0;
+    let sumUncappedGrand = 0;
 
     let grantClaimants = 0;
     let selfClaimants = 0;
+    let cappedClaimants = 0;
     let overseasClaimants = 0;
     let domesticClaimants = 0;
 
@@ -1422,8 +1439,18 @@
       const travelVal = parseFloat(travelInput?.value) || 0;
       const nightsVal = parseFloat(nightsInput?.value) || 0;
       const indHotelTotal = isSelf ? 0 : (nightsVal * globalHotelRate);
-      const indTotalJpy = isSelf ? 0 : (travelVal + indHotelTotal);
-      const indTotalEur = Math.round(indTotalJpy / EUR_RATE);
+      const rawTotalJpy = isSelf ? 0 : (travelVal + indHotelTotal);
+      const rawTotalEur = Math.round(rawTotalJpy / EUR_RATE);
+
+      const isCapped = !isSelf && applyCap && (rawTotalJpy > capJPY);
+      if (isCapped) {
+        cappedClaimants++;
+      }
+
+      const indTotalJpy = isCapped ? capJPY : rawTotalJpy;
+      const indTotalEur = isCapped ? capEur : rawTotalEur;
+      const excessJpy = isCapped ? (rawTotalJpy - capJPY) : 0;
+      const excessEur = isCapped ? Math.round(excessJpy / EUR_RATE) : 0;
 
       const elHotelSub = document.getElementById('ind-hotel-sub-' + i);
       if (elHotelSub) {
@@ -1433,14 +1460,30 @@
 
       const elTotJpy = document.getElementById('ind-total-jpy-' + i);
       if (elTotJpy) {
-        elTotJpy.innerText = isSelf ? '¥0 (Self)' : ('¥' + indTotalJpy.toLocaleString());
-        elTotJpy.style.color = isSelf ? 'var(--text-muted)' : 'var(--navy)';
+        if (isSelf) {
+          elTotJpy.innerHTML = '¥0 <span style="font-size:10px; color:var(--text-muted);">(Self)</span>';
+          elTotJpy.style.color = 'var(--text-muted)';
+        } else if (isCapped) {
+          elTotJpy.innerHTML = '¥' + indTotalJpy.toLocaleString() + '<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €' + capEur + '</span>';
+          elTotJpy.style.color = 'var(--navy)';
+        } else {
+          elTotJpy.innerText = '¥' + indTotalJpy.toLocaleString();
+          elTotJpy.style.color = 'var(--navy)';
+        }
       }
 
       const elTotEur = document.getElementById('ind-total-eur-' + i);
       if (elTotEur) {
-        elTotEur.innerText = isSelf ? '€0' : ('€' + indTotalEur.toLocaleString());
-        elTotEur.style.color = isSelf ? 'var(--text-muted)' : 'var(--navy)';
+        if (isSelf) {
+          elTotEur.innerText = '€0';
+          elTotEur.style.color = 'var(--text-muted)';
+        } else if (isCapped) {
+          elTotEur.innerHTML = '€' + indTotalEur.toLocaleString() + '<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €' + rawTotalEur.toLocaleString() + ' • Excess self-funded: €' + excessEur.toLocaleString() + '">Claim €' + rawTotalEur.toLocaleString() + '<br>+€' + excessEur.toLocaleString() + ' self</span>';
+          elTotEur.style.color = '#c2410c';
+        } else {
+          elTotEur.innerText = '€' + indTotalEur.toLocaleString();
+          elTotEur.style.color = 'var(--navy)';
+        }
       }
 
       if (!isSelf) {
@@ -1452,15 +1495,22 @@
         sumHotelNights += nightsVal;
         sumHotelCost += indHotelTotal;
         sumTravelGrand += indTotalJpy;
+        sumUncappedGrand += rawTotalJpy;
       }
     });
 
     const sumTravelEur = Math.round(sumTravelGrand / EUR_RATE);
+    const sumSavingsJpy = sumUncappedGrand - sumTravelGrand;
+    const sumSavingsEur = Math.round(sumSavingsJpy / EUR_RATE);
 
     // Update Travel Simulator Header Badge
     const fundingBadge = document.getElementById('funding-ratio-badge');
     if (fundingBadge) {
-      fundingBadge.innerText = `${travelRows.length} Claimants (${grantClaimants} Grant Funded • ${selfClaimants} Self-Funded)`;
+      if (cappedClaimants > 0 && applyCap) {
+        fundingBadge.innerText = `${travelRows.length} Claimants (${grantClaimants} Grant Funded • ${cappedClaimants} Capped at €${capEur} • ${selfClaimants} Self-Funded)`;
+      } else {
+        fundingBadge.innerText = `${travelRows.length} Claimants (${grantClaimants} Grant Funded • ${selfClaimants} Self-Funded)`;
+      }
     }
 
     // Update KPI card hotel (MCAA funded hotel rooms)
@@ -1476,8 +1526,24 @@
     const elSumTT = document.getElementById('sum-travel-trans'); if (elSumTT) elSumTT.innerText = '¥' + sumTravelTrans.toLocaleString();
     const elSumRN = document.getElementById('sum-room-nights'); if (elSumRN) elSumRN.innerText = sumHotelNights + ' Room-Nights';
     const elSumTH = document.getElementById('sum-travel-hotel'); if (elSumTH) elSumTH.innerText = '¥' + sumHotelCost.toLocaleString();
-    const elSumTG = document.getElementById('sum-travel-grand'); if (elSumTG) elSumTG.innerText = '¥' + sumTravelGrand.toLocaleString();
-    const elSumTE = document.getElementById('sum-travel-eur'); if (elSumTE) elSumTE.innerText = '€' + sumTravelEur.toLocaleString() + ' EUR';
+    
+    const elSumTG = document.getElementById('sum-travel-grand');
+    if (elSumTG) {
+      if (sumSavingsJpy > 0 && applyCap) {
+        elSumTG.innerHTML = '¥' + sumTravelGrand.toLocaleString() + '<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Cap: -¥' + sumSavingsJpy.toLocaleString() + ')</span>';
+      } else {
+        elSumTG.innerText = '¥' + sumTravelGrand.toLocaleString();
+      }
+    }
+
+    const elSumTE = document.getElementById('sum-travel-eur');
+    if (elSumTE) {
+      if (sumSavingsEur > 0 && applyCap) {
+        elSumTE.innerHTML = '€' + sumTravelEur.toLocaleString() + ' EUR<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Saved €' + sumSavingsEur.toLocaleString() + ')</span>';
+      } else {
+        elSumTE.innerText = '€' + sumTravelEur.toLocaleString() + ' EUR';
+      }
+    }
 
     // Update Travel Summary Box in left panel
     const sideFlight = document.getElementById('side-flight-sum');
@@ -1508,12 +1574,14 @@
 
     const sideTravelBadge = document.getElementById('side-travel-badge');
     if (sideTravelBadge) {
-      sideTravelBadge.innerHTML = `(${grantClaimants} Funded • ${selfClaimants} Self • Nov 3–6)`;
+      const capText = (cappedClaimants > 0 && applyCap) ? ` • ${cappedClaimants} Capped` : '';
+      sideTravelBadge.innerHTML = `(${grantClaimants} Funded${capText} • Nov 3–6)`;
     }
 
     const kpiTravelSub = document.getElementById('kpi-travel-sub');
     if (kpiTravelSub) {
-      kpiTravelSub.innerHTML = `&euro;${sumTravelEur.toLocaleString()} &bull; ${grantClaimants} Claimants`;
+      const capText = (cappedClaimants > 0 && applyCap) ? ` (${cappedClaimants} capped)` : '';
+      kpiTravelSub.innerHTML = `&euro;${sumTravelEur.toLocaleString()} &bull; ${grantClaimants} Claimants${capText}`;
     }
 
     const hotelLogisticsLbl = document.getElementById('hotel-logistics-lbl');
@@ -1521,18 +1589,17 @@
       hotelLogisticsLbl.innerHTML = `🏨 Hotel &amp; Lodging Logistics (${overseasCount} Overseas Delegates)`;
     }
 
-
     // Checkbox toggle: Include Travel in Grand Total
     const includeTravel = document.getElementById('toggle-travel')?.checked ?? true;
     const grandTotal = includeTravel ? (localOpsTotal + sumTravelGrand) : localOpsTotal;
     const totalEur = Math.round(grandTotal / EUR_RATE);
 
     const lblTotal = document.getElementById('grand-total-label');
-    if (lblTotal) lblTotal.innerText = includeTravel ? "TOTAL ESTIMATED BUDGET (Operations + Travel & Accom.)" : "TOTAL ESTIMATED BUDGET (Local Operations Only)";
+    if (lblTotal) lblTotal.innerText = includeTravel ? "TOTAL ESTIMATED BUDGET" : "TOTAL ESTIMATED BUDGET - LOCAL OPS ONLY";
 
     const bdSub = document.getElementById('total-breakdown-sub');
     if (bdSub) bdSub.innerText = includeTravel 
-      ? `Local Ops: ¥${localOpsTotal.toLocaleString()} | Travel & Accom: ¥${sumTravelGrand.toLocaleString()}`
+      ? `Local Ops: ¥${localOpsTotal.toLocaleString()} | Travel & Accom: ¥${sumTravelGrand.toLocaleString()}${(sumSavingsJpy > 0 && applyCap) ? ` (Capped at €${capEur}/pax, -¥${sumSavingsJpy.toLocaleString()})` : ''}`
       : `Local Ops only (Travel & Accommodation excluded)`;
 
     if (document.getElementById('grand-total-jpy')) document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
@@ -1556,7 +1623,9 @@
       banner: document.getElementById('cost-banner')?.value,
       venue: document.getElementById('cost-venue')?.value,
       hotelRate: document.getElementById('global-hotel-rate')?.value,
-      toggleTravel: document.getElementById('toggle-travel')?.checked
+      toggleTravel: document.getElementById('toggle-travel')?.checked,
+      travelCapEur: document.getElementById('travel-cap-eur')?.value,
+      toggleTravelCap: document.getElementById('toggle-travel-cap')?.checked
     };
 
     const travelRows = [];
@@ -1726,6 +1795,8 @@
         if (state.unitCosts.venue !== undefined) document.getElementById('cost-venue').value = state.unitCosts.venue;
         if (state.unitCosts.hotelRate !== undefined) document.getElementById('global-hotel-rate').value = state.unitCosts.hotelRate;
         if (state.unitCosts.toggleTravel !== undefined) document.getElementById('toggle-travel').checked = state.unitCosts.toggleTravel;
+        if (state.unitCosts.travelCapEur !== undefined && document.getElementById('travel-cap-eur')) document.getElementById('travel-cap-eur').value = state.unitCosts.travelCapEur;
+        if (state.unitCosts.toggleTravelCap !== undefined && document.getElementById('toggle-travel-cap')) document.getElementById('toggle-travel-cap').checked = state.unitCosts.toggleTravelCap;
       }
 
       if (state.fundingByDelegateId) {
