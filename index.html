@@ -94,7 +94,7 @@
     <div>
       <span class="header-badge">Central Management Console</span>
       <h1>MCAA Asia Connect "Konnichiwa Tokyo 2026"</h1>
-      <p>November 4–5, 2026 | Tokyo, Japan | Headcount: <strong id="header-headcount-lbl">30 Roster Total (23 In Person &bull; 7 Online)</strong></p>
+      <p>November 4–5, 2026 | Tokyo, Japan | Headcount: <strong id="header-headcount-lbl">33 Roster Total (23 In Person &bull; 10 Online)</strong></p>
     </div>
     <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
       <span id="save-status-badge" style="font-size:11px; padding:6px 12px; border-radius:12px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
@@ -119,9 +119,9 @@
   <!-- KPI SUMMARY CARDS -->
   <div class="kpi-grid">
     <div class="kpi-card">
-      <div class="kpi-val" id="kpi-total">30</div>
+      <div class="kpi-val" id="kpi-total">33</div>
       <div class="kpi-lbl">Total Registered</div>
-      <div class="kpi-sub">23 In Person &bull; 7 Online</div>
+      <div class="kpi-sub">23 In Person &bull; 10 Online</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-val" id="kpi-bento1">23</div>
@@ -420,12 +420,13 @@
           </tr>
         </thead>
         <tbody>
-          <tr data-id="ORG-01" data-overseas="false" style="border-bottom:1px solid var(--border); background:#fafcff;">
+          <tr data-id="ORG-01" data-overseas="false" style="border-bottom:1px solid var(--border); background:#f0fdf4;">
             <td style="padding:8px;"><strong>Prof. Dr. Eugenio Otal</strong><br><small style="color:var(--text-muted);">ORG-01</small></td>
             <td style="padding:8px;">Japan Chapter (Ueda)</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="ORG-01" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
-                <option value="grant" selected>Grant Funded</option>
+                <option value="grant" >Grant Funded</option>
+                <option value="migt" selected>Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -441,9 +442,9 @@
             <td style="padding:8px; text-align:center;">
               <input type="number" class="ind-hotel-nights" id="hotel-nights-ORG-01" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
             </td>
-            <td class="ind-hotel-sub" id="ind-hotel-sub-ORG-01" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
-            <td class="ind-total-jpy" id="ind-total-jpy-ORG-01" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;58,500</td>
-            <td class="ind-total-eur" id="ind-total-eur-ORG-01" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;355</td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-ORG-01" style="padding:8px; text-align:right; font-weight:600;">&yen;0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span></td>
+            <td class="ind-total-jpy" id="ind-total-jpy-ORG-01" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <br><span style="font-size:10px; color:#047857; background:#dcfce7; padding:1px 5px; border-radius:4px; font-weight:700;">Grant MIGT</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-ORG-01" style="padding:8px; text-align:right; color:#047857; font-size:11px;">&euro;0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span></td>
           </tr>
           <tr data-id="ORG-02" data-overseas="false" style="border-bottom:1px solid var(--border); background:#fafcff;">
             <td style="padding:8px;"><strong>Dr. Manuela Leticia Kim</strong><br><small style="color:var(--text-muted);">ORG-02</small></td>
@@ -451,6 +452,7 @@
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="ORG-02" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -470,12 +472,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-ORG-02" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;58,500</td>
             <td class="ind-total-eur" id="ind-total-eur-ORG-02" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;355</td>
           </tr>
-          <tr data-id="DEL-03" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-03" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f0fdf4;">
             <td style="padding:8px;"><strong>Prof. Dr. Fan Mo</strong><br><small style="color:var(--text-muted);">DEL-03</small></td>
             <td style="padding:8px;">China Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-03" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
-                <option value="grant" selected>Grant Funded</option>
+                <option value="grant" >Grant Funded</option>
+                <option value="migt" selected>Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -491,16 +494,17 @@
             <td style="padding:8px; text-align:center;">
               <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-03" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
             </td>
-            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-03" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
-            <td class="ind-total-jpy" id="ind-total-jpy-DEL-03" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
-            <td class="ind-total-eur" id="ind-total-eur-DEL-03" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,273 • Excess self-funded: €343">Claim €1,273<br>+€343 self</span></td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-03" style="padding:8px; text-align:right; font-weight:600;">&yen;0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span></td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-03" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <br><span style="font-size:10px; color:#047857; background:#dcfce7; padding:1px 5px; border-radius:4px; font-weight:700;">Grant MIGT</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-03" style="padding:8px; text-align:right; color:#047857; font-size:11px;">&euro;0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span></td>
           </tr>
-          <tr data-id="DEL-04" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-04" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Shaoshan Mai</strong><br><small style="color:var(--text-muted);">DEL-04</small></td>
             <td style="padding:8px;">China Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-04" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -520,12 +524,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-04" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-04" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,073 • Excess self-funded: €143">Claim €1,073<br>+€143 self</span></td>
           </tr>
-          <tr data-id="DEL-05" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-05" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Christopher Hales</strong><br><small style="color:var(--text-muted);">DEL-05</small></td>
             <td style="padding:8px;">Oceania Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-05" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -545,12 +550,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-05" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-05" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €2,273 • Excess self-funded: €1,343">Claim €2,273<br>+€1,343 self</span></td>
           </tr>
-          <tr data-id="DEL-08" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-08" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f8fafc; opacity:0.65;">
             <td style="padding:8px;"><strong>Yuening Li</strong><br><small style="color:var(--text-muted);">DEL-08</small></td>
             <td style="padding:8px;">China Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-08" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" >Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" selected>Self-Funded</option>
               </select>
             </td>
@@ -566,16 +572,17 @@
             <td style="padding:8px; text-align:center;">
               <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-08" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
             </td>
-            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-08" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
-            <td class="ind-total-jpy" id="ind-total-jpy-DEL-08" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
-            <td class="ind-total-eur" id="ind-total-eur-DEL-08" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,773 • Excess self-funded: €843">Claim €1,773<br>+€843 self</span></td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-08" style="padding:8px; text-align:right; font-weight:600;">&yen;0 (Self)</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-08" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <span style="font-size:10px; color:var(--text-muted);">(Self)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-08" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;0</td>
           </tr>
-          <tr data-id="DEL-09" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-09" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Pengfei Wang</strong><br><small style="color:var(--text-muted);">DEL-09</small></td>
             <td style="padding:8px;">China Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-09" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -595,12 +602,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-09" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-09" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,182 • Excess self-funded: €252">Claim €1,182<br>+€252 self</span></td>
           </tr>
-          <tr data-id="DEL-11" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-11" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f8fafc; opacity:0.65;">
             <td style="padding:8px;"><strong>Dr. Xiuxiu Han</strong><br><small style="color:var(--text-muted);">DEL-11</small></td>
             <td style="padding:8px;">China & UK</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-11" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" >Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" selected>Self-Funded</option>
               </select>
             </td>
@@ -616,16 +624,17 @@
             <td style="padding:8px; text-align:center;">
               <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-11" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
             </td>
-            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-11" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
-            <td class="ind-total-jpy" id="ind-total-jpy-DEL-11" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
-            <td class="ind-total-eur" id="ind-total-eur-DEL-11" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,273 • Excess self-funded: €343">Claim €1,273<br>+€343 self</span></td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-11" style="padding:8px; text-align:right; font-weight:600;">&yen;0 (Self)</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-11" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <span style="font-size:10px; color:var(--text-muted);">(Self)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-11" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;0</td>
           </tr>
-          <tr data-id="DEL-12" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-12" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Tao Yang</strong><br><small style="color:var(--text-muted);">DEL-12</small></td>
             <td style="padding:8px;">China Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-12" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -645,12 +654,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-12" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;127,500</td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-12" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;773</td>
           </tr>
-          <tr data-id="DEL-13" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-13" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Yuanyuan Wei</strong><br><small style="color:var(--text-muted);">DEL-13</small></td>
             <td style="padding:8px;">China Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-13" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -670,12 +680,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-13" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-13" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €973 • Excess self-funded: €43">Claim €973<br>+€43 self</span></td>
           </tr>
-          <tr data-id="DEL-14" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-14" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Tejaswini Gowda</strong><br><small style="color:var(--text-muted);">DEL-14</small></td>
             <td style="padding:8px;">India Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-14" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -695,12 +706,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-14" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-14" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,636 • Excess self-funded: €706">Claim €1,636<br>+€706 self</span></td>
           </tr>
-          <tr data-id="DEL-16" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-16" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Praveen Kumar</strong><br><small style="color:var(--text-muted);">DEL-16</small></td>
             <td style="padding:8px;">India Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-16" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -720,12 +732,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-16" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-16" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,673 • Excess self-funded: €743">Claim €1,673<br>+€743 self</span></td>
           </tr>
-          <tr data-id="DEL-18" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-18" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Dr. Ashwani Kumar Tiwari</strong><br><small style="color:var(--text-muted);">DEL-18</small></td>
             <td style="padding:8px;">India Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-18" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -745,12 +758,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-18" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-18" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €973 • Excess self-funded: €43">Claim €973<br>+€43 self</span></td>
           </tr>
-          <tr data-id="DEL-19" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-19" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Vishwas Kalakaleshwar Lakkundi</strong><br><small style="color:var(--text-muted);">DEL-19</small></td>
             <td style="padding:8px;">India Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-19" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -770,12 +784,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-19" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;152,250</td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-19" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;923</td>
           </tr>
-          <tr data-id="DEL-20" data-overseas="true" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-20" data-overseas="true" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Joey Mark Santiago Diaz</strong><br><small style="color:var(--text-muted);">DEL-20</small></td>
             <td style="padding:8px;">Southeast Asia Chapter</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-20" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -795,12 +810,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-20" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-20" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,372 • Excess self-funded: €442">Claim €1,372<br>+€442 self</span></td>
           </tr>
-          <tr data-id="DEL-01" data-overseas="false" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-01" data-overseas="false" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Matteo Tarsi</strong><br><small style="color:var(--text-muted);">DEL-01</small></td>
             <td style="padding:8px;">Japan Chapter (Kyoto)</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-01" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -820,12 +836,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-01" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;72,000</td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-01" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;436</td>
           </tr>
-          <tr data-id="DEL-02" data-overseas="false" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-02" data-overseas="false" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Motoko Akashi</strong><br><small style="color:var(--text-muted);">DEL-02</small></td>
             <td style="padding:8px;">Japan Chapter (Kansai)</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-02" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -845,12 +862,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-02" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;69,000</td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-02" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;418</td>
           </tr>
-          <tr data-id="DEL-10" data-overseas="false" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-10" data-overseas="false" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Kazutsugu Matsukawa</strong><br><small style="color:var(--text-muted);">DEL-10</small></td>
             <td style="padding:8px;">Japan Chapter (Kochi)</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-10" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -870,12 +888,13 @@
             <td class="ind-total-jpy" id="ind-total-jpy-DEL-10" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;93,608</td>
             <td class="ind-total-eur" id="ind-total-eur-DEL-10" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;567</td>
           </tr>
-          <tr data-id="DEL-17" data-overseas="false" style="border-bottom:1px solid var(--border); ">
+          <tr data-id="DEL-17" data-overseas="false" style="border-bottom:1px solid var(--border);">
             <td style="padding:8px;"><strong>Keisuke HATADA</strong><br><small style="color:var(--text-muted);">DEL-17</small></td>
             <td style="padding:8px;">Japan Chapter (Toyama)</td>
             <td style="padding:8px; text-align:center;">
               <select class="ind-funding-type" data-id="DEL-17" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
                 <option value="grant" selected>Grant Funded</option>
+                <option value="migt" >Grant MIGT</option>
                 <option value="self" >Self-Funded</option>
               </select>
             </td>
@@ -913,7 +932,7 @@
   <!-- FULL ATTENDEE CENTRAL ROSTER TABLE -->
   <div class="table-container">
     <div class="table-tools">
-      <h2 style="font-size: 16px; font-weight: 800; color: var(--navy);">Master Attendee Roster (30 Confirmed Records)</h2>
+      <h2 style="font-size: 16px; font-weight: 800; color: var(--navy);">Master Attendee Roster (33 Confirmed Records)</h2>
       <input type="text" id="searchInput" class="search-input" placeholder="Search by name, chapter, role..." onkeyup="filterTable()">
     </div>
 
@@ -1356,6 +1375,48 @@
           <td><span class="tag tag-no">No</span></td>
           <td><span class="tag tag-no">No</span></td>
         </tr>
+              <tr>
+          <td><strong>GEN-03</strong></td>
+          <td><strong>Ashish Pratap Patel</strong><br><small>Ashish Pratap Patel</small></td>
+          <td>Jawaharlal Nehru University, India</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-04</strong></td>
+          <td><strong>Dr. Abhishek Pandey Bharat</strong><br><small>Dr. A. P. Bharat</small></td>
+          <td>Gautam Buddha University, Greater Noida, India</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-05</strong></td>
+          <td><strong>Xusheng Zhu</strong><br><small>Xusheng Zhu</small></td>
+          <td>University College London (UCL)</td>
+          <td>Speaker Applicant (6G Fluid Antenna)</td>
+          <td><span class="tag tag-mcaa">Proposed Talk</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
       </tbody>
     </table>
   </div>
@@ -1491,6 +1552,7 @@
     let sumUncappedGrand = 0;
 
     let grantClaimants = 0;
+    let migtClaimants = 0;
     let selfClaimants = 0;
     let cappedClaimants = 0;
     let overseasClaimants = 0;
@@ -1502,8 +1564,16 @@
       const fundingSelect = tr.querySelector('.ind-funding-type');
       const isOverseas = tr.getAttribute('data-overseas') === 'true';
 
-      const isSelf = fundingSelect && fundingSelect.value === 'self';
-      if (isSelf) {
+      const fundingVal = fundingSelect ? fundingSelect.value : 'grant';
+      const isMigt = (fundingVal === 'migt');
+      const isSelf = (fundingVal === 'self');
+      const isExcluded = isMigt || isSelf;
+
+      if (isMigt) {
+        migtClaimants++;
+        tr.style.background = '#f0fdf4';
+        tr.style.opacity = '1';
+      } else if (isSelf) {
         selfClaimants++;
         tr.style.background = '#f8fafc';
         tr.style.opacity = '0.65';
@@ -1515,11 +1585,11 @@
 
       const travelVal = parseFloat(travelInput?.value) || 0;
       const nightsVal = parseFloat(nightsInput?.value) || 0;
-      const indHotelTotal = isSelf ? 0 : (nightsVal * globalHotelRate);
-      const rawTotalJpy = isSelf ? 0 : (travelVal + indHotelTotal);
+      const indHotelTotal = isExcluded ? 0 : (nightsVal * globalHotelRate);
+      const rawTotalJpy = isExcluded ? 0 : (travelVal + indHotelTotal);
       const rawTotalEur = Math.round(rawTotalJpy / EUR_RATE);
 
-      const isCapped = !isSelf && applyCap && (rawTotalJpy > capJPY);
+      const isCapped = !isExcluded && applyCap && (rawTotalJpy > capJPY);
       if (isCapped) {
         cappedClaimants++;
       }
@@ -1532,13 +1602,24 @@
       // Update cells DIRECTLY on tr (immune to index drift)
       const elHotelSub = tr.querySelector('.ind-hotel-sub') || tr.cells[8];
       if (elHotelSub) {
-        elHotelSub.innerText = isSelf ? '¥0 (Self)' : ('¥' + indHotelTotal.toLocaleString());
-        elHotelSub.style.color = isSelf ? 'var(--text-muted)' : '';
+        if (isMigt) {
+          elHotelSub.innerHTML = '¥0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span>';
+          elHotelSub.style.color = '#047857';
+        } else if (isSelf) {
+          elHotelSub.innerText = '¥0 (Self)';
+          elHotelSub.style.color = 'var(--text-muted)';
+        } else {
+          elHotelSub.innerText = '¥' + indHotelTotal.toLocaleString();
+          elHotelSub.style.color = '';
+        }
       }
 
       const elTotJpy = tr.querySelector('.ind-total-jpy') || tr.cells[9];
       if (elTotJpy) {
-        if (isSelf) {
+        if (isMigt) {
+          elTotJpy.innerHTML = '¥0 <br><span style="font-size:10px; color:#047857; background:#dcfce7; padding:1px 5px; border-radius:4px; font-weight:700;">Grant MIGT</span>';
+          elTotJpy.style.color = '#047857';
+        } else if (isSelf) {
           elTotJpy.innerHTML = '¥0 <span style="font-size:10px; color:var(--text-muted);">(Self)</span>';
           elTotJpy.style.color = 'var(--text-muted)';
         } else if (isCapped) {
@@ -1552,7 +1633,10 @@
 
       const elTotEur = tr.querySelector('.ind-total-eur') || tr.cells[10];
       if (elTotEur) {
-        if (isSelf) {
+        if (isMigt) {
+          elTotEur.innerHTML = '€0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span>';
+          elTotEur.style.color = '#047857';
+        } else if (isSelf) {
           elTotEur.innerText = '€0';
           elTotEur.style.color = 'var(--text-muted)';
         } else if (isCapped) {
@@ -1564,7 +1648,7 @@
         }
       }
 
-      if (!isSelf) {
+      if (!isExcluded) {
         if (isOverseas) overseasClaimants++; else domesticClaimants++;
         sumTravelTrans += travelVal;
         if (isOverseas) sumOverseasFlight += travelVal;
@@ -1584,11 +1668,9 @@
     // Update Travel Simulator Header Badge
     const fundingBadge = document.getElementById('funding-ratio-badge');
     if (fundingBadge) {
-      if (cappedClaimants > 0 && applyCap) {
-        fundingBadge.innerText = `${travelRows.length} Claimants (${grantClaimants} Grant Funded • ${cappedClaimants} Capped at €${capEur} • ${selfClaimants} Self-Funded)`;
-      } else {
-        fundingBadge.innerText = `${travelRows.length} Claimants (${grantClaimants} Grant Funded • ${selfClaimants} Self-Funded)`;
-      }
+      const migtText = migtClaimants > 0 ? (' • ' + migtClaimants + ' Grant MIGT') : '';
+      const capText = (cappedClaimants > 0 && applyCap) ? (' • ' + cappedClaimants + ' Capped at €' + capEur) : '';
+      fundingBadge.innerText = travelRows.length + ' Claimants (' + grantClaimants + ' MCAA Grant' + migtText + capText + ' • ' + selfClaimants + ' Self-Funded)';
     }
 
     // Update KPI card hotel (MCAA funded hotel rooms)
@@ -1649,14 +1731,16 @@
 
     const sideTravelBadge = document.getElementById('side-travel-badge');
     if (sideTravelBadge) {
-      const capText = (cappedClaimants > 0 && applyCap) ? ` • ${cappedClaimants} Capped` : '';
-      sideTravelBadge.innerHTML = `(${grantClaimants} Funded${capText} • Nov 3–6)`;
+      const capText = (cappedClaimants > 0 && applyCap) ? (' • ' + cappedClaimants + ' Capped') : '';
+      const migtText = migtClaimants > 0 ? (' • ' + migtClaimants + ' MIGT') : '';
+      sideTravelBadge.innerHTML = '(' + grantClaimants + ' MCAA Funded' + migtText + capText + ' • Nov 3–6)';
     }
 
     const kpiTravelSub = document.getElementById('kpi-travel-sub');
     if (kpiTravelSub) {
-      const capText = (cappedClaimants > 0 && applyCap) ? ` (${cappedClaimants} capped)` : '';
-      kpiTravelSub.innerHTML = `&euro;${sumTravelEur.toLocaleString()} &bull; ${grantClaimants} Claimants${capText}`;
+      const capText = (cappedClaimants > 0 && applyCap) ? (' (' + cappedClaimants + ' capped)') : '';
+      const migtText = migtClaimants > 0 ? (' • ' + migtClaimants + ' MIGT') : '';
+      kpiTravelSub.innerHTML = '&euro;' + sumTravelEur.toLocaleString() + ' &bull; ' + grantClaimants + ' MCAA Claimants' + migtText + capText;
     }
 
     const hotelLogisticsLbl = document.getElementById('hotel-logistics-lbl');
@@ -1737,6 +1821,7 @@
           <td style="padding:8px; text-align:center;">
             <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
               <option value="grant">Grant Funded</option>
+              <option value="migt">Grant MIGT</option>
               <option value="self">Self-Funded</option>
             </select>
           </td>
@@ -1974,11 +2059,19 @@
       if (state.version >= 7) {
         if (state.customRosterHTML) {
           const tbody = document.querySelector('#rosterTable tbody');
-          if (tbody) tbody.innerHTML = state.customRosterHTML;
+          const customRowCount = (state.customRosterHTML.match(/<tr/gi) || []).length;
+          const currentRowCount = tbody ? tbody.querySelectorAll('tr').length : 0;
+          if (tbody && customRowCount >= currentRowCount) {
+            tbody.innerHTML = state.customRosterHTML;
+          }
         }
         if (state.customTravelHTML) {
           const travelTbody = document.querySelector('#travelSimTable tbody');
-          if (travelTbody) travelTbody.innerHTML = state.customTravelHTML;
+          const customTravelCount = (state.customTravelHTML.match(/<tr/gi) || []).length;
+          const currentTravelCount = travelTbody ? travelTbody.querySelectorAll('tr').length : 0;
+          if (travelTbody && customTravelCount >= currentTravelCount) {
+            travelTbody.innerHTML = state.customTravelHTML;
+          }
         }
       }
 
@@ -2157,6 +2250,7 @@
         <td style="padding:8px; text-align:center;">
           <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
             <option value="grant" ${funding === 'grant' ? 'selected' : ''}>Grant Funded</option>
+            <option value="migt" ${funding === 'migt' ? 'selected' : ''}>Grant MIGT</option>
             <option value="self" ${funding === 'self' ? 'selected' : ''}>Self-Funded</option>
           </select>
         </td>
@@ -2344,6 +2438,7 @@
           <td style="padding:8px; text-align:center;">
             <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
               <option value="grant">Grant Funded</option>
+              <option value="migt">Grant MIGT</option>
               <option value="self">Self-Funded</option>
             </select>
           </td>
@@ -2512,6 +2607,7 @@ Todos los viáticos y totales se recalcularon y sincronizaron en vivo.`);
             <label style="font-size:11px; font-weight:600; color:#475569; display:block; margin-bottom:2px;">Modelo de Financiamiento</label>
             <select id="newDelFunding" style="width:100%; padding:5px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
               <option value="grant">Grant Funded</option>
+              <option value="migt">Grant MIGT</option>
               <option value="self">Self-Funded</option>
             </select>
           </div>
