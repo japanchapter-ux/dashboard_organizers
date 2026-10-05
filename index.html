@@ -1691,7 +1691,9 @@
 
   let dbRef = null;
   let isRemoteSyncing = false;
+  let isRestoring = false;
   let syncDebounceTimer = null;
+  const RTDB_URL = "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/budget_state.json";
 
   function initFirebase() {
     try {
@@ -1721,37 +1723,89 @@
           if (error.code === 'PERMISSION_DENIED') {
             updateSaveBadge("⚠️ Firebase: Permiso denegado (Revisa Reglas)", true);
           } else {
-            updateSaveBadge("💾 Modo Local (Navegador)");
+            loadCloudStateViaFetch();
           }
         });
+      } else {
+        loadCloudStateViaFetch();
       }
     } catch (e) {
       console.warn("Firebase initialization notice:", e);
-      updateSaveBadge("💾 Modo Local (Navegador)");
+      loadCloudStateViaFetch();
     }
   }
 
+  function loadCloudStateViaFetch() {
+    fetch(RTDB_URL)
+      .then(res => res.json())
+      .then(val => {
+        if (val && !isRestoring) {
+          isRemoteSyncing = true;
+          try {
+            applyState(val);
+            recalc(false);
+            const timeStr = new Date(val.savedAt || Date.now()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            updateSaveBadge(`🟢 En Vivo (Cloud ${timeStr})`);
+          } finally {
+            isRemoteSyncing = false;
+          }
+        }
+      })
+      .catch(err => {
+        console.warn("REST RTDB fetch notice:", err);
+        updateSaveBadge("💾 Modo Local (Navegador)");
+      });
+  }
+
   function saveStateToCloud() {
-    if (isRemoteSyncing || isRestoring || !dbRef) return;
+    if (isRemoteSyncing || isRestoring) return;
     clearTimeout(syncDebounceTimer);
     syncDebounceTimer = setTimeout(() => {
       try {
         const state = getDashboardState();
-        dbRef.set(state, (error) => {
-          if (error) {
-            console.warn("Cloud save notice:", error);
-            if (error.code === 'PERMISSION_DENIED') {
-              updateSaveBadge("⚠️ Permiso denegado en Firebase (Ver Reglas)", true);
+        if (dbRef) {
+          dbRef.set(state, (error) => {
+            if (error) {
+              console.warn("Cloud save SDK notice, falling back to fetch:", error);
+              saveStateViaFetch(state);
+            } else {
+              const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+              updateSaveBadge(`🟢 Guardado en Nube (${timeStr})`);
             }
-          } else {
-            const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
-            updateSaveBadge(`🟢 Guardado en Nube (${timeStr})`);
-          }
-        });
+          });
+        } else {
+          saveStateViaFetch(state);
+        }
       } catch (e) {
-        console.warn("Cloud save exception:", e);
+        console.warn("Cloud save exception, falling back to fetch:", e);
+        try {
+          const state = getDashboardState();
+          saveStateViaFetch(state);
+        } catch(e2) {
+          console.error("State generation error:", e2);
+        }
       }
     }, 350);
+  }
+
+  function saveStateViaFetch(state) {
+    fetch(RTDB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    })
+      .then(res => {
+        if (res.ok) {
+          const timeStr = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'});
+          updateSaveBadge(`🟢 Guardado en Nube (${timeStr})`);
+        } else {
+          updateSaveBadge("⚠️ Error al guardar en nube", true);
+        }
+      })
+      .catch(err => {
+        console.warn("REST RTDB PUT error:", err);
+        updateSaveBadge("💾 Modo Local (Navegador)");
+      });
   }
 
   function restoreStateFromLocalStorage() {
