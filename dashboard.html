@@ -1,0 +1,2738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCAA Tokyo 2026 - Central Organization & Budget Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <style>
+    :root {
+      --navy: #0e3672;
+      --navy-dark: #09244f;
+      --gold: #c38214;
+      --red: #bc002d;
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --border: #e2e8f0;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --green: #10b981;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background: var(--bg); color: var(--text); padding: 20px; line-height: 1.5; }
+    .container { max-width: 1200px; margin: 0 auto; }
+    
+    /* HEADER */
+    .header { background: linear-gradient(135deg, var(--navy-dark) 0%, var(--navy) 100%); color: white; padding: 26px 28px; border-radius: 14px; margin-bottom: 22px; box-shadow: 0 4px 14px rgba(0,0,0,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .header h1 { font-size: 24px; font-weight: 800; }
+    .header p { font-size: 13px; color: #cbd5e1; margin-top: 4px; }
+    .header-badge { background: rgba(195,130,20,0.3); border: 1px solid var(--gold); color: #ffd875; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+
+    /* KPI METRICS GRID */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 22px; }
+    .kpi-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; text-align: center; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .kpi-val { font-size: 28px; font-weight: 800; color: var(--navy); line-height: 1.1; margin-bottom: 4px; }
+    .kpi-card.highlight .kpi-val { color: var(--red); }
+    .kpi-card.gold .kpi-val { color: var(--gold); }
+    .kpi-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
+    .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+    /* TWO-COL MAIN */
+    .main-grid { display: grid; grid-template-columns: 1fr 1.35fr; gap: 20px; margin-bottom: 22px; }
+    @media (max-width: 900px) { .main-grid { grid-template-columns: 1fr; } }
+
+    .panel { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 22px; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+    .panel h2 { font-size: 17px; font-weight: 800; color: var(--navy); margin-bottom: 14px; border-bottom: 2px solid var(--border); padding-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+
+    /* BUDGET SIMULATOR */
+    .calc-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--border); font-size: 13px; }
+    .calc-row label { font-weight: 600; color: var(--text); }
+    .calc-row .input-wrap { display: flex; align-items: center; gap: 6px; }
+    .calc-row input[type="number"] { width: 85px; padding: 5px 8px; border: 1px solid var(--border); border-radius: 6px; font-size: 13px; font-weight: 700; text-align: right; }
+    .calc-row .subtotal { font-weight: 700; min-width: 80px; text-align: right; color: var(--navy); }
+    
+    .total-box { background: #f0f4fa; border: 2px solid var(--navy); border-radius: 10px; padding: 14px 16px; margin-top: 16px; text-align: center; }
+    .total-jpy { font-size: 26px; font-weight: 800; color: var(--navy); }
+    .total-eur { font-size: 16px; font-weight: 700; color: var(--gold); margin-top: 2px; }
+
+    /* TABLE SECTION */
+    .table-container { overflow-x: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; }
+    .table-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
+    .search-input { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; width: 250px; }
+    .btn { background: var(--navy); color: white; padding: 7px 14px; border-radius: 8px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; text-decoration: none; }
+    .btn:hover { background: var(--navy-dark); }
+    .btn-outline { background: white; color: var(--navy); border: 1px solid var(--navy); }
+
+    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
+    th { background: #f8fafc; padding: 10px 8px; font-weight: 700; color: var(--text-muted); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 10px; }
+    td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
+    tr:hover { background: #fafcff; }
+    .tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
+    .tag-mcaa { background: #e0edff; color: var(--navy); }
+    .tag-gen { background: #fef3c7; color: var(--gold); }
+    .tag-yes { background: #d1fae5; color: #065f46; font-weight: bold; }
+    .tag-no { background: #f1f5f9; color: var(--text-muted); }
+    .tag-alert { background: #fee2e2; color: var(--red); font-weight: bold; }
+    .tag-hotel { background: #fef3c7; color: #92400e; font-weight: bold; border: 1px solid #fde68a; }
+    .tag-funded { background: #dbeafe; color: #1e40af; font-weight: 700; border: 1px solid #bfdbfe; }
+    .tag-self { background: #f3e8ff; color: #6b21a8; font-weight: 700; border: 1px solid #d8b4fe; }
+
+    /* DIETARY SUMMARY */
+    .diet-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .diet-item { background: #f8fafc; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 12px; display: flex; justify-content: space-between; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div>
+      <span class="header-badge">Central Management Console</span>
+      <h1>MCAA Asia Connect "Konnichiwa Tokyo 2026"</h1>
+      <p>November 4–5, 2026 | Tokyo, Japan | Headcount: <strong id="header-headcount-lbl">33 Roster Total (23 In Person &bull; 10 Online)</strong></p>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+      <span id="save-status-badge" style="font-size:11px; padding:6px 12px; border-radius:12px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
+        💾 Auto-guardado local
+      </span>
+      <button class="btn btn-outline" style="border-color:#cbd5e1; color:#334155; font-size:11px; padding:6px 10px;" onclick="exportBackupJSON()" title="Descargar archivo JSON con todos los datos y cambios">💾 Guardar Backup (JSON)</button>
+      <label class="btn btn-outline" style="border-color:#cbd5e1; color:#334155; font-size:11px; padding:6px 10px; cursor:pointer;" title="Restaurar archivo JSON de copia de seguridad">
+        <span>📂 Cargar Backup</span>
+        <input type="file" id="jsonBackupInput" accept=".json" style="display:none;" onchange="importBackupJSON(event)">
+      </label>
+      <button class="btn btn-outline" style="border-color:#fca5a5; color:#b91c1c; font-size:11px; padding:6px 10px;" onclick="resetToDefaults()" title="Restaurar todos los costos y noches de hotel al original">🔄 Reset</button>
+      <button class="btn" style="background:#1d4ed8; color:#ffffff; font-size:11px; padding:6px 12px; font-weight:700;" onclick="openAddDelegateModal()" title="Agregar manualmente un nuevo delegado o participante">➕ Agregar Delegado</button>
+      <label class="btn" style="background:#059669; cursor:pointer; font-size:11px; padding:6px 12px;" title="Import new CSV exported from Microsoft Forms">
+        <span>📥 Import CSV</span>
+        <input type="file" id="csvFileInput" accept=".csv, .xlsx, .xls" style="display:none;" onchange="handleFileUpload(event)">
+      </label>
+      <button class="btn btn-outline" style="font-size:11px; padding:6px 10px;" onclick="exportCurrentCSV()">📤 Export CSV</button>
+      <button class="btn" style="font-size:11px; padding:6px 12px;" onclick="window.print()">🖨️ Print</button>
+    </div>
+  </div>
+
+  <!-- KPI SUMMARY CARDS -->
+  <div class="kpi-grid">
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-total">33</div>
+      <div class="kpi-lbl">Total Registered</div>
+      <div class="kpi-sub">23 In Person &bull; 10 Online</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-bento1">23</div>
+      <div class="kpi-lbl">Day 1 Bento Lunch</div>
+      <div class="kpi-sub">Seated Themed Tables</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-val" id="kpi-dinner">22</div>
+      <div class="kpi-lbl">Monjayaki Dinner</div>
+      <div class="kpi-sub">Nov 4 Evening (Tokyo)</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-val" id="kpi-bento2">21</div>
+      <div class="kpi-lbl">Day 2 Bento Lunch</div>
+      <div class="kpi-sub">Prior to Site Visit</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-val" id="kpi-visit">21</div>
+      <div class="kpi-lbl">Leave a Nest Visit</div>
+      <div class="kpi-sub">Iidabashi Deep-Tech HQ</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-val" id="kpi-hotel">19</div>
+      <div class="kpi-lbl" id="kpi-hotel-lbl">Hotel Rooms (19 Pax)</div>
+        <div class="kpi-sub" id="kpi-hotel-sub">57 Nights (Nov 3-6) &bull; &yen;855K</div>
+    </div>
+    <div class="kpi-card highlight">
+      <div class="kpi-val" id="kpi-visa">11</div>
+      <div class="kpi-lbl">Visa Letters Needed</div>
+      <div class="kpi-sub">Support docs required</div>
+    </div>
+    <div class="kpi-card gold">
+      <div class="kpi-val" id="kpi-travel-budget">&yen;2.76M</div>
+      <div class="kpi-lbl">Travel &amp; Stay Budget</div>
+      <div class="kpi-sub" id="kpi-travel-sub">&euro;14,486 &bull; 19 Claimants (11 capped)</div>
+    </div>
+  </div>
+
+  <!-- MAIN SECTION: BUDGET & LOGISTICS -->
+  <div class="main-grid">
+
+    <!-- BUDGET CALCULATOR & SIMULATOR -->
+    <div class="panel">
+      <h2>
+        <span>Live Budget Simulator</span>
+        <span style="font-size: 11px; font-weight: 500; color: var(--text-muted);">Rate: 1 EUR = 165 JPY</span>
+      </h2>
+
+      <!-- Item 1: Bento 1 -->
+      <div class="calc-row">
+        <label>Day 1 Bento Lunch</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-bento1" value="0" oninput="recalc()">
+          <span class="subtotal" id="sub-bento1">&yen;0</span>
+        </div>
+      </div>
+
+      <!-- Item 2: Snacks & Coffee Day 1 -->
+      <div class="calc-row">
+        <label>Day 1 Coffee &amp; Snack Exchange</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-coffee1" value="500" oninput="recalc()">
+          <span class="subtotal" id="sub-coffee1">&yen;14,500</span>
+        </div>
+      </div>
+
+      <!-- Item 3: Monjayaki Dinner -->
+      <div class="calc-row">
+        <label>Day 1 Monjayaki Dinner</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-dinner" value="1500" oninput="recalc()">
+          <span class="subtotal" id="sub-dinner">&yen;31,500</span>
+        </div>
+      </div>
+
+      <!-- Item 4: Coffee Day 2 -->
+      <div class="calc-row">
+        <label>Day 2 Morning Coffee Break</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-coffee2" value="400" oninput="recalc()">
+          <span class="subtotal" id="sub-coffee2">&yen;8,000</span>
+        </div>
+      </div>
+
+      <!-- Item 5: Bento 2 -->
+      <div class="calc-row">
+        <label>Day 2 Bento Lunch</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-bento2" value="1500" oninput="recalc()">
+          <span class="subtotal" id="sub-bento2">&yen;30,000</span>
+        </div>
+      </div>
+
+      <!-- Item 6: Metro Transit -->
+      <div class="calc-row">
+        <label>Tokyo Metro Transit</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-transit" value="440" oninput="recalc()">
+          <span class="subtotal" id="sub-transit">&yen;8,800</span>
+        </div>
+      </div>
+
+      <!-- Item 7: Badges, Lanyards & Prints -->
+      <div class="calc-row">
+        <label>Badges, Lanyards &amp; Programs</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-badges" value="800" oninput="recalc()">
+          <span class="subtotal" id="sub-badges">&yen;27,200</span>
+        </div>
+      </div>
+
+      <!-- Item 8: Banner & Miscellaneous -->
+      <div class="calc-row">
+        <label>30th Anniversary Banner &amp; Supplies</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-banner" value="50000" oninput="recalc()">
+          <span class="subtotal" id="sub-banner">&yen;50,000</span>
+        </div>
+      </div>
+
+      <!-- Item 9: Venue / AV -->
+      <div class="calc-row">
+        <label>Venue / Tech AV</label>
+        <div class="input-wrap">
+          <span>&yen;</span>
+          <input type="number" id="cost-venue" value="0" oninput="recalc()">
+          <span class="subtotal" id="sub-venue">&yen;0</span>
+        </div>
+      </div>
+
+      <!-- Item 10: Contingency -->
+      <div class="calc-row" style="background:#fafcff;">
+        <label><strong>Contingency Buffer</strong></label>
+        <div class="input-wrap">
+          <span class="subtotal" id="sub-contingency">&yen;17,000</span>
+        </div>
+      </div>
+
+      <!-- LOCAL OPS SUBTOTAL -->
+      <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; font-weight:700; color:var(--navy); border-top:1px solid var(--border); margin-top:6px;">
+        <span>Local Operations Subtotal:</span>
+        <span id="subtotal-local-ops">&yen;251,284 (&euro;1,523)</span>
+      </div>
+
+      <!-- TRAVEL & ACCOMMODATION SUMMARY IN LOCAL PANEL -->
+      <div style="margin-top:14px; padding-top:10px; border-top:2px solid var(--gold);">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+          <h3 style="font-size:13px; font-weight:800; color:var(--gold);">✈️ Travel &amp; Accommodation Subtotal</h3>
+          <span style="font-size:11px; color:var(--text-muted);" id="side-travel-badge">(18 Claimants &bull; Nov 3–6)</span>
+        </div>
+        <div style="font-size:11px; color:var(--text-muted); margin-bottom:8px;">
+          Calculated from individual declared costs &amp; &yen;15,000/night hotel:
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+          <span id="side-overseas-lbl">12 Overseas Flights:</span>
+          <strong id="side-flight-sum">&yen;1,959,000 (&euro;11,873)</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px;">
+          <span>Hotel (33 Nts @ &yen;15k, Nov 3–6):</span>
+          <strong id="side-hotel-sum">&yen;495,000 (&euro;3,000)</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:6px;">
+          <span>6 Domestic (incl. Ueda Shinkansen):</span>
+          <strong id="side-dom-sum">&yen;152,568 (&euro;925)</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; font-weight:800; color:var(--gold); border-top:1px dashed var(--border);">
+          <span>Travel &amp; Stay Subtotal:</span>
+          <span id="subtotal-travel">&yen;2,606,568 (&euro;15,797)</span>
+        </div>
+      </div>
+
+      <!-- COMBINED GRAND TOTAL BOX -->
+      <div class="total-box">
+        <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: var(--navy-dark); letter-spacing: 0.8px;" id="grand-total-label">TOTAL ESTIMATED BUDGET</div>
+        <div class="total-jpy" id="grand-total-jpy">&yen;1,349,284</div>
+        <div class="total-eur" id="grand-total-eur">&euro;8,178 EUR</div>
+        <div style="font-size:11px; color:var(--text-muted); margin-top:4px;" id="total-breakdown-sub">Local Ops: &yen;251,284 | Travel: &yen;1,098,000</div>
+      </div>
+    </div>
+
+    <!-- LOGISTICS, DIETARY & VISA OVERVIEW -->
+    <div class="panel">
+      <h2>Logistical Requirements Breakdown</h2>
+
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">Dietary &amp; Meal Specifications</h3>
+      <div class="diet-list">
+        <div class="diet-item"><span>Standard (Regular Bento)</span><strong>18</strong></div>
+        <div class="diet-item"><span>Vegetarian</span><strong>5</strong></div>
+        <div class="diet-item"><span>Halal Certified</span><strong>1</strong></div>
+        <div class="diet-item"><span>Halal / Vegetarian</span><strong>1</strong></div>
+      </div>
+
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;">Administrative &amp; Speaker Demographics</h3>
+      <div class="diet-list">
+        <div class="diet-item"><span>Official Visa Support Letters</span><strong style="color:var(--red);">10 delegates</strong></div>
+        <div class="diet-item"><span>Hotel Reservation Assistance</span><strong style="color:var(--gold);">11 delegates</strong></div>
+        <div class="diet-item"><span>Oral Presentations / Pitches</span><strong>13 speakers</strong></div>
+        <div class="diet-item"><span>Snack Exchange Contributors</span><strong>15 delegates</strong></div>
+      </div>
+
+      <!-- HOTEL LOGISTICS & RECOMMENDED OPTIONS -->
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;" id="hotel-logistics-lbl">🏨 Hotel &amp; Lodging Logistics (12 Overseas Delegates)</h3>
+      <div style="background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; padding: 10px 12px; font-size: 11px; margin-top: 4px;">
+        <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+          <span><strong>Covered Duration:</strong> Up to 3 Nights (Nov 3–6, 2026)</span>
+          <strong style="color:#92400e;">33 Room-Nights Total</strong>
+        </div>
+        <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+          <span><strong>Budget Cap:</strong> &yen;15,000 / night (~&euro;91)</span>
+          <strong>Allocated: &yen;495,000 (&euro;3,000)</strong>
+        </div>
+        <div style="font-weight:700; color:var(--navy); margin-top:6px; margin-bottom:3px;">Recommended Strategic Clusters (Near Tokyo Stn &amp; Ueno):</div>
+        <ul style="padding-left:16px; margin:0; line-height:1.5; color:var(--text-main);">
+          <li><strong>Sotetsu Fresa Inn Tokyo-Kanda</strong> (~&yen;11,500–14,000/nt) &bull; 1 stop from Tokyo Station; direct Ginza Line &amp; JR Yamanote to Shibuya (20 min).</li>
+          <li><strong>Tokyu Stay Nihombashi</strong> (~&yen;12,000–15,000/nt) &bull; Washer/dryer in room; direct Tozai Line to Iidabashi &amp; Ginza Line to Shibuya.</li>
+          <li><strong>Dormy Inn Ueno-Okachimachi</strong> (~&yen;12,500–15,000/nt) &bull; Free onsen &amp; night ramen; direct Keisei Skyliner (Narita 41 min) &amp; Ginza Line to Shibuya.</li>
+          <li><strong>APA Hotel Ueno Ekimae</strong> (~&yen;10,000–13,000/nt) &bull; At JR Ueno / Shinkansen hub; direct Yamanote Line loop to Shibuya. Very economical.</li>
+        </ul>
+        <div style="margin-top:6px; font-size:10px; color:#78350f; background:#fef3c7; padding:4px 8px; border-radius:4px; line-height:1.4;">
+          💡 <strong>Transit &amp; Budget Strategy:</strong> Shibuya hotels average &yen;25,000–&yen;45,000/night due to high tourist demand. Tokyo Station / Ueno clusters offer dependable business hotels under &yen;15,000/night, immediate Shinkansen/airport drop-off, and direct 20-min access to Shibuya via Tokyo Metro Ginza Line (no transfers) or JR Yamanote Line.
+        </div>
+      </div>
+
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;">Affiliation Distribution</h3>
+      <div class="diet-list">
+        <div class="diet-item"><span>China Chapter</span><strong>10</strong></div>
+        <div class="diet-item"><span>Japan Chapter & Organizing Lead</span><strong>6</strong></div>
+        <div class="diet-item"><span>India Chapter</span><strong>4</strong></div>
+        <div class="diet-item"><span>Oceania Chapter</span><strong>1</strong></div>
+        <div class="diet-item"><span>Southeast Asia Chapter</span><strong>1</strong></div>
+        <div class="diet-item"><span>EU Delegation / GloPol / NCP / L-Nest</span><strong>6</strong></div>
+        <div class="diet-item"><span>General Attendees (Online)</span><strong>2</strong></div>
+      </div>
+    </div>
+
+  </div>
+
+  
+  <!-- TRAVEL & ACCOMMODATION LIVE SIMULATOR (PERSON-BY-PERSON CLAIMS) -->
+  <div class="panel" style="margin-top: 18px; border: 2px solid var(--gold); background: #ffffff;">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:14px;">
+      <div>
+        <h2 style="margin:0; font-size:18px; color:var(--navy); display:flex; align-items:center; gap:8px;">
+          <span>✈️ Delegate Travel &amp; Accommodation Live Simulator</span>
+          <span style="font-size:11px; background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:12px; font-weight:700;" id="funding-ratio-badge">18 Claimants (18 Grant Funded • 0 Self-Funded)</span>
+        </h2>
+        <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">
+          Calculated directly from each participant's submitted flight/train estimates. All traveling delegates entitled to <strong>3 nights hotel covered at &yen;15,000 / night</strong> strictly for <strong>Nov 3–6</strong> (max 3 nights). Subject to €930 cap per person. All amounts editable in real-time.
+        </p>
+      </div>
+      <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+        <div style="font-size:12px; display:flex; align-items:center; gap:6px; background:#fff7ed; padding:4px 10px; border-radius:8px; border:1px solid #fed7aa;">
+          <label style="font-size:12px; font-weight:700; color:#c2410c; cursor:pointer; display:flex; align-items:center; gap:5px;" title="Capping rule: Maximum €930 (¥153,450) per delegate for Travel + Hotel">
+            <input type="checkbox" id="toggle-travel-cap" checked onchange="recalc()"> Max Cap / Person:
+          </label>
+          <span style="font-weight:700; color:#9a3412;">&euro;</span>
+          <input type="number" id="travel-cap-eur" value="930" style="width:65px; padding:3px 6px; border:1px solid #fdba74; border-radius:6px; font-weight:700; font-size:12px; color:#9a3412;" oninput="recalc()">
+          <span style="font-size:11px; color:#9a3412; font-weight:600;" id="travel-cap-jpy-lbl">(&yen;153,450)</span>
+        </div>
+        <div style="font-size:12px; display:flex; align-items:center; gap:6px;">
+          <label style="font-weight:700; color:var(--navy);">Hotel Rate / Night:</label>
+          <span>&yen;</span>
+          <input type="number" id="global-hotel-rate" value="15000" style="width:75px; padding:4px 6px; border:1px solid var(--border); border-radius:6px; font-weight:700; font-size:12px;" oninput="recalc()">
+        </div>
+        <label style="font-size:12px; font-weight:700; color:var(--navy); cursor:pointer; background:#f0f4fa; padding:6px 12px; border-radius:8px; display:flex; align-items:center; gap:6px;">
+          <input type="checkbox" id="toggle-travel" checked onchange="recalc()"> Include Travel in Grand Total
+        </label>
+        <button class="btn btn-outline" onclick="syncRosterToTravelSimulator(true)" style="font-size:11px; padding:6px 12px; background:#fff7ed; border-color:#fdba74; color:#9a3412; font-weight:700;" title="Sincronizar y refrescar automáticamente el simulador con el padrón de asistentes">🔄 Refrescar Simulador</button>
+        <button class="btn btn-outline" onclick="exportTravelCSV()" style="font-size:11px; padding:6px 12px;">📤 Export Travel Budget (CSV)</button>
+      </div>
+    </div>
+
+    
+    <!-- Grant MIGT Notice & Policy Banner -->
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; margin-bottom:14px; padding:10px 16px; background:#f0fdf4; border:1.5px solid #86efac; border-radius:8px; font-size:12px; color:#166534; box-shadow:0 1px 3px rgba(22,163,74,0.08);">
+      <div style="display:flex; align-items:center; gap:8px;">
+        <span style="font-size:20px;">🎯</span>
+        <div>
+          <strong style="color:#15803d; font-size:13px;">Financiación Externa — Grant MIGT Activo:</strong>
+          <span style="margin-left:6px; color:#166534;"><strong>Prof. Dr. Eugenio Otal (ORG-01)</strong> y <strong>Prof. Dr. Fan Mo (DEL-03)</strong> tienen sus viajes y 3 noches de hotel cubiertos 100% por el <strong>Grant MIGT</strong> (Coste para presupuesto MCAA: <strong>¥0 / €0</strong>).</span>
+        </div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <span style="background:#dcfce7; color:#15803d; border:1px solid #86efac; padding:3px 8px; border-radius:6px; font-weight:800; font-size:11px;">ORG-01: Otal (Grant MIGT)</span>
+        <span style="background:#dcfce7; color:#15803d; border:1px solid #86efac; padding:3px 8px; border-radius:6px; font-weight:800; font-size:11px;">DEL-03: Mo (Grant MIGT)</span>
+      </div>
+    </div>
+    <div style="overflow-x:auto;">
+      <table id="travelSimTable" style="width:100%; border-collapse:collapse; font-size:12px;">
+        <thead>
+          <tr style="background:#f8fafc; border-bottom:2px solid var(--border); text-align:left;">
+            <th style="padding:8px;">Delegate Name</th>
+            <th style="padding:8px;">Chapter / Route</th>
+            <th style="padding:8px; text-align:center;">Funding Model</th>
+            <th style="padding:8px;">Transport Mode</th>
+            <th style="padding:8px;">Stated in Form</th>
+            <th style="padding:8px;">Travel Cost (&yen;)</th>
+            <th style="padding:8px;">Stay Dates</th>
+            <th style="padding:8px; text-align:center;">Covered Nts (Nov 3-6)</th>
+            <th style="padding:8px; text-align:right;">Hotel Subtotal (&yen;)</th>
+            <th style="padding:8px; text-align:right;">Approved Grant (&yen;)</th>
+            <th style="padding:8px; text-align:right;">Approved Grant (&euro;)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr data-id="ORG-01" data-overseas="false" style="border-bottom:1px solid var(--border); background:#f0fdf4; border-left:6px solid #16a34a;">
+            <td style="padding:8px;"><strong>Prof. Dr. Eugenio Otal</strong><br><small style="color:var(--text-muted);">ORG-01</small></td>
+            <td style="padding:8px;">Japan Chapter (Ueda)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="ORG-01" onchange="syncFunding(this)" style="font-size:11px; font-weight:800; padding:5px 8px; border-radius:6px; border:2px solid #16a34a; background:#dcfce7; color:#15803d; cursor:pointer; box-shadow:0 1px 3px rgba(22,163,74,0.25);">
+                <option value="grant" >MCAA Grant Funded</option>
+                <option value="migt" selected>🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              <div style="margin-top:4px;"><span style="display:inline-block; font-size:10px; font-weight:800; background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:4px; border:1px solid #86efac; box-shadow:0 1px 2px rgba(22,163,74,0.15);">🎯 Grant MIGT (Ext. ¥0)</span></div>
+            </td>
+            <td style="padding:8px;"><span class="tag tag-yes">Hokuriku Shinkansen (Ueda <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">Round-trip Shinkansen (Ueda)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-ORG-01" value="13500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 4–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-ORG-01" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-ORG-01" style="padding:8px; text-align:right; font-weight:600;">&yen;0 <br><span style="font-size:10px; color:#15803d; font-weight:800; background:#dcfce7; padding:2px 6px; border-radius:4px; border:1px solid #86efac;">Grant MIGT</span></td>
+            <td class="ind-total-jpy" id="ind-total-jpy-ORG-01" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <br><span style="font-size:10px; color:#15803d; background:#dcfce7; padding:2px 6px; border-radius:4px; font-weight:800; border:1px solid #86efac; display:inline-block; margin-top:2px;">Grant MIGT (¥0)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-ORG-01" style="padding:8px; text-align:right; color:#15803d; font-size:11px;">&euro;0 <br><span style="font-size:10px; color:#15803d; font-weight:800; background:#dcfce7; padding:2px 6px; border-radius:4px; border:1px solid #86efac; display:inline-block; margin-top:2px;">Grant MIGT (€0)</span></td>
+          </tr>
+          <tr data-id="ORG-02" data-overseas="false" style="border-bottom:1px solid var(--border); background:#fafcff; border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Dr. Manuela Leticia Kim</strong><br><small style="color:var(--text-muted);">ORG-02</small></td>
+            <td style="padding:8px;">Japan Chapter (Ueda)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="ORG-02" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-yes">Hokuriku Shinkansen (Ueda <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">Round-trip Shinkansen (Ueda)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-ORG-02" value="13500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 4–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-ORG-02" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-ORG-02" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-ORG-02" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;58,500</td>
+            <td class="ind-total-eur" id="ind-total-eur-ORG-02" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;355</td>
+          </tr>
+          <tr data-id="DEL-03" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f0fdf4; border-left:6px solid #16a34a;">
+            <td style="padding:8px;"><strong>Prof. Dr. Fan Mo</strong><br><small style="color:var(--text-muted);">DEL-03</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-03" onchange="syncFunding(this)" style="font-size:11px; font-weight:800; padding:5px 8px; border-radius:6px; border:2px solid #16a34a; background:#dcfce7; color:#15803d; cursor:pointer; box-shadow:0 1px 3px rgba(22,163,74,0.25);">
+                <option value="grant" >MCAA Grant Funded</option>
+                <option value="migt" selected>🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              <div style="margin-top:4px;"><span style="display:inline-block; font-size:10px; font-weight:800; background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:4px; border:1px solid #86efac; box-shadow:0 1px 2px rgba(22,163,74,0.15);">🎯 Grant MIGT (Ext. ¥0)</span></div>
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,000 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-03" value="165000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–7</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-03" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-03" style="padding:8px; text-align:right; font-weight:600;">&yen;0 <br><span style="font-size:10px; color:#15803d; font-weight:800; background:#dcfce7; padding:2px 6px; border-radius:4px; border:1px solid #86efac;">Grant MIGT</span></td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-03" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <br><span style="font-size:10px; color:#15803d; background:#dcfce7; padding:2px 6px; border-radius:4px; font-weight:800; border:1px solid #86efac; display:inline-block; margin-top:2px;">Grant MIGT (¥0)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-03" style="padding:8px; text-align:right; color:#15803d; font-size:11px;">&euro;0 <br><span style="font-size:10px; color:#15803d; font-weight:800; background:#dcfce7; padding:2px 6px; border-radius:4px; border:1px solid #86efac; display:inline-block; margin-top:2px;">Grant MIGT (€0)</span></td>
+          </tr>
+          <tr data-id="DEL-04" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Shaoshan Mai</strong><br><small style="color:var(--text-muted);">DEL-04</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-04" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">800 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-04" value="132000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–9</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-04" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-04" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-04" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-04" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,073 • Excess self-funded: €143">Claim €1,073<br>+€143 self</span></td>
+          </tr>
+          <tr data-id="DEL-05" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f8fafc; opacity:0.75; border-left:6px solid #94a3b8;">
+            <td style="padding:8px;"><strong>Christopher Hales</strong><br><small style="color:var(--text-muted);">DEL-05</small></td>
+            <td style="padding:8px;">Oceania Chapter (Online)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-05" onchange="syncFunding(this)" style="font-size:11px; font-weight:600; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f1f5f9; color:#64748b; cursor:pointer;">
+                <option value="grant" >MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" selected>⚪ Online (¥0)</option>
+              </select>
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Online Attendance</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--text-muted);">Online</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-05" value="0" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Online</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-05" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-05" style="padding:8px; text-align:right; font-weight:600;">&yen;0</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-05" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <span style="font-size:10px; color:var(--text-muted);">(Online)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-05" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;0</td>
+          </tr>
+          <tr data-id="DEL-08" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f8fafc; opacity:0.75; border-left:6px solid #94a3b8;">
+            <td style="padding:8px;"><strong>Yuening Li</strong><br><small style="color:var(--text-muted);">DEL-08</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-08" onchange="syncFunding(this)" style="font-size:11px; font-weight:600; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f1f5f9; color:#64748b; cursor:pointer;">
+                <option value="grant" >MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" selected>⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,500 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-08" value="247500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 2–12</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-08" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-08" style="padding:8px; text-align:right; font-weight:600;">&yen;0 (Self)</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-08" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <span style="font-size:10px; color:var(--text-muted);">(Self)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-08" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;0</td>
+          </tr>
+          <tr data-id="DEL-09" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Pengfei Wang</strong><br><small style="color:var(--text-muted);">DEL-09</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-09" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,000 USD</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-09" value="150000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–9</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-09" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-09" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-09" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-09" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,182 • Excess self-funded: €252">Claim €1,182<br>+€252 self</span></td>
+          </tr>
+          <tr data-id="DEL-11" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f8fafc; opacity:0.75; border-left:6px solid #94a3b8;">
+            <td style="padding:8px;"><strong>Dr. Xiuxiu Han</strong><br><small style="color:var(--text-muted);">DEL-11</small></td>
+            <td style="padding:8px;">China & UK (Online)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-11" onchange="syncFunding(this)" style="font-size:11px; font-weight:600; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f1f5f9; color:#64748b; cursor:pointer;">
+                <option value="grant" >MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" selected>⚪ Online (¥0)</option>
+              </select>
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Online Attendance</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--text-muted);">Online</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-11" value="0" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Online</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-11" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-11" style="padding:8px; text-align:right; font-weight:600;">&yen;0</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-11" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <span style="font-size:10px; color:var(--text-muted);">(Online)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-11" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;0</td>
+          </tr>
+          <tr data-id="DEL-12" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Tao Yang</strong><br><small style="color:var(--text-muted);">DEL-12</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-12" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">500 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-12" value="82500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-12" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-12" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-12" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;127,500</td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-12" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;773</td>
+          </tr>
+          <tr data-id="DEL-13" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Yuanyuan Wei</strong><br><small style="color:var(--text-muted);">DEL-13</small></td>
+            <td style="padding:8px;">China Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-13" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">700 EUR (flight)</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-13" value="115500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 1–7</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-13" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-13" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-13" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-13" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €973 • Excess self-funded: €43">Claim €973<br>+€43 self</span></td>
+          </tr>
+          <tr data-id="DEL-14" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Tejaswini Gowda</strong><br><small style="color:var(--text-muted);">DEL-14</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-14" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,500 USD</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-14" value="225000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 1–7</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-14" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-14" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-14" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-14" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,636 • Excess self-funded: €706">Claim €1,636<br>+€706 self</span></td>
+          </tr>
+          <tr data-id="DEL-16" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Praveen Kumar</strong><br><small style="color:var(--text-muted);">DEL-16</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-16" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">1,400 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-16" value="231000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-16" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-16" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-16" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-16" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €1,673 • Excess self-funded: €743">Claim €1,673<br>+€743 self</span></td>
+          </tr>
+          <tr data-id="DEL-18" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Dr. Ashwani Kumar Tiwari</strong><br><small style="color:var(--text-muted);">DEL-18</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-18" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">700 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-18" value="115500" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–8</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-18" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-18" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-18" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;153,450<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €930</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-18" style="padding:8px; text-align:right; color:#c2410c; font-size:11px;">&euro;930<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €973 • Excess self-funded: €43">Claim €973<br>+€43 self</span></td>
+          </tr>
+          <tr data-id="DEL-19" data-overseas="true" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Vishwas Kalakaleshwar Lakkundi</strong><br><small style="color:var(--text-muted);">DEL-19</small></td>
+            <td style="padding:8px;">India Chapter</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-19" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-mcaa">International Flight</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">650 EUR</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-19" value="107250" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 2–8</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-19" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-19" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-19" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;152,250</td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-19" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;923</td>
+          </tr>
+          <tr data-id="DEL-20" data-overseas="true" style="border-bottom:1px solid var(--border); background:#f8fafc; opacity:0.75; border-left:6px solid #94a3b8;">
+            <td style="padding:8px;"><strong>Joey Mark Santiago Diaz</strong><br><small style="color:var(--text-muted);">DEL-20</small></td>
+            <td style="padding:8px;">Southeast Asia Chapter (Online)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-20" onchange="syncFunding(this)" style="font-size:11px; font-weight:600; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f1f5f9; color:#64748b; cursor:pointer;">
+                <option value="grant" >MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" selected>⚪ Online (¥0)</option>
+              </select>
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Online Attendance</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--text-muted);">Online</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-20" value="0" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Online</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-20" value="0" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-20" style="padding:8px; text-align:right; font-weight:600;">&yen;0</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-20" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;0 <span style="font-size:10px; color:var(--text-muted);">(Online)</span></td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-20" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;0</td>
+          </tr>
+          <tr data-id="DEL-01" data-overseas="false" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Matteo Tarsi</strong><br><small style="color:var(--text-muted);">DEL-01</small></td>
+            <td style="padding:8px;">Japan Chapter (Kyoto)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-01" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Shinkansen Nozomi (Kyoto <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥27,000 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-01" value="27000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-01" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-01" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-01" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;72,000</td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-01" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;436</td>
+          </tr>
+          <tr data-id="DEL-02" data-overseas="false" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Motoko Akashi</strong><br><small style="color:var(--text-muted);">DEL-02</small></td>
+            <td style="padding:8px;">Japan Chapter (Kansai)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-02" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Domestic Flight (Kansai <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥24,000 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-02" value="24000" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 2–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-02" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-02" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-02" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;69,000</td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-02" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;418</td>
+          </tr>
+          <tr data-id="DEL-10" data-overseas="false" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Kazutsugu Matsukawa</strong><br><small style="color:var(--text-muted);">DEL-10</small></td>
+            <td style="padding:8px;">Japan Chapter (Kochi)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-10" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Domestic Flight (Kochi <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥48,608 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-10" value="48608" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 4–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-10" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-10" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-10" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;93,608</td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-10" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;567</td>
+          </tr>
+          <tr data-id="DEL-17" data-overseas="false" style="border-bottom:1px solid var(--border); border-left:6px solid #3b82f6;">
+            <td style="padding:8px;"><strong>Keisuke HATADA</strong><br><small style="color:var(--text-muted);">DEL-17</small></td>
+            <td style="padding:8px;">Japan Chapter (Toyama)</td>
+            <td style="padding:8px; text-align:center;">
+              <select class="ind-funding-type" data-id="DEL-17" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:4px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+                <option value="grant" selected>MCAA Grant Funded</option>
+                <option value="migt" >🟢 Grant MIGT (Ext. ¥0)</option>
+                <option value="self" >⚪ Self-Funded (¥0)</option>
+              </select>
+              
+            </td>
+            <td style="padding:8px;"><span class="tag tag-gen">Shinkansen (Toyama <-> Tokyo)</span></td>
+            <td style="padding:8px; font-weight:600; color:var(--navy);">¥25,960 JPY</td>
+            <td style="padding:8px;">
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span>&yen;</span>
+                <input type="number" class="ind-travel-cost" id="travel-cost-DEL-17" value="25960" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+              </div>
+            </td>
+            <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–5</span></td>
+            <td style="padding:8px; text-align:center;">
+              <input type="number" class="ind-hotel-nights" id="hotel-nights-DEL-17" value="3" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+            </td>
+            <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-17" style="padding:8px; text-align:right; font-weight:600;">&yen;45,000</td>
+            <td class="ind-total-jpy" id="ind-total-jpy-DEL-17" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;70,960</td>
+            <td class="ind-total-eur" id="ind-total-eur-DEL-17" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;430</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr style="background:#fefce8; font-weight:700; border-top:2px solid var(--gold); border-bottom:1px solid var(--gold);">
+            <td colspan="5" style="padding:10px 8px; color:#92400e;" id="travel-subtotal-lbl">Subtotals (13 Overseas Flights + 6 Domestic [incl. Ueda] + 19 Hotels Nov 3–6):</td>
+            <td style="padding:10px 8px; color:#92400e;" id="sum-travel-trans">&yen;2,400,168</td>
+            <td colspan="2" style="padding:10px 8px; text-align:center; color:#92400e;" id="sum-room-nights">57 Room-Nights</td>
+            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;855,000</td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:14px;" id="sum-travel-grand">&yen;2,390,268<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Cap: -¥864,900)</span></td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:13px;" id="sum-travel-eur">&euro;14,486 EUR</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- FULL ATTENDEE CENTRAL ROSTER TABLE -->
+  <div class="table-container">
+    <div class="table-tools">
+      <h2 style="font-size: 16px; font-weight: 800; color: var(--navy);">Master Attendee Roster (33 Confirmed Records)</h2>
+      <input type="text" id="searchInput" class="search-input" placeholder="Search by name, chapter, role..." onkeyup="filterTable()">
+    </div>
+
+    <table id="rosterTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name / Badge</th>
+          <th>Chapter / Affiliation</th>
+          <th>Role</th>
+          <th>Type</th>
+          <th>Day 1 (Bento)</th>
+          <th>Dinner</th>
+          <th>Day 2 (Bento)</th>
+          <th>Site Visit</th>
+          <th>Dietary</th>
+          <th>Hotel (2 nts)</th>
+          <th>Visa</th>
+        </tr>
+      </thead>
+                        <tbody>
+        <!-- 28 Real Attendees (Organizers, Keynotes, Form Delegates & Guests) -->
+        <tr>
+          <td><strong>ORG-01</strong></td>
+          <td><strong>Prof. Dr. Eugenio Otal</strong><br><small>Eugenio Otal</small></td>
+          <td>Japan Chapter</td>
+          <td>MCAA Board / Chair Japan</td>
+          <td><span class="tag tag-mcaa">MCAA</span> <span class="tag" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:10px; margin-top:2px;">Grant MIGT</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>ORG-02</strong></td>
+          <td><strong>Dr. Manuela Leticia Kim</strong><br><small>Manuela Kim</small></td>
+          <td>Japan Chapter</td>
+          <td>Organizing Committee / Tokyo Lead</td>
+          <td><span class="tag tag-mcaa">MCAA</span> <span class="tag" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:10px; margin-top:2px;">Grant MIGT</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>INST-01</strong></td>
+          <td><strong>Dr. Judit Erika Magyar</strong><br><small>Judit Magyar</small></td>
+          <td>MSCA GLOPOL / EURAXESS</td>
+          <td>Regional Liaison Officer</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>INST-02</strong></td>
+          <td><strong>Gijs Berends</strong><br><small>Gijs Berends</small></td>
+          <td>EU Delegation Japan</td>
+          <td>Head of Science & Digital</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>INST-03</strong></td>
+          <td><strong>Fumiko Oda</strong><br><small>Fumiko Oda</small></td>
+          <td>Horizon Europe / NCP Japan</td>
+          <td>MSCA NCP</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>INST-04</strong></td>
+          <td><strong>Twan van Erp</strong></td>
+          <td>EU Delegation India</td>
+          <td>EU Counsellor R&I (EU Del India)</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>PART-01</strong></td>
+          <td><strong>Leave a Nest Tokyo Lead</strong><br><small>Leave a Nest</small></td>
+          <td>Leave a Nest Co., Ltd.</td>
+          <td>Deep-Tech Ecosystem Lead</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Host</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>SPK-01</strong></td>
+          <td><strong>Ryan Ginstrom</strong><br><small>Ryan Ginstrom</small></td>
+          <td>Recursive Inc.</td>
+          <td>Senior Vice President of Engineering</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-01</strong></td>
+          <td><strong>Matteo Tarsi</strong><br><small>Matteo Tarsi</small></td>
+          <td>University of Pavia / Kyoto</td>
+          <td>Japan Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-02</strong></td>
+          <td><strong>Motoko Akashi</strong><br><small>Motoko Akashi</small></td>
+          <td>Kansai University</td>
+          <td>Japan Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-03</strong></td>
+          <td><strong>Prof. Dr. Fan Mo</strong><br><small>Fan Mo</small></td>
+          <td>UESTC</td>
+          <td>China Chapter Chair / MCAA Board</td>
+          <td><span class="tag tag-mcaa">MCAA</span> <span class="tag" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:10px; margin-top:2px;">Grant MIGT</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (2 nts)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-04</strong></td>
+          <td><strong>Shaoshan Mai</strong><br><small>Shaoshan Mai</small></td>
+          <td>Medical University of Gdansk</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span> <span class="tag" style="background:#dcfce7; color:#15803d; border:1px solid #86efac; font-weight:800; font-size:10px; margin-top:2px;">Grant MIGT</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Allergy: Crab</td>
+          <td><span class="tag tag-hotel">Yes (Nov 3-6)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-05</strong></td>
+          <td><strong>Christopher Hales</strong><br><small>Chris Hales</small></td>
+          <td>Aiglet Engineering, Australia (Online)</td>
+          <td>Oceania Chapter Chair</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-06</strong></td>
+          <td><strong>Qingsong Xiong</strong><br><small>Qingsong Xiong</small></td>
+          <td>ETH Zurich</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-07</strong></td>
+          <td><strong>Boyu Li</strong><br><small>Boyu Li</small></td>
+          <td>Instituto de Ciencia Molecular, Univ. Valencia</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-08</strong></td>
+          <td><strong>Yuening Li</strong><br><small>Yuening Li</small></td>
+          <td>ETH Zurich</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span> <span class="tag" style="background:#e0f2fe; color:#0369a1; border:1px solid #7dd3fc; font-weight:800; font-size:10px; margin-top:2px;">Self-Funded</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No (Self)</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-09</strong></td>
+          <td><strong>Pengfei Wang</strong><br><small>Pengfei Wang</small></td>
+          <td>The Chinese University of Hong Kong</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (Nov 3-9)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-10</strong></td>
+          <td><strong>Kazutsugu Matsukawa</strong><br><small>Kazu Matsukawa</small></td>
+          <td>Kochi University</td>
+          <td>Japan Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-11</strong></td>
+          <td><strong>Dr. Xiuxiu Han</strong><br><small>Xiuxiu Han</small></td>
+          <td>University of Birmingham (Online)</td>
+          <td>China & UK Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-12</strong></td>
+          <td><strong>Tao Yang</strong><br><small>Tao Yang</small></td>
+          <td>Technical University of Munich</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (2 nts)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-13</strong></td>
+          <td><strong>Yuanyuan Wei</strong><br><small>Yuanyuan Wei</small></td>
+          <td>Univ. of Cambridge / ETH Zurich</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>None</td>
+          <td><span class="tag tag-hotel">Yes (Nov 1-7)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-14</strong></td>
+          <td><strong>Tejaswini Gowda Madapura Eregowda</strong><br><small>Tejaswini Eregowda</small></td>
+          <td>Vasudha Foundation</td>
+          <td>India Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian</td>
+          <td><span class="tag tag-hotel">Yes (Nov 1-7)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-15</strong></td>
+          <td><strong>Yao Wei</strong><br><small>Yao Wei</small></td>
+          <td>Institute of Physics, Czech Academy of Sciences</td>
+          <td>China Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-16</strong></td>
+          <td><strong>Praveen Kumar</strong><br><small>Praveen Kumar</small></td>
+          <td>Plaksha University</td>
+          <td>India Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian</td>
+          <td><span class="tag tag-hotel">Yes (2 nts)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-17</strong></td>
+          <td><strong>Keisuke HATADA</strong><br><small>Keisuke Hatada</small></td>
+          <td>University of Toyama</td>
+          <td>Japan Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Allergy: Crab</td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-18</strong></td>
+          <td><strong>Dr. Ashwani Kumar Tiwari</strong><br><small>Ashwani Tiwari</small></td>
+          <td>Jawaharlal Nehru University, New Delhi</td>
+          <td>India Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian</td>
+          <td><span class="tag tag-hotel">Yes (2 nts)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-19</strong></td>
+          <td><strong>Vishwas Kalakaleshwar Lakkundi</strong><br><small>Vishwas Lakkundi</small></td>
+          <td>Smarten Spaces</td>
+          <td>Chair, MCAA India Chapter</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td><span class="tag tag-yes">Yes</span></td>
+          <td>Vegetarian, Allergy: Sesame</td>
+          <td><span class="tag tag-hotel">Yes (3 nts)</span></td>
+          <td><span class="tag tag-alert">Yes</span></td>
+        </tr>
+        <tr>
+          <td><strong>DEL-20</strong></td>
+          <td><strong>Joey Mark Santiago Diaz</strong><br><small>Joey Mark Santiago Diaz</small></td>
+          <td>Southeast Asia / Univ. of Leeds (Online)</td>
+          <td>Southeast Asia Chapter Delegate</td>
+          <td><span class="tag tag-mcaa">MCAA</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-01</strong></td>
+          <td><strong>Gautam Kumar</strong><br><small>Gautam Kumar</small></td>
+          <td>Jawaharlal Nehru University</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-02</strong></td>
+          <td><strong>Dr. Nighat Parveen</strong><br><small>Dr. Parveen</small></td>
+          <td>Jawaharlal Nehru University</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+              <tr>
+          <td><strong>GEN-03</strong></td>
+          <td><strong>Ashish Pratap Patel</strong><br><small>Ashish Pratap Patel</small></td>
+          <td>Jawaharlal Nehru University, India</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-04</strong></td>
+          <td><strong>Dr. Abhishek Pandey Bharat</strong><br><small>Dr. A. P. Bharat</small></td>
+          <td>Gautam Buddha University, Greater Noida, India</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-05</strong></td>
+          <td><strong>Xusheng Zhu</strong><br><small>Xusheng Zhu</small></td>
+          <td>University College London (UCL)</td>
+          <td>Speaker Applicant (6G Fluid Antenna)</td>
+          <td><span class="tag tag-mcaa">Proposed Talk</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-06</strong></td>
+          <td><strong>Hideko Matsuo</strong><br><small>Hideko Matsuo</small></td>
+          <td>Institute of Tropical Medicine, Belgium (Online)</td>
+          <td>General Attendee (Belgium)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-07</strong></td>
+          <td><strong>Abhishek Kumar</strong><br><small>Abhishek</small></td>
+          <td>SES, Jawaharlal Nehru University, India (Online)</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+        <tr>
+          <td><strong>GEN-08</strong></td>
+          <td><strong>Subhash Chandra</strong><br><small>Subhash</small></td>
+          <td>GITAM (Deemed to be) University Visakhapatnam, India (Online)</td>
+          <td>General Attendee (India)</td>
+          <td><span class="tag tag-gen">General</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+          <td>None</td>
+          <td><span class="tag tag-no">No</span></td>
+          <td><span class="tag tag-no">No</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+  const EUR_RATE = 165; // 1 EUR = 165 JPY
+  const STORAGE_KEY = 'mcaa_tokyo2026_budget_state_v8';
+
+  function parseTravelCostJPY(str) {
+    if (!str) return 0;
+    const s = String(str).trim();
+    const num = parseFloat(s.replace(/,/g, '').replace(/[^0-9.]/g, '')) || 0;
+    const lower = s.toLowerCase();
+    if (lower.includes('gbp') || s.includes('£')) {
+      return Math.round(num * 195);
+    } else if (lower.includes('eur') || s.includes('€')) {
+      return Math.round(num * EUR_RATE);
+    } else if (lower.includes('usd') || s.includes('$')) {
+      return Math.round(num * 150);
+    } else if (lower.includes('cny') || lower.includes('rmb')) {
+      return Math.round(num * 21);
+    } else if (lower.includes('inr') || s.includes('₹')) {
+      return Math.round(num * 1.8);
+    } else if (lower.includes('sgd')) {
+      return Math.round(num * 115);
+    } else if (lower.includes('aud')) {
+      return Math.round(num * 100);
+    }
+    return Math.round(num);
+  }
+
+  function syncFunding(elem, triggerCloud = true) {
+    recalc(triggerCloud);
+  }
+
+  function recalc(triggerCloud = true) {
+    const rows = document.querySelectorAll("#rosterTable tbody tr");
+    let total = 0, bento1Count = 0, dinnerCount = 0, bento2Count = 0, transitCount = 0, hotelCount = 0, visaCount = 0, inPersonCount = 0;
+
+    rows.forEach(tr => {
+      total++;
+      const tds = tr.querySelectorAll("td");
+      if (tds.length >= 12) {
+        const isOnline = tds[2].innerText.includes("Online") || tds[3].innerText.includes("Online") || tds[5].innerText.includes("Online");
+        if (!isOnline) inPersonCount++;
+        if (tds[5].innerText.includes("Yes")) bento1Count++;
+        if (tds[6].innerText.includes("Yes")) dinnerCount++;
+        if (tds[7].innerText.includes("Yes")) bento2Count++;
+        if (tds[8].innerText.includes("Yes") || tds[8].innerText.includes("Host")) transitCount++;
+        if (tds[10].innerText.includes("Yes") || tds[10].innerText.includes("nts")) hotelCount++;
+        if (tds[11].innerText.includes("Yes")) visaCount++;
+      }
+    });
+
+    // Update Header Headcount Badge if present
+    const headerHeadcount = document.getElementById('header-headcount-lbl');
+    if (headerHeadcount) {
+      headerHeadcount.innerHTML = `${total} Roster Total (${inPersonCount} In Person &bull; ${total - inPersonCount} Online)`;
+    }
+
+    // Update Master Attendee Roster Title Count
+    const rosterHeading = document.querySelector(".table-tools h2");
+    if (rosterHeading) {
+      rosterHeading.innerText = `Master Attendee Roster (${total} Confirmed Records)`;
+    }
+
+    // Update KPI card numbers
+    const kpiTotal = document.getElementById('kpi-total'); if (kpiTotal) kpiTotal.innerText = total;
+    const kpiBento1 = document.getElementById('kpi-bento1'); if (kpiBento1) kpiBento1.innerText = bento1Count;
+    const kpiDinner = document.getElementById('kpi-dinner'); if (kpiDinner) kpiDinner.innerText = dinnerCount;
+    const kpiBento2 = document.getElementById('kpi-bento2'); if (kpiBento2) kpiBento2.innerText = bento2Count;
+    const kpiVisit = document.getElementById('kpi-visit'); if (kpiVisit) kpiVisit.innerText = transitCount;
+    const kpiVisa = document.getElementById('kpi-visa'); if (kpiVisa) kpiVisa.innerText = visaCount;
+
+    // Local Operations calculation (catering, coffee, venue, badges, site visit transit)
+    const bento1Price = parseFloat(document.getElementById('cost-bento1')?.value) || 0;
+    const coffee1Price = parseFloat(document.getElementById('cost-coffee1')?.value) || 0;
+    const dinnerPrice = parseFloat(document.getElementById('cost-dinner')?.value) || 0;
+    const coffee2Price = parseFloat(document.getElementById('cost-coffee2')?.value) || 0;
+    const bento2Price = parseFloat(document.getElementById('cost-bento2')?.value) || 0;
+    const transitPrice = parseFloat(document.getElementById('cost-transit')?.value) || 0;
+    const badgesPrice = parseFloat(document.getElementById('cost-badges')?.value) || 0;
+    const bannerPrice = parseFloat(document.getElementById('cost-banner')?.value) || 0;
+    const venuePrice = parseFloat(document.getElementById('cost-venue')?.value) || 0;
+
+    const subBento1 = bento1Count * bento1Price;
+    const subCoffee1 = total * coffee1Price;
+    const subDinner = dinnerCount * dinnerPrice;
+    const subCoffee2 = bento2Count * coffee2Price;
+    const subBento2 = bento2Count * bento2Price;
+    const subTransit = transitCount * transitPrice;
+    const subBadges = Math.max(total + 5, 25) * badgesPrice;
+    const subBanner = bannerPrice;
+    const subVenue = venuePrice;
+
+    if (document.getElementById('sub-bento1')) document.getElementById('sub-bento1').innerText = '¥' + subBento1.toLocaleString();
+    if (document.getElementById('sub-coffee1')) document.getElementById('sub-coffee1').innerText = '¥' + subCoffee1.toLocaleString();
+    if (document.getElementById('sub-dinner')) document.getElementById('sub-dinner').innerText = '¥' + subDinner.toLocaleString();
+    if (document.getElementById('sub-coffee2')) document.getElementById('sub-coffee2').innerText = '¥' + subCoffee2.toLocaleString();
+    if (document.getElementById('sub-bento2')) document.getElementById('sub-bento2').innerText = '¥' + subBento2.toLocaleString();
+    if (document.getElementById('sub-transit')) document.getElementById('sub-transit').innerText = '¥' + subTransit.toLocaleString();
+    if (document.getElementById('sub-badges')) document.getElementById('sub-badges').innerText = '¥' + subBadges.toLocaleString();
+    if (document.getElementById('sub-banner')) document.getElementById('sub-banner').innerText = '¥' + subBanner.toLocaleString();
+    if (document.getElementById('sub-venue')) document.getElementById('sub-venue').innerText = '¥' + subVenue.toLocaleString();
+
+    const directSum = subBento1 + subCoffee1 + subDinner + subCoffee2 + subBento2 + subTransit + subBadges + subBanner + subVenue;
+    const contingency = Math.round(directSum * 0.10);
+    if (document.getElementById('sub-contingency')) document.getElementById('sub-contingency').innerText = '¥' + contingency.toLocaleString();
+
+    const localOpsTotal = directSum + contingency;
+    const localOpsEur = Math.round(localOpsTotal / EUR_RATE);
+    const subLocalEl = document.getElementById('subtotal-local-ops');
+    if (subLocalEl) subLocalEl.innerText = `¥${localOpsTotal.toLocaleString()} (€${localOpsEur.toLocaleString()})`;
+
+    // --- Person-by-Person Travel & Accommodation Calculation ---
+    const globalHotelRate = parseFloat(document.getElementById('global-hotel-rate')?.value) || 15000;
+    const travelRows = document.querySelectorAll("#travelSimTable tbody tr");
+
+    const applyCap = document.getElementById('toggle-travel-cap')?.checked ?? true;
+    const capEur = parseFloat(document.getElementById('travel-cap-eur')?.value) || 930;
+    const capJPY = Math.round(capEur * EUR_RATE);
+    const capJpyLbl = document.getElementById('travel-cap-jpy-lbl');
+    if (capJpyLbl) capJpyLbl.innerText = '(¥' + capJPY.toLocaleString() + ')';
+
+    let sumTravelTrans = 0;
+    let sumOverseasFlight = 0;
+    let sumDomTravel = 0;
+    let sumHotelNights = 0;
+    let sumHotelCost = 0;
+    let sumTravelGrand = 0;
+    let sumUncappedGrand = 0;
+
+    let grantClaimants = 0;
+    let migtClaimants = 0;
+    let selfClaimants = 0;
+    let cappedClaimants = 0;
+    let overseasClaimants = 0;
+    let domesticClaimants = 0;
+
+    travelRows.forEach((tr, i) => {
+      const travelInput = tr.querySelector('.ind-travel-cost');
+      const nightsInput = tr.querySelector('.ind-hotel-nights');
+      const fundingSelect = tr.querySelector('.ind-funding-type');
+      const isOverseas = tr.getAttribute('data-overseas') === 'true';
+
+      const fundingVal = fundingSelect ? fundingSelect.value : 'grant';
+      const isMigt = (fundingVal === 'migt');
+      const isSelf = (fundingVal === 'self');
+      const isExcluded = isMigt || isSelf;
+
+      if (isMigt) {
+        migtClaimants++;
+        tr.style.background = '#f0fdf4';
+        tr.style.borderLeft = '5px solid #16a34a';
+        tr.style.opacity = '1';
+        if (fundingSelect) {
+          fundingSelect.style.background = '#dcfce7';
+          fundingSelect.style.color = '#15803d';
+          fundingSelect.style.border = '2px solid #16a34a';
+          fundingSelect.style.fontWeight = '800';
+          fundingSelect.style.boxShadow = '0 1px 3px rgba(22,163,74,0.2)';
+        }
+      } else if (isSelf) {
+        selfClaimants++;
+        tr.style.background = '#f8fafc';
+        tr.style.borderLeft = '5px solid #94a3b8';
+        tr.style.opacity = '0.75';
+        if (fundingSelect) {
+          fundingSelect.style.background = '#f1f5f9';
+          fundingSelect.style.color = '#64748b';
+          fundingSelect.style.border = '1px solid #cbd5e1';
+          fundingSelect.style.fontWeight = '600';
+          fundingSelect.style.boxShadow = 'none';
+        }
+      } else {
+        grantClaimants++;
+        tr.style.background = '';
+        tr.style.borderLeft = '5px solid #3b82f6';
+        tr.style.opacity = '1';
+        if (fundingSelect) {
+          fundingSelect.style.background = '#ffffff';
+          fundingSelect.style.color = 'var(--navy)';
+          fundingSelect.style.border = '1px solid #cbd5e1';
+          fundingSelect.style.fontWeight = '700';
+          fundingSelect.style.boxShadow = 'none';
+        }
+      }
+
+      const travelVal = parseFloat(travelInput?.value) || 0;
+      const nightsVal = parseFloat(nightsInput?.value) || 0;
+      const indHotelTotal = isExcluded ? 0 : (nightsVal * globalHotelRate);
+      const rawTotalJpy = isExcluded ? 0 : (travelVal + indHotelTotal);
+      const rawTotalEur = Math.round(rawTotalJpy / EUR_RATE);
+
+      const isCapped = !isExcluded && applyCap && (rawTotalJpy > capJPY);
+      if (isCapped) {
+        cappedClaimants++;
+      }
+
+      const indTotalJpy = isCapped ? capJPY : rawTotalJpy;
+      const indTotalEur = isCapped ? capEur : rawTotalEur;
+      const excessJpy = isCapped ? (rawTotalJpy - capJPY) : 0;
+      const excessEur = isCapped ? Math.round(excessJpy / EUR_RATE) : 0;
+
+      // Update cells DIRECTLY on tr (immune to index drift)
+      const elHotelSub = tr.querySelector('.ind-hotel-sub') || tr.cells[8];
+      if (elHotelSub) {
+        if (isMigt) {
+          elHotelSub.innerHTML = '¥0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span>';
+          elHotelSub.style.color = '#047857';
+        } else if (isSelf) {
+          elHotelSub.innerText = '¥0 (Self)';
+          elHotelSub.style.color = 'var(--text-muted)';
+        } else {
+          elHotelSub.innerText = '¥' + indHotelTotal.toLocaleString();
+          elHotelSub.style.color = '';
+        }
+      }
+
+      const elTotJpy = tr.querySelector('.ind-total-jpy') || tr.cells[9];
+      if (elTotJpy) {
+        if (isMigt) {
+          elTotJpy.innerHTML = '¥0 <br><span style="font-size:10px; color:#047857; background:#dcfce7; padding:1px 5px; border-radius:4px; font-weight:700;">Grant MIGT</span>';
+          elTotJpy.style.color = '#047857';
+        } else if (isSelf) {
+          elTotJpy.innerHTML = '¥0 <span style="font-size:10px; color:var(--text-muted);">(Self)</span>';
+          elTotJpy.style.color = 'var(--text-muted)';
+        } else if (isCapped) {
+          elTotJpy.innerHTML = '¥' + indTotalJpy.toLocaleString() + '<br><span style="font-size:10px; color:#c2410c; background:#ffedd5; padding:1px 5px; border-radius:4px; font-weight:700;">Cap €' + capEur + '</span>';
+          elTotJpy.style.color = 'var(--navy)';
+        } else {
+          elTotJpy.innerText = '¥' + indTotalJpy.toLocaleString();
+          elTotJpy.style.color = 'var(--navy)';
+        }
+      }
+
+      const elTotEur = tr.querySelector('.ind-total-eur') || tr.cells[10];
+      if (elTotEur) {
+        if (isMigt) {
+          elTotEur.innerHTML = '€0 <br><span style="font-size:10px; color:#047857; font-weight:700;">(Grant MIGT)</span>';
+          elTotEur.style.color = '#047857';
+        } else if (isSelf) {
+          elTotEur.innerText = '€0';
+          elTotEur.style.color = 'var(--text-muted)';
+        } else if (isCapped) {
+          elTotEur.innerHTML = '€' + indTotalEur.toLocaleString() + '<br><span style="font-size:10px; color:#c2410c;" title="Raw Claim: €' + rawTotalEur.toLocaleString() + ' • Excess self-funded: €' + excessEur.toLocaleString() + '">Claim €' + rawTotalEur.toLocaleString() + '<br>+€' + excessEur.toLocaleString() + ' self</span>';
+          elTotEur.style.color = '#c2410c';
+        } else {
+          elTotEur.innerText = '€' + indTotalEur.toLocaleString();
+          elTotEur.style.color = 'var(--navy)';
+        }
+      }
+
+      if (!isExcluded) {
+        if (isOverseas) overseasClaimants++; else domesticClaimants++;
+        sumTravelTrans += travelVal;
+        if (isOverseas) sumOverseasFlight += travelVal;
+        else sumDomTravel += travelVal;
+
+        sumHotelNights += nightsVal;
+        sumHotelCost += indHotelTotal;
+        sumTravelGrand += indTotalJpy;
+        sumUncappedGrand += rawTotalJpy;
+      }
+    });
+
+    const sumTravelEur = Math.round(sumTravelGrand / EUR_RATE);
+    const sumSavingsJpy = sumUncappedGrand - sumTravelGrand;
+    const sumSavingsEur = Math.round(sumSavingsJpy / EUR_RATE);
+
+    // Update Travel Simulator Header Badge
+    const fundingBadge = document.getElementById('funding-ratio-badge');
+    if (fundingBadge) {
+      const migtText = migtClaimants > 0 ? (' • <span style="background:#dcfce7; color:#15803d; padding:2px 7px; border-radius:4px; font-weight:800; border:1px solid #86efac;">' + migtClaimants + ' Grant MIGT</span>') : '';
+      const capText = (cappedClaimants > 0 && applyCap) ? (' • <span style="color:#c2410c; font-weight:700;">' + cappedClaimants + ' Capped at €' + capEur + '</span>') : '';
+      fundingBadge.innerHTML = travelRows.length + ' Claimants (<span style="color:#2563eb; font-weight:700;">' + grantClaimants + ' MCAA Grant</span>' + migtText + capText + ' • <span style="color:#64748b;">' + selfClaimants + ' Self-Funded</span>)';
+    }
+
+    // Update KPI card hotel (MCAA funded hotel rooms)
+    const fundedHotelPax = Math.round(sumHotelNights / 3);
+    const kpiHotel = document.getElementById('kpi-hotel');
+    if (kpiHotel) kpiHotel.innerText = fundedHotelPax;
+    const kpiHotelLbl = document.getElementById('kpi-hotel-lbl');
+    if (kpiHotelLbl) kpiHotelLbl.innerText = `Hotel Rooms (${fundedHotelPax} Pax)`;
+    const kpiHotelSub = document.getElementById('kpi-hotel-sub');
+    if (kpiHotelSub) kpiHotelSub.innerHTML = `${sumHotelNights} Nights (Nov 3-6) &bull; &yen;${Math.round(sumHotelCost/1000)}K`;
+
+    // Update Travel Simulator Footer
+    const elSumTT = document.getElementById('sum-travel-trans'); if (elSumTT) elSumTT.innerText = '¥' + sumTravelTrans.toLocaleString();
+    const elSumRN = document.getElementById('sum-room-nights'); if (elSumRN) elSumRN.innerText = sumHotelNights + ' Room-Nights';
+    const elSumTH = document.getElementById('sum-travel-hotel'); if (elSumTH) elSumTH.innerText = '¥' + sumHotelCost.toLocaleString();
+    
+    const elSumTG = document.getElementById('sum-travel-grand');
+    if (elSumTG) {
+      if (sumSavingsJpy > 0 && applyCap) {
+        elSumTG.innerHTML = '¥' + sumTravelGrand.toLocaleString() + '<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Cap: -¥' + sumSavingsJpy.toLocaleString() + ')</span>';
+      } else {
+        elSumTG.innerText = '¥' + sumTravelGrand.toLocaleString();
+      }
+    }
+
+    const elSumTE = document.getElementById('sum-travel-eur');
+    if (elSumTE) {
+      elSumTE.innerText = '€' + sumTravelEur.toLocaleString() + ' EUR';
+    }
+
+    // Update Travel Summary Box in left panel
+    const sideFlight = document.getElementById('side-flight-sum');
+    if (sideFlight) sideFlight.innerText = `¥${sumOverseasFlight.toLocaleString()} (€${Math.round(sumOverseasFlight/EUR_RATE).toLocaleString()})`;
+    const sideHotel = document.getElementById('side-hotel-sum');
+    if (sideHotel) sideHotel.innerText = `¥${sumHotelCost.toLocaleString()} (€${Math.round(sumHotelCost/EUR_RATE).toLocaleString()})`;
+    const sideDom = document.getElementById('side-dom-sum');
+    if (sideDom) sideDom.innerText = `¥${sumDomTravel.toLocaleString()} (€${Math.round(sumDomTravel/EUR_RATE).toLocaleString()})`;
+
+    const subTravelEl = document.getElementById('subtotal-travel');
+    if (subTravelEl) subTravelEl.innerText = `¥${sumTravelGrand.toLocaleString()} (€${sumTravelEur.toLocaleString()})`;
+
+    const kpiTB = document.getElementById('kpi-travel-budget');
+    if (kpiTB) kpiTB.innerText = '¥' + (sumTravelGrand / 1000000).toFixed(2) + 'M';
+    
+    // Update Dynamic Labels
+    const overseasCount = isNaN(overseasClaimants) ? 13 : overseasClaimants;
+    const domCount = isNaN(domesticClaimants) ? 6 : domesticClaimants;
+
+    const elSubtotalLbl = document.getElementById('travel-subtotal-lbl');
+    if (elSubtotalLbl) {
+      elSubtotalLbl.innerText = `Subtotals (${overseasCount} Overseas Flights + ${domCount} Domestic [incl. Ueda] + ${fundedHotelPax} Hotels Nov 3–6):`;
+    }
+
+    const sideOverseasLbl = document.getElementById('side-overseas-lbl');
+    if (sideOverseasLbl) {
+      sideOverseasLbl.innerText = `${overseasCount} Overseas Flights:`;
+    }
+
+    const sideTravelBadge = document.getElementById('side-travel-badge');
+    if (sideTravelBadge) {
+      const capText = (cappedClaimants > 0 && applyCap) ? (' • ' + cappedClaimants + ' Capped') : '';
+      const migtText = migtClaimants > 0 ? (' • ' + migtClaimants + ' MIGT') : '';
+      sideTravelBadge.innerHTML = '(' + grantClaimants + ' MCAA Funded' + migtText + capText + ' • Nov 3–6)';
+    }
+
+    const kpiTravelSub = document.getElementById('kpi-travel-sub');
+    if (kpiTravelSub) {
+      const capText = (cappedClaimants > 0 && applyCap) ? (' (' + cappedClaimants + ' capped)') : '';
+      const migtText = migtClaimants > 0 ? (' • ' + migtClaimants + ' MIGT') : '';
+      kpiTravelSub.innerHTML = '&euro;' + sumTravelEur.toLocaleString() + ' &bull; ' + grantClaimants + ' MCAA Claimants' + migtText + capText;
+    }
+
+    const hotelLogisticsLbl = document.getElementById('hotel-logistics-lbl');
+    if (hotelLogisticsLbl) {
+      hotelLogisticsLbl.innerHTML = `🏨 Hotel &amp; Lodging Logistics (${fundedHotelPax} Traveling Delegates)`;
+    }
+
+    // Checkbox toggle: Include Travel in Grand Total
+    const includeTravel = document.getElementById('toggle-travel')?.checked ?? true;
+    const grandTotal = includeTravel ? (localOpsTotal + sumTravelGrand) : localOpsTotal;
+    const totalEur = Math.round(grandTotal / EUR_RATE);
+
+    const bdSub = document.getElementById('total-breakdown-sub');
+    if (bdSub) bdSub.innerText = includeTravel 
+      ? `Local Ops: ¥${localOpsTotal.toLocaleString()} | Travel & Accom: ¥${sumTravelGrand.toLocaleString()}${(sumSavingsJpy > 0 && applyCap) ? ` (Capped at €${capEur}/pax, -¥${sumSavingsJpy.toLocaleString()})` : ''}`
+      : `Local Ops only (Travel & Accommodation excluded)`;
+
+    if (document.getElementById('grand-total-jpy')) document.getElementById('grand-total-jpy').innerText = '¥' + grandTotal.toLocaleString();
+    if (document.getElementById('grand-total-eur')) document.getElementById('grand-total-eur').innerText = '€' + totalEur.toLocaleString() + ' EUR';
+
+    saveStateToLocalStorage();
+    if (triggerCloud) {
+      saveStateToCloud();
+    }
+  }
+
+  // --- AUTOMATIC SYNCHRONIZATION: ROSTER -> TRAVEL SIMULATOR ---
+  function isEligibleTraveler(id, type, day1, day2, chapter, role) {
+    if (!type || !type.toUpperCase().includes('MCAA')) return false;
+    // Online participants
+    if (day1 === 'No' && day2 === 'No') return false;
+    if (chapter.toLowerCase().includes('online') || role.toLowerCase().includes('online')) return false;
+    // Local non-traveling institutional partners / general
+    if (id.startsWith('INST-') || id.startsWith('PART-') || id.startsWith('SPK-') || id.startsWith('GEN-')) return false;
+    return true;
+  }
+
+  function syncRosterToTravelSimulator(showNotification = false) {
+    const travelTbody = document.querySelector("#travelSimTable tbody");
+    if (!travelTbody) return;
+
+    // Collect all existing delegate IDs currently in travelSimTable
+    const existingTravelIds = new Set();
+    document.querySelectorAll("#travelSimTable tbody tr").forEach(tr => {
+      const id = tr.getAttribute('data-id') || tr.querySelector('.ind-funding-type')?.getAttribute('data-id');
+      if (id) existingTravelIds.add(id);
+    });
+
+    let addedCount = 0;
+    const rosterRows = document.querySelectorAll("#rosterTable tbody tr");
+
+    rosterRows.forEach(tr => {
+      const tds = tr.querySelectorAll("td");
+      if (tds.length < 12) return;
+
+      const id = tds[0].innerText.trim();
+      const name = tds[1].querySelector("strong")?.innerText.trim() || tds[1].innerText.trim();
+      const badge = tds[1].querySelector("small")?.innerText.trim() || name;
+      const chapter = tds[2].innerText.trim();
+      const role = tds[3].innerText.trim();
+      const type = tds[4].innerText.trim();
+      const day1 = tds[5].innerText.trim();
+      const day2 = tds[7].innerText.trim();
+
+      if (isEligibleTraveler(id, type, day1, day2, chapter, role) && !existingTravelIds.has(id)) {
+        const isOverseas = !chapter.toLowerCase().includes('japan') && !chapter.toLowerCase().includes('ueda') && !chapter.toLowerCase().includes('tokyo') && !chapter.toLowerCase().includes('kyoto') && !chapter.toLowerCase().includes('kansai') && !chapter.toLowerCase().includes('kochi') && !chapter.toLowerCase().includes('toyama');
+        
+        const defaultCost = isOverseas ? 150000 : 25000;
+        const nights = 3; // Policy: all traveling delegates entitled to 3 nights hotel
+
+        const newRow = document.createElement('tr');
+        newRow.style.borderBottom = '1px solid var(--border)';
+        newRow.setAttribute('data-id', id);
+        newRow.setAttribute('data-overseas', isOverseas ? 'true' : 'false');
+        newRow.innerHTML = `
+          <td style="padding:8px;"><strong>${name}</strong><br><small style="color:var(--text-muted);">${id}</small></td>
+          <td style="padding:8px;">${chapter}</td>
+          <td style="padding:8px; text-align:center;">
+            <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+              <option value="grant">Grant Funded</option>
+              <option value="migt">Grant MIGT</option>
+              <option value="self">Self-Funded</option>
+            </select>
+          </td>
+          <td style="padding:8px;"><span class="tag ${isOverseas ? 'tag-mcaa' : 'tag-gen'}">${isOverseas ? "International Flight" : "Domestic / Shinkansen"}</span></td>
+          <td style="padding:8px; font-weight:600; color:var(--navy);">${isOverseas ? "Estimated Flight" : "Domestic Travel"}</td>
+          <td style="padding:8px;">
+            <div style="display:flex; align-items:center; gap:3px;">
+              <span>&yen;</span>
+              <input type="number" class="ind-travel-cost" id="travel-cost-${id}" value="${defaultCost}" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+            </div>
+          </td>
+          <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+          <td style="padding:8px; text-align:center;">
+            <input type="number" class="ind-hotel-nights" id="hotel-nights-${id}" value="${nights}" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+          </td>
+          <td class="ind-hotel-sub" id="ind-hotel-sub-${id}" style="padding:8px; text-align:right; font-weight:600;">&yen;${(nights * 15000).toLocaleString()}</td>
+          <td class="ind-total-jpy" id="ind-total-jpy-${id}" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;${(defaultCost + nights * 15000).toLocaleString()}</td>
+          <td class="ind-total-eur" id="ind-total-eur-${id}" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;${Math.round((defaultCost + nights * 15000)/EUR_RATE).toLocaleString()}</td>
+        `;
+
+        if (isOverseas) {
+          const domRow = travelTbody.querySelector('tr[data-overseas="false"]');
+          if (domRow) travelTbody.insertBefore(newRow, domRow);
+          else travelTbody.appendChild(newRow);
+        } else {
+          travelTbody.appendChild(newRow);
+        }
+        existingTravelIds.add(id);
+        addedCount++;
+      }
+    });
+
+    if (addedCount > 0) {
+      recalc(true);
+    }
+
+    if (showNotification) {
+      alert(addedCount > 0 
+        ? `✅ Se sincronizaron y agregaron ${addedCount} delegados al simulador de viajes.` 
+        : `ℹ️ El simulador de viajes ya está 100% sincronizado con el padrón (${travelTbody.querySelectorAll('tr').length} participantes).`);
+    }
+  }
+
+  function getDashboardState() {
+    const unitCosts = {
+      bento1: document.getElementById('cost-bento1')?.value,
+      coffee1: document.getElementById('cost-coffee1')?.value,
+      dinner: document.getElementById('cost-dinner')?.value,
+      coffee2: document.getElementById('cost-coffee2')?.value,
+      bento2: document.getElementById('cost-bento2')?.value,
+      transit: document.getElementById('cost-transit')?.value,
+      badges: document.getElementById('cost-badges')?.value,
+      banner: document.getElementById('cost-banner')?.value,
+      venue: document.getElementById('cost-venue')?.value,
+      hotelRate: document.getElementById('global-hotel-rate')?.value,
+      toggleTravel: document.getElementById('toggle-travel')?.checked,
+      travelCapEur: document.getElementById('travel-cap-eur')?.value,
+      toggleTravelCap: document.getElementById('toggle-travel-cap')?.checked
+    };
+
+    const travelRows = [];
+    const travelClaims = {};
+    document.querySelectorAll('#travelSimTable tbody tr').forEach((tr, i) => {
+      const id = tr.getAttribute('data-id') || tr.querySelector('.ind-funding-type')?.getAttribute('data-id');
+      const travelVal = tr.querySelector('.ind-travel-cost')?.value;
+      const nightsVal = tr.querySelector('.ind-hotel-nights')?.value;
+      const fundingSelect = tr.querySelector('.ind-funding-type');
+      const fundingType = fundingSelect ? fundingSelect.value : 'grant';
+      travelRows.push({ i, id, travelVal, nightsVal, fundingType });
+      if (id) {
+        travelClaims[id] = { travelVal, nightsVal, fundingType };
+      }
+    });
+
+    const fundingByDelegateId = {};
+    document.querySelectorAll('.ind-funding-type').forEach(sel => {
+      const id = sel.getAttribute('data-id');
+      if (id) fundingByDelegateId[id] = sel.value;
+    });
+
+    // Save full dynamic HTML so newly added/imported attendees are persistent
+    const customRosterHTML = document.querySelector('#rosterTable tbody')?.innerHTML;
+    const customTravelHTML = document.querySelector('#travelSimTable tbody')?.innerHTML;
+
+    return {
+      version: 8,
+      savedAt: new Date().toISOString(),
+      unitCosts,
+      travelRows,
+      travelClaims,
+      fundingByDelegateId,
+      customRosterHTML,
+      customTravelHTML
+    };
+  }
+
+  function saveStateToLocalStorage() {
+    if (isRestoring) return;
+    try {
+      const state = getDashboardState();
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      updateSaveBadge(`Guardado (${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit', second:'2-digit'})})`);
+    } catch (e) {
+      console.warn("Storage not available:", e);
+    }
+  }
+
+  function updateSaveBadge(text, isAlert = false) {
+    const badge = document.getElementById('save-status-badge');
+    if (badge) {
+      badge.innerHTML = (isAlert ? '⚠️ ' : '💾 ') + text;
+      badge.style.background = isAlert ? '#fef3c7' : '#ecfdf5';
+      badge.style.color = isAlert ? '#92400e' : '#065f46';
+      badge.style.borderColor = isAlert ? '#fde68a' : '#a7f3d0';
+    }
+  }
+
+  // --- FIREBASE REALTIME DATABASE LIVE CLOUD SYNCHRONIZATION ---
+  const FIREBASE_CONFIG = {
+    databaseURL: "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/",
+    projectId: "mcaa-asia-2026"
+  };
+
+  let dbRef = null;
+  let isRemoteSyncing = false;
+  let isRestoring = false;
+  let syncDebounceTimer = null;
+  const RTDB_URL = "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/budget_state.json";
+
+  function initFirebase() {
+    try {
+      if (typeof firebase !== 'undefined' && firebase.initializeApp) {
+        if (!firebase.apps.length) {
+          firebase.initializeApp(FIREBASE_CONFIG);
+        }
+        const db = firebase.database();
+        dbRef = db.ref('budget_state');
+
+        dbRef.on('value', (snapshot) => {
+          const val = snapshot.val();
+          if (val && !isRemoteSyncing) {
+            applyState(val);
+            recalc(false);
+            updateSaveBadge(`🟢 En Vivo (Cloud ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+          }
+        }, (err) => {
+          console.warn("Firebase WebSocket error, falling back to REST poll:", err);
+          initRestSync();
+        });
+      } else {
+        initRestSync();
+      }
+    } catch (e) {
+      console.warn("Firebase SDK init failed, falling back to REST:", e);
+      initRestSync();
+    }
+  }
+
+  function initRestSync() {
+    fetch(RTDB_URL)
+      .then(res => res.json())
+      .then(val => {
+        if (val) {
+          applyState(val);
+          recalc(false);
+          updateSaveBadge(`🟢 En Vivo (REST ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+        }
+      })
+      .catch(err => {
+        console.warn("REST sync poll failed:", err);
+        updateSaveBadge("Modo Local", false);
+      });
+  }
+
+  function saveStateToCloud() {
+    if (isRestoring) return;
+    if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
+
+    syncDebounceTimer = setTimeout(() => {
+      const state = getDashboardState();
+      isRemoteSyncing = true;
+
+      if (dbRef) {
+        dbRef.set(state)
+          .then(() => {
+            isRemoteSyncing = false;
+            updateSaveBadge(`🟢 En Vivo (Cloud ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+          })
+          .catch((err) => {
+            isRemoteSyncing = false;
+            console.warn("WebSocket save failed, trying REST PUT fallback:", err);
+            putStateViaREST(state);
+          });
+      } else {
+        putStateViaREST(state);
+      }
+    }, 600);
+  }
+
+  function putStateViaREST(state) {
+    fetch(RTDB_URL, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(state)
+    })
+    .then(res => res.json())
+    .then(() => {
+      isRemoteSyncing = false;
+      updateSaveBadge(`🟢 En Vivo (REST ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+    })
+    .catch(err => {
+      isRemoteSyncing = false;
+      console.warn("REST sync failed:", err);
+      updateSaveBadge("Guardado Local (Offline)", true);
+    });
+  }
+
+  function restoreStateFromLocalStorage() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return false;
+      const state = JSON.parse(raw);
+      applyState(state);
+      return true;
+    } catch (e) {
+      console.error("Error restoring state:", e);
+      return false;
+    }
+  }
+
+  function applyState(state) {
+    if (!state) return;
+    isRestoring = true;
+    try {
+      if (state.version >= 8) {
+        if (state.customRosterHTML) {
+          const tbody = document.querySelector('#rosterTable tbody');
+          const customRowCount = (state.customRosterHTML.match(/<tr/gi) || []).length;
+          const currentRowCount = tbody ? tbody.querySelectorAll('tr').length : 0;
+          if (tbody && customRowCount >= currentRowCount) {
+            tbody.innerHTML = state.customRosterHTML;
+          }
+        }
+        // In v8, preserve the high-fidelity canonical table and its custom Grant MIGT badges
+        if (state.version >= 8 && state.customTravelHTML) {
+          const travelTbody = document.querySelector('#travelSimTable tbody');
+          const customTravelCount = (state.customTravelHTML.match(/<tr/gi) || []).length;
+          const currentTravelCount = travelTbody ? travelTbody.querySelectorAll('tr').length : 0;
+          if (travelTbody && customTravelCount > currentTravelCount) {
+            travelTbody.innerHTML = state.customTravelHTML;
+          }
+        }
+      }
+
+      // Automatically sync any roster attendees who aren't yet in travelSimTable
+      syncRosterToTravelSimulator(false);
+
+      if (state.unitCosts) {
+        if (state.unitCosts.bento1 !== undefined) document.getElementById('cost-bento1').value = state.unitCosts.bento1;
+        if (state.unitCosts.coffee1 !== undefined) document.getElementById('cost-coffee1').value = state.unitCosts.coffee1;
+        if (state.unitCosts.dinner !== undefined) document.getElementById('cost-dinner').value = state.unitCosts.dinner;
+        if (state.unitCosts.coffee2 !== undefined) document.getElementById('cost-coffee2').value = state.unitCosts.coffee2;
+        if (state.unitCosts.bento2 !== undefined) document.getElementById('cost-bento2').value = state.unitCosts.bento2;
+        if (state.unitCosts.transit !== undefined) document.getElementById('cost-transit').value = state.unitCosts.transit;
+        if (state.unitCosts.badges !== undefined) document.getElementById('cost-badges').value = state.unitCosts.badges;
+        if (state.unitCosts.banner !== undefined) document.getElementById('cost-banner').value = state.unitCosts.banner;
+        if (state.unitCosts.venue !== undefined) document.getElementById('cost-venue').value = state.unitCosts.venue;
+        if (state.unitCosts.hotelRate !== undefined) document.getElementById('global-hotel-rate').value = state.unitCosts.hotelRate;
+        if (state.unitCosts.toggleTravel !== undefined) document.getElementById('toggle-travel').checked = state.unitCosts.toggleTravel;
+        if (state.unitCosts.travelCapEur !== undefined && document.getElementById('travel-cap-eur')) document.getElementById('travel-cap-eur').value = state.unitCosts.travelCapEur;
+        if (state.unitCosts.toggleTravelCap !== undefined && document.getElementById('toggle-travel-cap')) document.getElementById('toggle-travel-cap').checked = state.unitCosts.toggleTravelCap;
+      }
+
+      // Apply claims by delegate ID (immune to row index shifts)
+      if (state.travelClaims) {
+        Object.keys(state.travelClaims).forEach(id => {
+          const claim = state.travelClaims[id];
+          const tr = document.querySelector(`#travelSimTable tbody tr[data-id="${id}"]`) || document.querySelector(`#travelSimTable tbody tr .ind-funding-type[data-id="${id}"]`)?.closest('tr');
+          if (tr) {
+            const travelInput = tr.querySelector('.ind-travel-cost');
+            const nightsInput = tr.querySelector('.ind-hotel-nights');
+            const fundingSelect = tr.querySelector('.ind-funding-type');
+            if (travelInput && claim.travelVal !== undefined) travelInput.value = claim.travelVal;
+            if (nightsInput && claim.nightsVal !== undefined) nightsInput.value = claim.nightsVal;
+            if (fundingSelect && claim.fundingType !== undefined) fundingSelect.value = claim.fundingType;
+          }
+        });
+      } else if (state.travelRows && Array.isArray(state.travelRows)) {
+        state.travelRows.forEach((item, idx) => {
+          const tr = item.id ? (document.querySelector(`#travelSimTable tbody tr[data-id="${item.id}"]`) || document.querySelector(`#travelSimTable tbody tr .ind-funding-type[data-id="${item.id}"]`)?.closest('tr')) : null;
+          if (tr) {
+            const travelInput = tr.querySelector('.ind-travel-cost');
+            const nightsInput = tr.querySelector('.ind-hotel-nights');
+            const fundingSelect = tr.querySelector('.ind-funding-type');
+            if (travelInput && item.travelVal !== undefined) travelInput.value = item.travelVal;
+            if (nightsInput && item.nightsVal !== undefined) nightsInput.value = item.nightsVal;
+            if (fundingSelect && item.fundingType !== undefined) fundingSelect.value = item.fundingType;
+          }
+        });
+      }
+
+      if (state.fundingByDelegateId) {
+        Object.keys(state.fundingByDelegateId).forEach(id => {
+          const val = state.fundingByDelegateId[id];
+          document.querySelectorAll(`.ind-funding-type[data-id="${id}"]`).forEach(sel => {
+            sel.value = val;
+          });
+        });
+      }
+    } finally {
+      isRestoring = false;
+    }
+  }
+
+  function resetToDefaults() {
+    if (!confirm("¿Deseas restaurar todos los precios, viáticos y noches de hotel a sus valores originales por defecto?")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    location.reload();
+  }
+
+  function exportBackupJSON() {
+    const state = getDashboardState();
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MCAA_Tokyo2026_Dashboard_Backup_${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+    updateSaveBadge("Backup descargado");
+  }
+
+  function importBackupJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      try {
+        const state = JSON.parse(e.target.result);
+        applyState(state);
+        recalc(true);
+        alert("¡Copia de seguridad restaurada y aplicada con éxito!");
+      } catch (err) {
+        alert("Error al leer el archivo JSON: " + err.message);
+      }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+  }
+
+  // --- INTERACTIVE MODAL FOR ADDING DELEGATES ---
+  function openAddDelegateModal() {
+    const modal = document.getElementById('addDelegateModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      document.getElementById('newDelName')?.focus();
+    }
+  }
+
+  function closeAddDelegateModal() {
+    const modal = document.getElementById('addDelegateModal');
+    if (modal) modal.style.display = 'none';
+  }
+
+  function toggleModeFields() {
+    const mode = document.getElementById('newDelMode')?.value;
+    const wrap = document.getElementById('travelFieldsWrap');
+    if (wrap) wrap.style.display = (mode === 'online') ? 'none' : 'flex';
+  }
+
+  function submitNewDelegate(e) {
+    e.preventDefault();
+    const name = document.getElementById('newDelName').value.trim();
+    if (!name) return;
+
+    const badge = document.getElementById('newDelBadge').value.trim() || name;
+    const chapter = document.getElementById('newDelChapter').value.trim();
+    const role = document.getElementById('newDelRole').value.trim() || 'Delegate';
+    const mode = document.getElementById('newDelMode').value;
+    const type = document.getElementById('newDelType').value;
+    const diet = document.getElementById('newDelDiet').value.trim() || 'None';
+    const visa = document.getElementById('newDelVisa').value;
+
+    const isOnline = (mode === 'online');
+    const totalRoster = document.querySelectorAll("#rosterTable tbody tr").length;
+    const nextIdNum = totalRoster + 1;
+    const id = `DEL-${String(nextIdNum).padStart(2, '0')}`;
+
+    const hotelNights = isOnline ? 0 : (parseInt(document.getElementById('newDelHotelNights').value) || 3);
+    const hotelTag = hotelNights > 0 ? `Yes (${hotelNights} nts)` : 'No';
+
+    // 1. Add to Roster Table
+    const tbody = document.querySelector("#rosterTable tbody");
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><strong>${id}</strong></td>
+      <td><strong>${name}</strong><br><small>${badge}</small></td>
+      <td>${chapter}</td>
+      <td>${role}</td>
+      <td><span class="tag ${type === 'MCAA' ? 'tag-mcaa' : 'tag-gen'}">${type}</span></td>
+      <td><span class="tag ${isOnline ? 'tag-no' : 'tag-yes'}">${isOnline ? 'No' : 'Yes'}</span></td>
+      <td><span class="tag ${isOnline ? 'tag-no' : 'tag-yes'}">${isOnline ? 'No' : 'Yes'}</span></td>
+      <td><span class="tag ${isOnline ? 'tag-no' : 'tag-yes'}">${isOnline ? 'No' : 'Yes'}</span></td>
+      <td><span class="tag ${isOnline ? 'tag-no' : 'tag-yes'}">${isOnline ? 'No' : 'Yes'}</span></td>
+      <td>${diet}</td>
+      <td><span class="tag ${hotelNights > 0 ? 'tag-hotel' : 'tag-no'}">${hotelTag}</span></td>
+      <td><span class="tag ${visa === 'Yes' ? 'tag-alert' : 'tag-no'}">${visa}</span></td>
+    `;
+    tbody.appendChild(tr);
+
+    // 2. If In-Person MCAA traveler, add to Travel Simulator
+    if (!isOnline && type === 'MCAA') {
+      const transport = document.getElementById('newDelTransport').value.trim() || 'International Flight';
+      const costStr = document.getElementById('newDelCost').value.trim();
+      const costJPY = parseTravelCostJPY(costStr);
+      const funding = document.getElementById('newDelFunding').value || 'grant';
+
+      const isOverseas = !chapter.toLowerCase().includes('japan') && !chapter.toLowerCase().includes('ueda') && !chapter.toLowerCase().includes('tokyo');
+      const travelTbody = document.querySelector("#travelSimTable tbody");
+      
+      const trSim = document.createElement('tr');
+      trSim.style.borderBottom = '1px solid var(--border)';
+      trSim.setAttribute('data-id', id);
+      trSim.setAttribute('data-overseas', isOverseas ? 'true' : 'false');
+      trSim.innerHTML = `
+        <td style="padding:8px;"><strong>${name}</strong><br><small style="color:var(--text-muted);">${id}</small></td>
+        <td style="padding:8px;">${chapter}</td>
+        <td style="padding:8px; text-align:center;">
+          <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+            <option value="grant" ${funding === 'grant' ? 'selected' : ''}>Grant Funded</option>
+            <option value="migt" ${funding === 'migt' ? 'selected' : ''}>Grant MIGT</option>
+            <option value="self" ${funding === 'self' ? 'selected' : ''}>Self-Funded</option>
+          </select>
+        </td>
+        <td style="padding:8px;"><span class="tag ${isOverseas ? 'tag-mcaa' : 'tag-yes'}">${transport}</span></td>
+        <td style="padding:8px; font-weight:600; color:var(--navy);">${costStr || `¥${costJPY.toLocaleString()}`}</td>
+        <td style="padding:8px;">
+          <div style="display:flex; align-items:center; gap:3px;">
+            <span>&yen;</span>
+            <input type="number" class="ind-travel-cost" id="travel-cost-${id}" value="${costJPY}" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+          </div>
+        </td>
+        <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+        <td style="padding:8px; text-align:center;">
+          <input type="number" class="ind-hotel-nights" id="hotel-nights-${id}" value="${hotelNights}" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+        </td>
+        <td class="ind-hotel-sub" id="ind-hotel-sub-${id}" style="padding:8px; text-align:right; font-weight:600;">&yen;${(hotelNights * 15000).toLocaleString()}</td>
+        <td class="ind-total-jpy" id="ind-total-jpy-${id}" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;${(costJPY + hotelNights * 15000).toLocaleString()}</td>
+        <td class="ind-total-eur" id="ind-total-eur-${id}" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;${Math.round((costJPY + hotelNights * 15000)/EUR_RATE).toLocaleString()}</td>
+      `;
+
+      if (isOverseas) {
+        const domRow = travelTbody.querySelector('tr[data-overseas="false"]');
+        if (domRow) travelTbody.insertBefore(trSim, domRow);
+        else travelTbody.appendChild(trSim);
+      } else {
+        travelTbody.appendChild(trSim);
+      }
+    }
+
+    closeAddDelegateModal();
+    document.getElementById('addDelegateForm').reset();
+    recalc(true);
+    alert(`✅ ¡Participante ${name} (${id}) incorporado con éxito a todas las tablas y sincronizado en vivo!`);
+  }
+
+  // Close modal when clicking on dark backdrop
+  window.addEventListener('click', function(e) {
+    const modal = document.getElementById('addDelegateModal');
+    if (e.target === modal) closeAddDelegateModal();
+  });
+
+  // --- FILE IMPORT (CSV & EXCEL) WITH ROBUST REFRESH ---
+  function handleFileUpload(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const isXlsx = file.name.endsWith('.xlsx') || file.name.endsWith('.xls');
+
+    if (isXlsx && typeof XLSX !== 'undefined') {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: 'array' });
+          const firstSheet = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[firstSheet];
+          const json = XLSX.utils.sheet_to_json(worksheet, { defval: '' });
+          if (json && json.length > 0) {
+            populateTableFromCSV(json);
+          }
+        } catch (err) {
+          alert("Error al leer archivo Excel: " + err.message);
+        }
+      };
+      reader.readAsArrayBuffer(file);
+    } else if (typeof Papa !== 'undefined') {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: function(results) {
+          if (results.data && results.data.length > 0) {
+            populateTableFromCSV(results.data);
+          }
+        }
+      });
+    }
+    event.target.value = '';
+  }
+
+  function populateTableFromCSV(data) {
+    const tbody = document.querySelector("#rosterTable tbody");
+    const travelTbody = document.querySelector("#travelSimTable tbody");
+
+    function findVal(row, ...keywords) {
+      for (const k of Object.keys(row)) {
+        const lower = k.toLowerCase();
+        if (keywords.some(kw => lower.includes(kw.toLowerCase()))) {
+          const val = String(row[k] || '').trim();
+          if (val) return val;
+        }
+      }
+      return '';
+    }
+    
+    // Index existing attendees to avoid duplicate insertions
+    const existingNames = new Set();
+    document.querySelectorAll("#rosterTable tbody tr").forEach(tr => {
+      const strong = tr.querySelector("td:nth-child(2) strong");
+      if (strong) {
+        const cleanName = strong.innerText.toLowerCase().replace(/^(dr.|prof.|mr.|ms.)s*/i, '').replace(/[s,]+/g, ' ').trim();
+        existingNames.add(cleanName);
+      }
+    });
+
+    let newCount = 0;
+    let currentDelCount = document.querySelectorAll("#rosterTable tbody tr").length;
+
+    data.forEach((row, i) => {
+      const name = findVal(row, 'full name', 'passport', 'nombre', 'name') || String(Object.values(row)[1] || '').trim();
+      if (!name) return;
+
+      const cleanName = name.toLowerCase().replace(/^(dr.|prof.|mr.|ms.)s*/i, '').replace(/[s,]+/g, ' ').trim();
+      if (existingNames.has(cleanName)) {
+        return; // Skip duplicate attendee
+      }
+      existingNames.add(cleanName);
+      newCount++;
+      currentDelCount++;
+
+      const id = findVal(row, 'id') || `DEL-${String(currentDelCount).padStart(2, '0')}`;
+      const badge = findVal(row, 'badge', 'preferred') || name;
+      const chapter = findVal(row, 'chapter', 'affiliation', 'institution', 'university') || 'General';
+      const role = findVal(row, 'role', 'title') || 'Delegate';
+      const type = (findVal(row, 'registration type') || chapter).toUpperCase().includes('MCAA') || chapter.includes('Chapter') ? 'MCAA' : 'General';
+      
+      const day1Raw = findVal(row, 'day 1 attend', 'day 1', 'session') || 'Yes';
+      const day1 = day1Raw.includes('Y') ? 'Yes' : (day1Raw.includes('N') ? 'No' : 'Yes');
+
+      const dinnerRaw = findVal(row, 'dinner', 'monjayaki') || 'Yes';
+      const dinner = dinnerRaw.includes('Y') ? 'Yes' : (dinnerRaw.includes('N') ? 'No' : 'Yes');
+
+      const day2Raw = findVal(row, 'day 2 attend', 'day 2') || 'Yes';
+      const day2 = day2Raw.includes('Y') ? 'Yes' : (day2Raw.includes('N') ? 'No' : 'Yes');
+
+      const siteRaw = findVal(row, 'site visit', 'leave a nest', 'iidabashi') || 'Yes';
+      const site = (siteRaw.includes('Y') || siteRaw.includes('Host')) ? 'Yes' : (siteRaw.includes('N') ? 'No' : 'Yes');
+
+      const dietary = findVal(row, 'dietary') || 'None';
+      const allergies = findVal(row, 'allerg');
+      const fullDietary = allergies && !dietary.includes(allergies) ? `${dietary}, Allergy: ${allergies}` : dietary;
+
+      const hotelRaw = findVal(row, 'hotel', 'reservation', 'lodging');
+      const hotel = hotelRaw.toLowerCase().includes('y') ? 'Yes (3 nts)' : 'No';
+
+      const visaRaw = findVal(row, 'visa');
+      const visa = visaRaw.toLowerCase().includes('y') ? 'Yes' : 'No';
+
+      const rawCostStr = findVal(row, 'round-trip travel', 'travel cost', 'flight cost', 'transport cost', 'stated travel', 'estimated travel', 'cost');
+      const transportMode = findVal(row, 'transportation', 'mode of transport', 'transport') || (chapter.includes('Japan') ? 'Domestic' : "International Flight");
+
+      // 1. Add to Roster Table
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${id}</strong></td>
+        <td><strong>${name}</strong><br><small>${badge}</small></td>
+        <td>${chapter}</td>
+        <td>${role}</td>
+        <td><span class="tag ${type === 'MCAA' ? 'tag-mcaa' : 'tag-gen'}">${type}</span></td>
+        <td><span class="tag ${day1 === 'Yes' ? 'tag-yes' : 'tag-no'}">${day1}</span></td>
+        <td><span class="tag ${dinner === 'Yes' ? 'tag-yes' : 'tag-no'}">${dinner}</span></td>
+        <td><span class="tag ${day2 === 'Yes' ? 'tag-yes' : 'tag-no'}">${day2}</span></td>
+        <td><span class="tag ${site === 'Yes' ? 'tag-yes' : 'tag-no'}">${site}</span></td>
+        <td>${fullDietary}</td>
+        <td><span class="tag ${hotel.includes('Yes') ? 'tag-hotel' : 'tag-no'}">${hotel}</span></td>
+        <td><span class="tag ${visa === 'Yes' ? 'tag-alert' : 'tag-no'}">${visa}</span></td>
+      `;
+      tbody.appendChild(tr);
+
+      // 2. Add to Travel Simulator Table (All traveling MCAA delegates are entitled to 3 nights hotel)
+      const estCostJPY = parseTravelCostJPY(rawCostStr);
+      const isOverseas = !chapter.includes('Japan') && !chapter.includes('Tokyo');
+      const isTraveling = isOverseas || transportMode.toLowerCase().includes('flight') || transportMode.toLowerCase().includes('shinkansen') || transportMode.toLowerCase().includes('train') || !transportMode.toLowerCase().includes('local');
+      const nights = (type === 'MCAA' && isTraveling) ? 3 : (hotel.includes('Yes') ? 3 : 0);
+
+      const needsTravelSim = isEligibleTraveler(id, type, day1, day2, chapter, role);
+
+      if (travelTbody && needsTravelSim) {
+        const trSim = document.createElement('tr');
+        trSim.style.borderBottom = '1px solid var(--border)';
+        trSim.setAttribute('data-id', id);
+        trSim.setAttribute('data-overseas', isOverseas ? 'true' : 'false');
+        trSim.innerHTML = `
+          <td style="padding:8px;"><strong>${name}</strong><br><small style="color:var(--text-muted);">${id}</small></td>
+          <td style="padding:8px;">${chapter}</td>
+          <td style="padding:8px; text-align:center;">
+            <select class="ind-funding-type" data-id="${id}" onchange="syncFunding(this)" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#ffffff; cursor:pointer;">
+              <option value="grant">Grant Funded</option>
+              <option value="migt">Grant MIGT</option>
+              <option value="self">Self-Funded</option>
+            </select>
+          </td>
+          <td style="padding:8px;"><span class="tag ${isOverseas ? 'tag-mcaa' : 'tag-yes'}">${transportMode || (isOverseas ? "Int'l Flight" : "Domestic")}</span></td>
+          <td style="padding:8px; font-weight:600; color:var(--navy);">${rawCostStr || (estCostJPY ? `¥${estCostJPY.toLocaleString()}` : "-")}</td>
+          <td style="padding:8px;">
+            <div style="display:flex; align-items:center; gap:3px;">
+              <span>&yen;</span>
+              <input type="number" class="ind-travel-cost" id="travel-cost-${id}" value="${estCostJPY}" style="width:85px; padding:3px 6px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()">
+            </div>
+          </td>
+          <td style="padding:8px;"><span style="font-size:11px; color:var(--text-muted);">Nov 3–6</span></td>
+          <td style="padding:8px; text-align:center;">
+            <input type="number" class="ind-hotel-nights" id="hotel-nights-${id}" value="${nights}" min="0" max="3" style="width:45px; text-align:center; padding:3px 4px; border:1px solid var(--border); border-radius:6px; font-size:12px;" oninput="recalc()"> nts
+          </td>
+          <td class="ind-hotel-sub" id="ind-hotel-sub-${id}" style="padding:8px; text-align:right; font-weight:600;">&yen;${(nights * 15000).toLocaleString()}</td>
+          <td class="ind-total-jpy" id="ind-total-jpy-${id}" style="padding:8px; text-align:right; font-weight:700; color:var(--navy);">&yen;${(estCostJPY + nights * 15000).toLocaleString()}</td>
+          <td class="ind-total-eur" id="ind-total-eur-${id}" style="padding:8px; text-align:right; color:var(--text-muted); font-size:11px;">&euro;${Math.round((estCostJPY + nights * 15000)/EUR_RATE).toLocaleString()}</td>
+        `;
+
+        if (isOverseas) {
+          const domRow = travelTbody.querySelector('tr[data-overseas="false"]');
+          if (domRow) travelTbody.insertBefore(trSim, domRow);
+          else travelTbody.appendChild(trSim);
+        } else {
+          travelTbody.appendChild(trSim);
+        }
+      }
+    });
+
+    syncRosterToTravelSimulator(false);
+    recalc(true);
+
+    if (newCount > 0) {
+      alert(`✅ ¡Éxito! Se agregaron ${newCount} nuevos participantes en ambas tablas (Roster y Simulador de Viajes).
+Todos los viáticos y totales se recalcularon y sincronizaron en vivo.`);
+    } else {
+      alert(`ℹ️ Todos los participantes del archivo ya estaban registrados en el dashboard. No se generaron duplicados.`);
+    }
+  }
+
+  function exportCurrentCSV() {
+    const rows = document.querySelectorAll("#rosterTable tr");
+    let csv = [];
+    rows.forEach(tr => {
+      const cols = tr.querySelectorAll("th, td");
+      let row = [];
+      cols.forEach(col => {
+        let text = col.innerText.replace(/"/g, '""').replace(/\n/g, ' ');
+        row.push(`"${text}"`);
+      });
+      csv.push(row.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MCAA_Tokyo2026_Live_Roster_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  function exportTravelCSV() {
+    const table = document.getElementById("travelSimTable");
+    let csv = [];
+    const rows = table.querySelectorAll("tr");
+    rows.forEach(tr => {
+      let row = [];
+      tr.querySelectorAll("th, td").forEach(cell => {
+        let select = cell.querySelector("select");
+        let input = cell.querySelector("input");
+        let text = select ? (select.options[select.selectedIndex]?.text || select.value) : (input ? input.value : cell.innerText);
+        text = text.replace(/"/g, '""').replace(/\n/g, ' ').trim();
+        row.push(`"${text}"`);
+      });
+      csv.push(row.join(","));
+    });
+    const blob = new Blob(["\uFEFF" + csv.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `MCAA_Tokyo2026_Travel_Budget_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+  }
+
+  function filterTable() {
+    const input = document.getElementById("searchInput").value.toLowerCase();
+    const rows = document.querySelectorAll("#rosterTable tbody tr");
+    rows.forEach(row => {
+      const text = row.innerText.toLowerCase();
+      row.style.display = text.includes(input) ? "" : "none";
+    });
+  }
+
+  // Restore saved modifications on startup, then calculate and connect Firebase
+  restoreStateFromLocalStorage();
+  recalc(false);
+  initFirebase();
+</script>
+
+
+<!-- ADD DELEGATE INTERACTIVE MODAL -->
+<div id="addDelegateModal" style="display:none; position:fixed; inset:0; background:rgba(15,23,42,0.65); z-index:99999; backdrop-filter:blur(3px); align-items:center; justify-content:center; padding:16px;">
+  <div style="background:#ffffff; width:100%; max-width:540px; border-radius:12px; box-shadow:0 20px 25px -5px rgba(0,0,0,0.25); overflow:hidden; border:1px solid #cbd5e1; animation:fadeIn 0.2s ease-out;">
+    <div style="background:var(--navy); color:#ffffff; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
+      <h3 style="margin:0; font-size:15px; font-weight:700;">➕ Agregar Nuevo Participante / Delegado</h3>
+      <button onclick="closeAddDelegateModal()" style="background:none; border:none; color:#ffffff; font-size:20px; cursor:pointer; line-height:1;" title="Cerrar">&times;</button>
+    </div>
+    <form id="addDelegateForm" onsubmit="submitNewDelegate(event)" style="padding:16px 20px; display:flex; flex-direction:column; gap:12px; max-height:85vh; overflow-y:auto;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Nombre Completo (Pasaporte) *</label>
+          <input type="text" id="newDelName" required placeholder="Ej. Dr. Maria Santos" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Nombre en Credencial (Badge)</label>
+          <input type="text" id="newDelBadge" placeholder="Ej. Maria Santos" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Capítulo MCAA / Afiliación *</label>
+          <input type="text" id="newDelChapter" required placeholder="Ej. Southeast Asia / Leeds..." style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Rol / Título</label>
+          <input type="text" id="newDelRole" value="Delegate" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Modalidad de Participación</label>
+          <select id="newDelMode" onchange="toggleModeFields()" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+            <option value="in_person">Presencial en Tokio</option>
+            <option value="online">Online</option>
+          </select>
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Categoría</label>
+          <select id="newDelType" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+            <option value="MCAA">MCAA</option>
+            <option value="General">General</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="travelFieldsWrap" style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:8px; padding:10px; display:flex; flex-direction:column; gap:10px;">
+        <div style="font-size:11px; font-weight:700; color:var(--navy);">✈️ Viáticos y Alojamiento (Simulador de Viajes):</div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:#475569; display:block; margin-bottom:2px;">Modo de Transporte</label>
+            <input type="text" id="newDelTransport" placeholder="Ej. International Flight" value="International Flight" style="width:100%; padding:5px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:#475569; display:block; margin-bottom:2px;">Costo de Viaje Estimado</label>
+            <input type="text" id="newDelCost" placeholder="Ej. 1000 EUR, GBP 930, 27000 JPY" value="1000 EUR" style="width:100%; padding:5px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+          <div>
+            <label style="font-size:11px; font-weight:600; color:#475569; display:block; margin-bottom:2px;">Noches de Hotel (Nov 3-6)</label>
+            <input type="number" id="newDelHotelNights" min="0" max="3" value="3" style="width:100%; padding:5px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+          </div>
+          <div>
+            <label style="font-size:11px; font-weight:600; color:#475569; display:block; margin-bottom:2px;">Modelo de Financiamiento</label>
+            <select id="newDelFunding" style="width:100%; padding:5px 8px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+              <option value="grant">Grant Funded</option>
+              <option value="migt">Grant MIGT</option>
+              <option value="self">Self-Funded</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Dieta / Restricciones</label>
+          <input type="text" id="newDelDiet" placeholder="None, Vegetarian, Halal..." value="None" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+        </div>
+        <div>
+          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">¿Requiere Carta de Visa Japonesa?</label>
+          <select id="newDelVisa" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
+            <option value="No">No (Exento / Sin visa)</option>
+            <option value="Yes">Sí (Requiere carta)</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
+        <button type="button" onclick="closeAddDelegateModal()" class="btn btn-outline" style="padding:6px 14px; font-size:12px;">Cancelar</button>
+        <button type="submit" class="btn" style="background:#059669; padding:6px 18px; font-size:12px; font-weight:700;">➕ Agregar e Incorporar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+</body>
+</html>
