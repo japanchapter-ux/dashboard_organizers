@@ -314,12 +314,15 @@
     <div class="panel">
       <h2>Logistical Requirements Breakdown</h2>
 
-      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">Dietary &amp; Meal Specifications</h3>
+      <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">Dietary &amp; Meal Specifications (In-Person Catering)</h3>
       <div class="diet-list">
-        <div class="diet-item"><span>Standard (Regular Bento)</span><strong>18</strong></div>
-        <div class="diet-item"><span>Vegetarian</span><strong>5</strong></div>
-        <div class="diet-item"><span>Halal Certified</span><strong>1</strong></div>
-        <div class="diet-item"><span>Halal / Vegetarian</span><strong>1</strong></div>
+        <div class="diet-item"><span>Standard (Regular Bento)</span><strong id="diet-regular-count">15</strong></div>
+        <div class="diet-item"><span>Vegetarian (Halal-compliant)</span><strong id="diet-veg-count">5</strong></div>
+        <div class="diet-item"><span>Allergy: Crustacean (Crab/Shrimp)</span><strong id="diet-crustacean-count" style="color:var(--red);">2</strong></div>
+        <div class="diet-item"><span>Allergy: Sesame (Strict)</span><strong id="diet-sesame-count" style="color:var(--red);">1</strong></div>
+      </div>
+      <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; padding: 6px 10px; background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; line-height: 1.4;">
+        <strong style="color:var(--navy);">&#x2713; Halal Verification:</strong> 0 delegates require meat-based Halal meals. All participants observing Halal or cultural restrictions are served by the 5 vegetarian bentos (free of meat, pork, and alcohol derivatives).
       </div>
 
       <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-top: 18px; margin-bottom: 6px;">Administrative &amp; Speaker Demographics</h3>
@@ -1424,6 +1427,7 @@
   function recalc(triggerCloud = true) {
     const rows = document.querySelectorAll("#rosterTable tbody tr");
     let total = 0, bento1Count = 0, dinnerCount = 0, bento2Count = 0, transitCount = 0, hotelCount = 0, visaCount = 0, inPersonCount = 0;
+    let vegCount = 0, crustaceanCount = 0, sesameCount = 0;
 
     rows.forEach(tr => {
       total++;
@@ -1437,8 +1441,20 @@
         if (tds[8].innerText.includes("Yes") || tds[8].innerText.includes("Host")) transitCount++;
         if (tds[10].innerText.includes("Yes") || tds[10].innerText.includes("nts")) hotelCount++;
         if (tds[11].innerText.includes("Yes")) visaCount++;
+
+        const diet = (tds[9]?.innerText || "").toLowerCase();
+        if (diet.includes("vegetarian")) vegCount++;
+        if (diet.includes("crab") || diet.includes("crustacean")) crustaceanCount++;
+        if (diet.includes("sesame")) sesameCount++;
       }
     });
+
+    // Update Dietary Summary Cards
+    const regularCount = inPersonCount - vegCount;
+    const dietRegularEl = document.getElementById('diet-regular-count'); if (dietRegularEl) dietRegularEl.innerText = regularCount;
+    const dietVegEl = document.getElementById('diet-veg-count'); if (dietVegEl) dietVegEl.innerText = vegCount;
+    const dietCrustaceanEl = document.getElementById('diet-crustacean-count'); if (dietCrustaceanEl) dietCrustaceanEl.innerText = crustaceanCount;
+    const dietSesameEl = document.getElementById('diet-sesame-count'); if (dietSesameEl) dietSesameEl.innerText = sesameCount;
 
     // Update Header Headcount Badge if present
     const headerHeadcount = document.getElementById('header-headcount-lbl');
