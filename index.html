@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MCAA Tokyo 2026 - Final Reconciled Expenses & Audited Financial Settlement</title>
+  <title>MCAA Tokyo 2026 - Final Reconciled Expenses &amp; Audited Financial Settlement</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
@@ -39,189 +39,124 @@
       flex-wrap: wrap;
       gap: 15px;
     }
-    .header h1 { font-size: 23px; font-weight: 800; }
-    .header p { font-size: 13px; color: #cbd5e1; margin-top: 4px; }
-    .header-badge {
-      background: rgba(195,130,20,0.3);
-      border: 1px solid var(--gold);
-      color: #ffd875;
-      padding: 4px 12px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
+    .header h1 { font-size: 24px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 6px; }
+    .header p { color: #cbd5e1; font-size: 13px; max-width: 780px; }
+    .header-actions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .btn {
+      background: rgba(255,255,255,0.12);
+      color: white;
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
     }
+    .btn:hover { background: rgba(255,255,255,0.22); }
+    .btn-primary { background: var(--gold); border-color: var(--gold); color: #fff; font-weight: 700; }
+    .btn-primary:hover { background: #a86e10; }
+    .btn-success { background: #15803d; border-color: #16a34a; color: #fff; font-weight: 700; }
+    .btn-success:hover { background: #166534; }
 
-    /* KPI METRICS GRID */
+    /* KPI METRICS */
     .kpi-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 14px;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 16px;
       margin-bottom: 22px;
     }
     .kpi-card {
-      background: white;
-      border: 1px solid var(--border);
+      background: var(--card-bg);
       border-radius: 12px;
-      padding: 16px;
-      text-align: center;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      transition: transform 0.15s ease;
+      padding: 18px 20px;
+      border: 1px solid var(--border);
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      border-left: 5px solid var(--navy);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
-    .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .kpi-val { font-size: 26px; font-weight: 800; color: var(--navy); line-height: 1.1; margin-bottom: 4px; }
-    .kpi-card.highlight .kpi-val { color: var(--red); }
-    .kpi-card.gold .kpi-val { color: var(--gold); }
-    .kpi-card.green .kpi-val { color: #15803d; }
-    .kpi-lbl { font-size: 11px; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.5px; }
-    .kpi-sub { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+    .kpi-card.gold { border-left-color: var(--gold); }
+    .kpi-card.green { border-left-color: var(--green); }
+    .kpi-card.red { border-left-color: var(--red); }
+    .kpi-val { font-size: 26px; font-weight: 800; color: var(--text); line-height: 1.1; margin-bottom: 4px; }
+    .kpi-lbl { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-muted); }
+    .kpi-sub { font-size: 12px; color: #047857; margin-top: 4px; font-weight: 600; }
 
-    /* PANELS & SECTIONS */
-    .panel {
-      background: white;
+    /* SECTION CARD */
+    .section-card {
+      background: var(--card-bg);
+      border-radius: 14px;
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 22px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-      margin-bottom: 22px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+      padding: 22px 24px;
+      margin-bottom: 24px;
     }
-    .panel h2 {
-      font-size: 17px;
+    .section-card h2 {
+      font-size: 18px;
       font-weight: 800;
       color: var(--navy);
-      margin-bottom: 14px;
-      border-bottom: 2px solid var(--border);
-      padding-bottom: 8px;
+      margin-bottom: 6px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 10px;
     }
 
-    /* BUTTONS */
-    .btn {
-      background: var(--navy);
-      color: white;
-      padding: 7px 14px;
-      border-radius: 8px;
-      border: none;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      text-decoration: none;
+    /* TABLES */
+    table { width: 100%; border-collapse: collapse; font-size: 12px; }
+    th { background: #f8fafc; color: var(--navy); font-weight: 700; padding: 10px 8px; border-bottom: 2px solid var(--border); }
+    td { padding: 8px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+    tr:hover td { background: #fbfcfe; }
+    tfoot td { font-weight: 800; }
+
+    .badge {
       display: inline-flex;
       align-items: center;
-      gap: 5px;
-      transition: all 0.15s ease;
-    }
-    .btn:hover { background: var(--navy-dark); }
-    .btn-outline { background: white; color: var(--navy); border: 1px solid var(--navy); }
-    .btn-outline:hover { background: #f8fafc; }
-
-    /* ATTACH BUTTON & CHIPS */
-    .btn-attach {
-      background: #f8fafc;
-      border: 1px dashed #94a3b8;
-      color: #334155;
-      font-size: 11px;
-      font-weight: 700;
       padding: 3px 8px;
       border-radius: 6px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
     }
-    .btn-attach:hover {
-      background: #e2e8f0;
-      border-color: #64748b;
-      color: var(--navy);
-    }
+    .badge-approved { background: #dcfce7; color: #15803d; }
+    .badge-paid { background: #e0f2fe; color: #0369a1; }
+    .badge-review { background: #fef3c7; color: #b45309; }
+
     .receipt-chip {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      padding: 2px 7px;
       background: #eff6ff;
       color: #1d4ed8;
       border: 1px solid #bfdbfe;
-      border-radius: 6px;
+      padding: 2px 6px;
+      border-radius: 4px;
       font-size: 10px;
       font-weight: 600;
       cursor: pointer;
-      transition: all 0.15s ease;
-      max-width: 170px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      margin: 1px;
+      transition: all 0.15s;
     }
-    .receipt-chip:hover {
-      background: #dbeafe;
-      border-color: #93c5fd;
-    }
-    .receipt-chip .chip-del {
-      font-size: 12px;
-      font-weight: bold;
-      margin-left: 2px;
-      color: #94a3b8;
+    .receipt-chip:hover { background: #dbeafe; }
+    .btn-attach {
+      background: transparent;
+      color: #64748b;
+      border: 1px dashed #cbd5e1;
+      border-radius: 4px;
+      padding: 2px 6px;
+      font-size: 10px;
       cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
     }
-    .receipt-chip .chip-del:hover {
-      color: #dc2626;
-    }
-
-    /* TABLES */
-    .table-container { overflow-x: auto; background: white; border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 22px; }
-    .table-tools { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 10px; }
-    .search-input { padding: 7px 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 13px; width: 250px; }
-    
-    table { width: 100%; border-collapse: collapse; font-size: 12px; text-align: left; }
-    th { background: #f8fafc; padding: 10px 8px; font-weight: 700; color: var(--text-muted); border-bottom: 2px solid var(--border); text-transform: uppercase; font-size: 10px; }
-    td { padding: 9px 8px; border-bottom: 1px solid var(--border); }
-    tr:hover { background: #fafcff; }
-    
-    .tag { display: inline-block; padding: 2px 7px; border-radius: 10px; font-size: 10px; font-weight: 700; }
-    .tag-mcaa { background: #e0edff; color: var(--navy); }
-    .tag-gen { background: #fef3c7; color: var(--gold); }
-    .tag-yes { background: #d1fae5; color: #065f46; font-weight: bold; }
-    .tag-no { background: #f1f5f9; color: var(--text-muted); }
-    .tag-alert { background: #fee2e2; color: var(--red); font-weight: bold; }
-    .tag-hotel { background: #fef3c7; color: #92400e; font-weight: bold; border: 1px solid #fde68a; }
-    .tag-funded { background: #dbeafe; color: #1e40af; font-weight: 700; border: 1px solid #bfdbfe; }
-    .tag-self { background: #f3e8ff; color: #6b21a8; font-weight: 700; border: 1px solid #d8b4fe; }
-
-    .btn-filter {
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: 700;
-      border-radius: 8px;
-      border: 1px solid var(--border);
-      background: #f1f5f9;
-      color: #475569;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-    .btn-filter:hover { background: #e2e8f0; color: var(--navy); }
-    .btn-filter.active { background: var(--navy); color: #ffffff; border-color: var(--navy); }
-
-    /* TOTAL BOX */
-    .total-box {
-      background: #f0fdf4;
-      border: 2px solid #16a34a;
-      border-radius: 12px;
-      padding: 18px 24px;
-      margin-top: 18px;
-      text-align: center;
-    }
-    .total-jpy { font-size: 32px; font-weight: 800; color: #15803d; }
-    .total-eur { font-size: 18px; font-weight: 700; color: #166534; margin-top: 3px; }
-
-    /* DIETARY SUMMARY */
-    .diet-list { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
-    .diet-item { background: #f8fafc; border: 1px solid var(--border); padding: 8px 12px; border-radius: 8px; font-size: 12px; display: flex; justify-content: space-between; }
+    .btn-attach:hover { background: #f1f5f9; color: var(--navy); border-color: var(--navy); }
 
     /* MODAL */
     .modal-overlay {
@@ -229,105 +164,111 @@
       position: fixed;
       inset: 0;
       background: rgba(15, 23, 42, 0.7);
-      z-index: 99999;
-      backdrop-filter: blur(4px);
-      align-items: center;
+      z-index: 9999;
       justify-content: center;
-      padding: 16px;
+      align-items: center;
+      padding: 20px;
+      backdrop-filter: blur(2px);
     }
-    .modal-box {
-      background: #ffffff;
+    .modal-content {
+      background: white;
+      border-radius: 14px;
       width: 100%;
-      max-width: 760px;
-      border-radius: 12px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      overflow: hidden;
-      border: 1px solid #cbd5e1;
-      animation: fadeIn 0.2s ease-out;
+      max-width: 860px;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
       display: flex;
       flex-direction: column;
-      max-height: 90vh;
     }
-    @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+    .modal-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8fafc;
+      border-radius: 14px 14px 0 0;
+    }
+    .modal-header h3 { font-size: 16px; font-weight: 800; color: var(--navy); }
+    .modal-close { background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer; }
+    .modal-body { padding: 20px; overflow-y: auto; }
   </style>
 </head>
 <body>
-
-<!-- Hidden File Inputs -->
-<input type="file" id="globalReceiptFileInput" accept="image/*,.pdf" style="display:none;" onchange="handleReceiptFileSelected(event)">
-<input type="file" id="globalExcelFileInput" accept=".xlsx,.xls,.csv" style="display:none;" onchange="handleExcelUpload(event)">
-<input type="file" id="globalJsonFileInput" accept=".json" style="display:none;" onchange="importBackupJSON(event)">
 
 <div class="container">
 
   <!-- HEADER -->
   <div class="header">
     <div>
-      <span class="header-badge">Official Post-Event Financial Closure &amp; Audit</span>
+      <div style="display:inline-flex; align-items:center; gap:6px; background:rgba(255,255,255,0.18); padding:3px 10px; border-radius:20px; font-size:11px; font-weight:700; margin-bottom:8px; text-transform:uppercase;">
+        <span>Official Post-Event Financial Closure &amp; Audit</span>
+      </div>
       <h1>MCAA Asia Connect "Konnichiwa Tokyo 2026"</h1>
-      <p>November 4–5, 2026 | Tokyo, Japan | Final Reconciled Expenses &amp; Audited Financial Settlement</p>
+      <p>
+        Held Nov 4-5, 2026 at The University of Tokyo (Yayoi Auditorium). Audited financial reconciliation of local operational reimbursements and delegate travel claims. Fully reconciled with official expense submissions and Japanese Qualified Invoices (インボイス登録番号).
+      </p>
     </div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
-      <span id="save-status-badge" style="font-size:11px; padding:6px 12px; border-radius:12px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0; font-weight:700; display:inline-flex; align-items:center; gap:4px;">
-        🟢 Cloud Synchronized
+    <div class="header-actions">
+      <span id="save-status-badge" style="font-size:11px; font-weight:700; padding:5px 12px; border-radius:8px; background:#ecfdf5; color:#065f46; border:1px solid #a7f3d0;">
+        🟢 Cloud Connected
       </span>
-      <button class="btn" style="background:#0284c7; color:#ffffff;" onclick="manualSaveToCloud()" title="Synchronize all real costs and receipts directly to Firebase RTDB">
-        ☁️ Save to Cloud Now
+      <button class="btn btn-primary" onclick="forceCloudSave()" title="Push latest audited balances to Firebase Cloud">
+        ☁️ Sync to Cloud
       </button>
-      <button class="btn" style="background:#059669; color:#ffffff;" onclick="downloadExcelTemplate()" title="Download multi-sheet pre-filled Excel template for actual expenses">
-        📥 Download Excel Template
+      <button class="btn btn-success" onclick="exportFinalExcel()" title="Download audited Excel spreadsheet">
+        📥 Export Final Excel
       </button>
-      <button class="btn" style="background:#4f46e5; color:#ffffff;" onclick="document.getElementById('globalExcelFileInput').click()" title="Upload Excel spreadsheet to update incurred expenses">
-        📤 Upload Expenses Excel
+      <button class="btn" onclick="exportJsonBackup()" title="Download raw JSON ledger">
+        💾 Export JSON
       </button>
-      <button class="btn btn-outline" style="border-color:#cbd5e1; color:#334155;" onclick="exportBackupJSON()" title="Export complete financial JSON snapshot with receipts">
-        💾 Export Backup (JSON)
-      </button>
-      <button class="btn btn-outline" onclick="window.print()" title="Print or save as PDF">
-        🖨️ Print / PDF
+      <button class="btn" onclick="window.print()" title="Print audited report or save to PDF">
+        🖨️ Print / PDF Report
       </button>
     </div>
   </div>
 
-  <!-- KPI SUMMARY METRICS -->
+  <!-- EXECUTIVE SUMMARY KPIS -->
   <div class="kpi-grid">
     <div class="kpi-card green">
       <div class="kpi-val" id="kpi-total-cost">&yen;2,339,068</div>
-      <div class="kpi-lbl">Total Audited Event Cost</div>
-      <div class="kpi-sub" id="kpi-total-cost-sub">&euro;13,332.69 EUR (Reconciled Settlement)</div>
+      <div class="kpi-lbl">Total Reconciled Event Claims</div>
+      <div class="kpi-sub" id="kpi-total-cost-sub">&euro;13,332.69 EUR (Reconciled Claims @ 0.0057)</div>
+      <div style="font-size:11px; color:#64748b; margin-top:4px;" id="kpi-total-cost-note">Approved Capped Settlement: &yen;2,024,068 (&euro;11,537.10 EUR)</div>
     </div>
     <div class="kpi-card">
       <div class="kpi-val" id="kpi-local-ops">&yen;280,568</div>
       <div class="kpi-lbl">Local Operations Settlement</div>
-      <div class="kpi-sub" id="kpi-local-ops-sub">&euro;1,599.24 EUR (Eugenio: &yen;109k | Manuela: &yen;171k)</div>
+      <div class="kpi-sub" id="kpi-local-ops-sub">&euro;1,599.24 EUR (15 Line Items)</div>
+      <div style="font-size:11px; color:#64748b; margin-top:4px;">Eugenio Otal: &yen;109,727 (&euro;625.44) | Manuela Kim: &yen;170,841 (&euro;973.79)</div>
     </div>
     <div class="kpi-card gold">
       <div class="kpi-val" id="kpi-travel-grants">&yen;2,058,500</div>
-      <div class="kpi-lbl">Travel &amp; Lodging Grants</div>
-      <div class="kpi-sub" id="kpi-travel-grants-sub">&euro;11,733.45 EUR (15 Delegates Reimbursed)</div>
-    </div>
-    <div class="kpi-card highlight">
-      <div class="kpi-val">&yen;375,500</div>
-      <div class="kpi-lbl">Capping Policy Savings</div>
-      <div class="kpi-sub">&euro;2,140.33 EUR Saved via &euro;930 Cap</div>
+      <div class="kpi-lbl">Delegate Travel &amp; Accommodation Claims</div>
+      <div class="kpi-sub" id="kpi-travel-sub">&euro;11,733.45 EUR (15 Incurred Claims @ 0.0057)</div>
+      <div style="font-size:11px; color:#64748b; margin-top:4px;" id="kpi-travel-note">Approved Capped Settlement: &yen;1,743,500 (&euro;9,937.87 EUR)</div>
     </div>
     <div class="kpi-card">
-      <div class="kpi-val" style="color:#15803d; font-size:22px; margin-top:4px;">100% Certified</div>
-      <div class="kpi-lbl">Audit Clearance Status</div>
-      <div class="kpi-sub">All Tax Invoices Digitized</div>
+      <div class="kpi-val">&euro;930 / &yen;153,500</div>
+      <div class="kpi-lbl">Statutory Cap Benchmark</div>
+      <div class="kpi-sub">MCAA Overseas Travel Cap / Person</div>
+      <div style="font-size:11px; color:#15803d; font-weight:700; margin-top:4px;" id="kpi-cap-savings">Policy Savings: &euro;1,795.49 (&yen;315,000)</div>
     </div>
   </div>
 
-  <!-- SECTION 1: LOCAL OPERATIONAL EXPENSES LEDGER -->
-  <div class="panel">
+  <!-- SECTION 1: LOCAL OPERATIONS SETTLEMENT -->
+  <div class="section-card">
     <h2>
       <span style="display:flex; align-items:center; gap:8px;">
         📋 Local Operational Expenses Ledger (Real Incurred Costs &amp; Invoices)
       </span>
-      <div style="display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:var(--navy);">
-        <span>Exchange Rate: 1 EUR =</span>
-        <input type="number" id="eur-rate-input" value="175.44" step="0.01" style="width:70px; padding:2px 4px; border:1px solid #cbd5e1; border-radius:4px; font-weight:700; text-align:center;" oninput="updateEurRate()">
-        <span>JPY</span>
+      <div style="display:flex; align-items:center; gap:8px; font-size:12px; font-weight:700; color:var(--navy); background:#f1f5f9; padding:6px 14px; border-radius:8px; border:1px solid #cbd5e1;">
+        <span>Exchange Rate:</span>
+        <span>1 JPY =</span>
+        <input type="number" id="jpy-eur-rate" value="0.0057" step="0.0001" style="width:75px; padding:3px 6px; border:1px solid #94a3b8; border-radius:4px; font-weight:700; text-align:center; color:var(--navy);" oninput="updateRateFromJpy(this.value)">
+        <span>EUR</span>
+        <span style="color:var(--text-muted); font-size:11px; font-weight:500;">(1 EUR &asymp; <span id="eur-equiv-lbl">175.44</span> JPY)</span>
       </div>
     </h2>
     <p style="font-size:12px; color:var(--text-muted); margin-bottom:14px;">
@@ -351,27 +292,30 @@
         <tbody>
           <!-- BATCH 1: REIMBURSEMENT TO EUGENIO OTAL -->
           <tr style="background:#f1f5f9; font-weight:800; border-top:2px solid var(--navy); border-bottom:1px solid var(--navy);">
-            <td colspan="8" style="padding:8px; color:var(--navy); font-size:12px;">
-              👤 REIMBURSEMENT BATCH 1: PROF. DR. EUGENIO OTAL (MCAA Board / Japan Chapter) &bull; Subtotal: &yen;109,727 (&euro;625.44 EUR)
-            </td>          </tr>
-          
+            <td colspan="4" style="padding:8px; color:var(--navy); font-size:12px;">
+              👤 REIMBURSEMENT BATCH 1: EUGENIO OTAL (Board Member / Organizing Lead)
+            </td>
+            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);" id="subtotal-eugenio-jpy">&yen;109,727</td>
+            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);" id="subtotal-eugenio-eur">&euro;625.44</td>
+            <td colspan="2" style="padding:8px; font-size:11px; color:var(--text-muted);">8 Reconciled Receipts &bull; Verified Invoices Attached</td>
+          </tr>
+
         <tr data-op-id="COFFEE_1" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>COFFEE BREAKS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">COFFEE 1</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">DISPOSABLE MATERIALS FOR COFFEE BREAKS BOTH DAYS</small>
+            <small style="color:var(--text-muted); font-size:11px;">DISPOSABLE MATERIALS FOR COFFEE BREAKS BOTH DAYS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-COFFEE_1" value="SERIA" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-COFFEE_1" value="T2400001013662" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-COFFEE_1" value="T2400001013662" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-COFFEE_1" value="2026-11-02" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-COFFEE_1" value="5621" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -381,18 +325,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-COFFEE_1" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-COFFEE_1" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-COFFEE_1" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105617EUG.pdf', 'Scanned_20261109_105617EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_1')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_1')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -400,20 +344,19 @@
         <tr data-op-id="COFFEE_2" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>COFFEE BREAKS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">COFFEE 2</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">TABLE CLOTH, BASKETS, BOXES, NAPKIN HOLDERS, ETC FOR COFFEE BREAK PRESENTATION</small>
+            <small style="color:var(--text-muted); font-size:11px;">TABLE CLOTH, BASKETS, BOXES, NAPKIN HOLDERS, ETC FOR COFFEE BREAK PRESENTATION</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-COFFEE_2" value="IKEA" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-COFFEE_2" value="T1040001021866" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-COFFEE_2" value="T1040001021866" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-COFFEE_2" value="2026-11-03" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-COFFEE_2" value="11382" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -423,18 +366,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-COFFEE_2" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-COFFEE_2" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-COFFEE_2" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105617EUG.pdf', 'Scanned_20261109_105617EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_2')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_2')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -442,20 +385,19 @@
         <tr data-op-id="SPEAKERS_1" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>GIFTS FOR INVITED SPEAKERS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">SPEAKERS 1</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">REGIONAL COOKIES X 10 BOXES</small>
+            <small style="color:var(--text-muted); font-size:11px;">REGIONAL COOKIES X 10 BOXES</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-SPEAKERS_1" value="AEON STYLE" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-SPEAKERS_1" value="T204000100456" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-SPEAKERS_1" value="T204000100456" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-SPEAKERS_1" value="2026-11-02" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-SPEAKERS_1" value="15660" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -465,18 +407,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-SPEAKERS_1" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-SPEAKERS_1" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-SPEAKERS_1" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105617EUG.pdf', 'Scanned_20261109_105617EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'SPEAKERS_1')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'SPEAKERS_1')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -484,20 +426,19 @@
         <tr data-op-id="SPEAKERS_2" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>GIFTS FOR INVITED SPEAKERS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">SPEAKERS 2</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">FLOWERS FOR ORGANIZING PARTNERS</small>
+            <small style="color:var(--text-muted); font-size:11px;">FLOWERS FOR ORGANIZING PARTNERS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-SPEAKERS_2" value="GEL FLOWER" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-SPEAKERS_2" value="T3010801015969" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-SPEAKERS_2" value="T3010801015969" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-SPEAKERS_2" value="2026-11-05" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-SPEAKERS_2" value="6600" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -507,18 +448,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-SPEAKERS_2" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-SPEAKERS_2" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-SPEAKERS_2" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105617EUG.pdf', 'Scanned_20261109_105617EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'SPEAKERS_2')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'SPEAKERS_2')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -526,20 +467,19 @@
         <tr data-op-id="COFFEE_3" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>COFFEE BREAKS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">COFFEE 3</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">SUGAR/CREAMERS/SWEATENERS FOR COFFEE BREAKS</small>
+            <small style="color:var(--text-muted); font-size:11px;">SUGAR/CREAMERS/SWEATENERS FOR COFFEE BREAKS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-COFFEE_3" value="AEON STYLE" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-COFFEE_3" value="T204000000456" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-COFFEE_3" value="T204000000456" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-COFFEE_3" value="2026-11-02" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-COFFEE_3" value="4510" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -549,18 +489,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-COFFEE_3" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-COFFEE_3" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-COFFEE_3" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105641EUG.pdf', 'Scanned_20261109_105641EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_3')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_3')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -568,20 +508,19 @@
         <tr data-op-id="COFFEE_4" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>COFFEE BREAKS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">COFFEE 4</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">PASTRIES FOR ALL COFFEE BREAKS</small>
+            <small style="color:var(--text-muted); font-size:11px;">PASTRIES FOR ALL COFFEE BREAKS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-COFFEE_4" value="COSTCO WHOLESALE" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-COFFEE_4" value="T3020001079681" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-COFFEE_4" value="T3020001079681" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-COFFEE_4" value="2026-11-03" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-COFFEE_4" value="15968" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -591,18 +530,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-COFFEE_4" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-COFFEE_4" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-COFFEE_4" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105641EUG.pdf', 'Scanned_20261109_105641EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_4')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_4')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -610,20 +549,19 @@
         <tr data-op-id="DINNER" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>CAMARADERIE DINNER</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">DINNER</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">DINNER FOR 6 MCAA MEMBERS</small>
+            <small style="color:var(--text-muted); font-size:11px;">DINNER FOR 6 MCAA MEMBERS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-DINNER" value="SAKURA" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-DINNER" value="T9011001011990" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-DINNER" value="T9011001011990" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-DINNER" value="2026-11-04" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-DINNER" value="15650" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -633,18 +571,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-DINNER" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-DINNER" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-DINNER" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Scanned_20261109_105641EUG.pdf', 'Scanned_20261109_105641EUG.pdf')" title="Click to view verified tax receipt">
-                📕 Scanned_20261109_105...
+                📕 Scanned_20261109_1..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'DINNER')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'DINNER')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -652,20 +590,19 @@
         <tr data-op-id="LUNCH" data-refunder="Eugenio Otal" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>LUNCH AT VENUE</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">LUNCH</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">12 PIZZAS DELIVERED TO LOCATION</small>
+            <small style="color:var(--text-muted); font-size:11px;">12 PIZZAS DELIVERED TO LOCATION</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-LUNCH" value="SALVATORE CUOMO" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-LUNCH" value="T601040105605" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-LUNCH" value="T601040105605" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-LUNCH" value="2026-11-05" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-LUNCH" value="34336" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -675,53 +612,49 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-LUNCH" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-LUNCH" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-LUNCH" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Eugenio  - 【SALVATORE】ご注文を受け付けました。PIZZAS.pdf', 'Eugenio  - 【SALVATORE】ご注文を受け付けました。PIZZAS.pdf')" title="Click to view verified tax receipt">
-                📕 Eugenio  - 【SALVATOR...
+                📕 Eugenio  - 【SALVAT..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'LUNCH')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'LUNCH')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
         </tr>
-          <tr style="background:#f8fafc; font-weight:700; border-bottom:2px solid #cbd5e1;">
-            <td colspan="4" style="padding:8px; text-align:right; color:#475569;">SUBTOTAL (EUGENIO OTAL):</td>
-            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);">&yen;109,727</td>
-            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);">&euro;625.44</td>
-            <td colspan="2" style="padding:8px; text-align:center; color:#15803d; font-size:11px;">8 Invoices Verified</td>
-          </tr>
 
           <!-- BATCH 2: REIMBURSEMENT TO MANUELA KIM -->
           <tr style="background:#f1f5f9; font-weight:800; border-top:2px solid var(--navy); border-bottom:1px solid var(--navy);">
-            <td colspan="8" style="padding:8px; color:var(--navy); font-size:12px;">
-              👤 REIMBURSEMENT BATCH 2: DR. MANUELA LETICIA KIM (Organizing Committee) &bull; Subtotal: &yen;170,841 (&euro;973.79 EUR)
+            <td colspan="4" style="padding:8px; color:var(--navy); font-size:12px;">
+              👤 REIMBURSEMENT BATCH 2: MANUELA KIM (Organizing Partner / Secretariat)
             </td>
+            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);" id="subtotal-manuela-jpy">&yen;170,841</td>
+            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);" id="subtotal-manuela-eur">&euro;973.79</td>
+            <td colspan="2" style="padding:8px; font-size:11px; color:var(--text-muted);">7 Reconciled Orders &bull; Official Invoices Attached</td>
           </tr>
-          
+
         <tr data-op-id="MERCH_1" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>MERCHANDISING FOR THE EVENT</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">MERCH 1</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">BAGS, TSHIRTS, LANYARD, KEYCHAINS</small>
+            <small style="color:var(--text-muted); font-size:11px;">BAGS, T-SHIRTS, LANYARDS, KEYCHAINS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-MERCH_1" value="SHEIN" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-MERCH_1" value="INVJP20261007850000117484" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-MERCH_1" value="INVJP20261007850000117484" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-MERCH_1" value="2026-10-07" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-MERCH_1" value="45340" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -731,18 +664,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-MERCH_1" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-MERCH_1" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-MERCH_1" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/INVJP20261007850000117484 (1).png', 'INVJP20261007850000117484 (1).png')" title="Click to view verified tax receipt">
-                🖼️ INVJP202610078500001...
+                📕 INVJP2026100785000..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_1')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_1')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -750,20 +683,19 @@
         <tr data-op-id="PRINTING" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>STICKERS PRINTING</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">PRINTING</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">STICKERS MERCHANDISING</small>
+            <small style="color:var(--text-muted); font-size:11px;">OFFICIAL STICKERS MERCHANDISING</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-PRINTING" value="CANVA" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-PRINTING" value="0502719752621" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-PRINTING" value="0502719752621" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-PRINTING" value="2026-10-07" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-PRINTING" value="4968" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -773,18 +705,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-PRINTING" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-PRINTING" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-PRINTING" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/invoice-05027-19752621.pdf', 'invoice-05027-19752621.pdf')" title="Click to view verified tax receipt">
-                📕 invoice-05027-197526...
+                📕 invoice-05027-1975..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'PRINTING')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'PRINTING')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -792,20 +724,19 @@
         <tr data-op-id="COFFEE_5" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>COFFEE BREAKS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">COFFEE 5</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">COFFEE, TEA, WATER, COOKIES FOR COFFEE BREAKS, LUNCH, AND IN VENUE CONSUMPTION.</small>
+            <small style="color:var(--text-muted); font-size:11px;">COFFEE, TEA, WATER, COOKIES FOR BREAKS & VENUE</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-COFFEE_5" value="AMAZON" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-COFFEE_5" value="5034016802-4179827" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-COFFEE_5" value="5034016802-4179827" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-COFFEE_5" value="2026-10-19" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-COFFEE_5" value="50355" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -815,18 +746,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-COFFEE_5" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-COFFEE_5" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-COFFEE_5" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Order Details.pdf', 'Order Details.pdf')" title="Click to view verified tax receipt">
-                📕 Order Details.pdf...
+                📕 Order Details.pdf..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_5')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_5')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -834,20 +765,19 @@
         <tr data-op-id="COFFEE_6" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>COFFEE BREAKS</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">COFFEE 6</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">TEA BAGS FOR COFFEE BREAKS</small>
+            <small style="color:var(--text-muted); font-size:11px;">TEA BAGS FOR COFFEE BREAKS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-COFFEE_6" value="AMAZON" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-COFFEE_6" value="503-2822350-1647800" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-COFFEE_6" value="503-2822350-1647800" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-COFFEE_6" value="2026-10-19" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-COFFEE_6" value="2792" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -857,18 +787,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-COFFEE_6" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-COFFEE_6" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-COFFEE_6" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Order Details2.pdf', 'Order Details2.pdf')" title="Click to view verified tax receipt">
-                📕 Order Details2.pdf...
+                📕 Order Details2.pdf..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_6')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'COFFEE_6')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -876,20 +806,19 @@
         <tr data-op-id="MERCH_2" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>MERCHANDISING FOR THE EVENT</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">MERCH 2</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">WRITING TOOLS</small>
+            <small style="color:var(--text-muted); font-size:11px;">WRITING TOOLS & PENS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-MERCH_2" value="AMAZON" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-MERCH_2" value="503-3752517-9979065" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-MERCH_2" value="503-3752517-9979065" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-MERCH_2" value="2026-10-19" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-MERCH_2" value="6730" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -899,18 +828,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-MERCH_2" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-MERCH_2" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-MERCH_2" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/Order Details3.pdf', 'Order Details3.pdf')" title="Click to view verified tax receipt">
-                📕 Order Details3.pdf...
+                📕 Order Details3.pdf..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_2')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_2')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -918,20 +847,19 @@
         <tr data-op-id="MERCH_3" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>MERCHANDISING FOR THE EVENT</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">MERCH 3</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">PINS OF THE EVENT</small>
+            <small style="color:var(--text-muted); font-size:11px;">PINS OF THE EVENT</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-MERCH_3" value="PINTATSUJIN" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-MERCH_3" value="911278" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-MERCH_3" value="911278" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-MERCH_3" value="2026-10-30" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-MERCH_3" value="16335" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -941,18 +869,18 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-MERCH_3" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-MERCH_3" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-MERCH_3" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/PINTATSUJIN.pdf', 'PINTATSUJIN.pdf')" title="Click to view verified tax receipt">
-                📕 PINTATSUJIN.pdf...
+                📕 PINTATSUJIN.pdf..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_3')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_3')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
@@ -960,20 +888,19 @@
         <tr data-op-id="MERCH_4" data-refunder="Manuela Kim" style="border-bottom: 1px solid var(--border);">
           <td style="padding:10px 8px;">
             <strong>MERCHANDISING FOR THE EVENT</strong><br>
-            <span class="tag tag-mcaa" style="font-size:10px;">MERCH 4</span> 
-            <small style="color:var(--text-muted); display:block; margin-top:2px;">WRITING TOOLS (NOTEBOOKS, CLEAR FOLDERS) PERSONALIZED</small>
+            <small style="color:var(--text-muted); font-size:11px;">CUSTOM NOTEBOOKS & CLEAR FOLDERS</small>
           </td>
           <td style="padding:10px 8px;">
             <input type="text" id="op-vendor-MERCH_4" value="RAKSUL" class="op-input-field" placeholder="Vendor / Payee" oninput="recalc()" style="width:100%; max-width:140px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
-            <input type="text" id="op-inv-MERCH_4" value="R.N261019-3868555592" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px; font-family:monospace;">
+            <input type="text" id="op-inv-MERCH_4" value="R-N261019-3868555592" class="op-input-field" placeholder="Invoice #" oninput="recalc()" style="width:100%; max-width:115px; padding:4px 6px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px;">
             <input type="date" id="op-date-MERCH_4" value="2026-10-30" class="op-input-field" oninput="recalc()" style="padding:3px 5px; font-size:11px; border:1px solid #cbd5e1; border-radius:6px;">
           </td>
           <td style="padding:10px 8px; text-align:right;">
-            <div style="display:inline-flex; align-items:center; gap:2px;">
+            <div style="display:inline-flex; align-items:center; gap:3px;">
               <span>&yen;</span>
               <input type="number" id="op-cost-MERCH_4" value="44321" class="op-cost-input" oninput="recalc()" style="width:85px; padding:4px 6px; font-size:12px; font-weight:700; text-align:right; border:1px solid #cbd5e1; border-radius:6px;">
             </div>
@@ -983,59 +910,57 @@
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select id="op-status-MERCH_4" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
-              <option value="Paid" selected>Paid / Settled</option>
+              <option value="Paid" selected>Reimbursed / Paid</option>
               <option value="Approved">Approved</option>
               <option value="Pending">Pending</option>
             </select>
           </td>
           <td style="padding:10px 8px;">
-            <div class="receipts-container" id="receipts-op-MERCH_4" style="display:flex; flex-wrap:wrap; gap:3px; margin-bottom:4px; min-height:18px;">
+            <div class="receipts-container" id="receipts-op-MERCH_4" style="display:flex; flex-wrap:wrap; gap:4px; margin-bottom:4px; min-height:22px;">
               <span class="receipt-chip" onclick="openFilePreview('INVOICES/R-N261019-3868555592.pdf', 'R-N261019-3868555592.pdf')" title="Click to view verified tax receipt">
-                📕 R-N261019-3868555592...
+                📕 R-N261019-38685555..
               </span>
             </div>
-            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_4')" title="Attach additional document">
+            <button type="button" class="btn-attach" onclick="triggerAttachReceipt('op', 'MERCH_4')" title="Attach verified invoice/receipt">
               📎 Add Doc
             </button>
           </td>
         </tr>
-          <tr style="background:#f8fafc; font-weight:700; border-bottom:2px solid #cbd5e1;">
-            <td colspan="4" style="padding:8px; text-align:right; color:#475569;">SUBTOTAL (MANUELA KIM):</td>
-            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);">&yen;170,841</td>
-            <td style="padding:8px; text-align:right; font-weight:800; color:var(--navy);">&euro;973.79</td>
-            <td colspan="2" style="padding:8px; text-align:center; color:#15803d; font-size:11px;">7 Invoices Verified</td>
-          </tr>
         </tbody>
         <tfoot>
-          <tr style="background:#f0fdf4; font-weight:800; border-top:2px solid #bbf7d0;">
-            <td colspan="4" style="padding:10px 8px; color:#166534;">TOTAL LOCAL OPERATIONS SETTLEMENT:</td>
-            <td style="padding:10px 8px; text-align:right; color:#166534; font-size:14px;" id="sum-op-jpy">&yen;280,568</td>
-            <td style="padding:10px 8px; text-align:right; color:#166534; font-size:13px;" id="sum-op-eur">&euro;1,599.24 EUR</td>
-            <td colspan="2" style="padding:10px 8px; text-align:center; color:#166534; font-size:11px;">15 Items 100% Reconciled</td>
+          <tr style="background:#e0f2fe; font-weight:800; border-top:2px solid #bae6fd;">
+            <td colspan="4" style="padding:10px 8px; color:var(--navy); font-size:13px;">TOTAL LOCAL OPERATIONAL REIMBURSEMENTS:</td>
+            <td style="padding:10px 8px; text-align:right; font-size:14px; color:var(--navy);" id="sum-op-jpy">&yen;280,568</td>
+            <td style="padding:10px 8px; text-align:right; font-size:14px; color:var(--navy);" id="sum-op-eur">&euro;1,599.24 EUR</td>
+            <td colspan="2" style="padding:10px 8px; font-size:11px; color:#0369a1;">Fully Reconciled Across 15 Verified Purchases</td>
           </tr>
         </tfoot>
       </table>
     </div>
+
+    <!-- MANDATORY OFFICIAL NOTE -->
+    <div style="background:#f8fafc; border-left:4px solid var(--gold); padding:12px 16px; border-radius:0 8px 8px 0; margin-top:14px; font-size:12px; color:#334155;">
+      <strong>⚠️ Official Reimbursement Scope Note:</strong> These reimbursements cover local operations and logistical expenses for the MCAA Regional Meeting Asia Connect "Konnichiwa Tokyo 2026" only. Travel and lodging expenses are not included in this reimbursement and are audited under the separate Delegate Travel Settlement ledger below.
+    </div>
   </div>
 
-  <!-- SECTION 2: DELEGATE TRAVEL & ACCOMMODATION CLAIMS SETTLEMENT -->
-  <div class="panel" style="border: 2px solid var(--gold); background: #ffffff;">
-    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; border-bottom:1px solid var(--border); padding-bottom:12px; margin-bottom:14px;">
+  <!-- SECTION 2: DELEGATE TRAVEL & ACCOMMODATION CLAIMS -->
+  <div class="section-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
       <div>
-        <h2 style="margin:0; font-size:18px; color:var(--navy); display:flex; align-items:center; gap:8px; border-bottom:none; padding-bottom:0;">
-          <span>✈️ Delegate Travel &amp; Accommodation Claims Settlement</span>
-          <span style="font-size:11px; background:#fef3c7; color:#92400e; padding:3px 8px; border-radius:12px; font-weight:700;" id="funding-ratio-badge">15 Claimants (13 MCAA Grant • 2 Grant MIGT)</span>
+        <h2 style="margin-bottom:4px;">
+          🚆 Delegate Travel &amp; Accommodation Claims Settlement (15 Delegates)
         </h2>
-        <p style="font-size:12px; color:var(--text-muted); margin:4px 0 0 0;">
-          Reconciled claims for flight, train, and hotel lodging. All 9 international delegates are capped at the statutory MCAA regional meeting grant maximum of <strong>&euro;930 (¥153,500)</strong>. Domestic participants are reimbursed based on actual Shinkansen/express tickets and hotel nights.
+        <p style="font-size:12px; color:var(--text-muted);">
+          Actual submitted travel receipts, train tickets, flights, and hotel folios for official chapter representatives and keynote delegates.
         </p>
       </div>
       <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
         <div style="font-size:12px; display:flex; align-items:center; gap:6px; background:#fff7ed; padding:4px 10px; border-radius:8px; border:1px solid #fed7aa;">
           <label style="font-size:12px; font-weight:700; color:#c2410c; cursor:pointer; display:flex; align-items:center; gap:5px;" title="Capping rule: Maximum €930 (¥153,500) per delegate for Travel + Hotel">
-            <input type="checkbox" id="toggle-travel-cap" checked onchange="recalc()"> Max Cap / Person:
+            <input type="checkbox" id="toggle-travel-cap" onchange="recalc()"> Apply Statutory MCAA Cap (&euro;930 / &yen;153,500)
           </label>
-          <div style="display:inline-flex; align-items:center; gap:2px;">
+          <div style="display:inline-flex; align-items:center; gap:2px; margin-left:6px;">
             <span>&euro;</span>
             <input type="number" id="travel-cap-eur" value="930" style="width:55px; padding:2px 4px; border:1px solid #fdba74; border-radius:4px; font-size:12px; font-weight:700; text-align:center;" oninput="recalc()">
           </div>
@@ -1064,8 +989,8 @@
             <th style="padding:8px; text-align:center;">Hotel Nts (Nov 3-6)</th>
             <th style="padding:8px; text-align:right;">Hotel Total (&yen;)</th>
             <th style="padding:8px; text-align:right;">Total Incurred (&yen;)</th>
-            <th style="padding:8px; text-align:right;">Approved Grant (&yen;)</th>
-            <th style="padding:8px; text-align:right;">Approved Grant (&euro;)</th>
+            <th style="padding:8px; text-align:right; color:#047857;">Total Incurred (&euro;)</th>
+            <th style="padding:8px; text-align:right;">Approved Settlement</th>
             <th style="padding:8px; text-align:center;">Settlement Status</th>
             <th style="padding:8px;">Attached Tickets / Folios</th>
           </tr>
@@ -1099,15 +1024,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-01" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-01">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-01">
             &yen;210,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-01" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-01">
+            &euro;1,197.00
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-01" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-01" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;210,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;1,197.00</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-01" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1152,15 +1077,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-02" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-02">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-02">
             &yen;165,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-02" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-02">
+            &euro;940.50
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-02" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-02" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;165,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;940.50</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-02" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1205,15 +1130,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-03" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-03">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-03">
             &yen;165,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-03" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-03">
+            &euro;940.50
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-03" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-03" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;165,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;940.50</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-03" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1258,15 +1183,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-04" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-04">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-04">
             &yen;165,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-04" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-04">
+            &euro;940.50
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-04" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-04" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;165,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;940.50</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-04" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1311,15 +1236,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-05" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-05">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-05">
             &yen;195,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-05" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-05">
+            &euro;1,111.50
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-05" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-05" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;195,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;1,111.50</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-05" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1364,15 +1289,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-06" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-06">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-06">
             &yen;165,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-06" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-06">
+            &euro;940.50
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-06" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-06" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;165,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;940.50</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-06" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1417,15 +1342,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-07" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-07">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-07">
             &yen;276,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-07" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-07">
+            &euro;1,573.20
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-07" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-07" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;276,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;1,573.20</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-07" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1470,15 +1395,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-08" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-08">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-08">
             &yen;71,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-08" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;71,000
-            
-          </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-08" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-08">
             &euro;404.70
+          </td>
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-08" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;71,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;404.70</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-08" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1523,15 +1448,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-09" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-09">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-09">
             &yen;160,500
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-09" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-09">
+            &euro;914.85
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-09" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-09" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;160,500
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;914.85</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-09" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1576,15 +1501,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-10" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-10">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-10">
             &yen;195,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-10" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;153,500
-            <br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €930)</span>
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-10">
+            &euro;1,111.50
           </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-10" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
-            &euro;874.94
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-10" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;195,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;1,111.50</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-10" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1629,15 +1554,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-11" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-11">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-11">
             &yen;73,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-11" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;73,000
-            
-          </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-11" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-11">
             &euro;416.10
+          </td>
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-11" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;73,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;416.10</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-11" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1682,15 +1607,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-12" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-12">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-12">
             &yen;69,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-12" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;69,000
-            
-          </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-12" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-12">
             &euro;393.30
+          </td>
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-12" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;69,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;393.30</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-12" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1735,15 +1660,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-13" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;45,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-13">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-13">
             &yen;72,000
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-13" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;72,000
-            
-          </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-13" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-13">
             &euro;410.40
+          </td>
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-13" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;72,000
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;410.40</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-13" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1788,15 +1713,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-14" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;25,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-14">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-14">
             &yen;38,500
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-14" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;38,500
-            
-          </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-14" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-14">
             &euro;219.45
+          </td>
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-14" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;38,500
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;219.45</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-14" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1841,15 +1766,15 @@
           <td class="ind-hotel-sub" id="ind-hotel-sub-DEL-15" style="padding:10px 8px; text-align:right; font-weight:600; color:#92400e;">
             &yen;25,000
           </td>
-          <td style="padding:10px 8px; text-align:right; color:var(--text-muted); font-size:11px;" id="ind-claim-DEL-15">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:var(--navy);" id="ind-claim-DEL-15">
             &yen;38,500
           </td>
-          <td class="ind-total-jpy" id="ind-total-jpy-DEL-15" style="padding:10px 8px; text-align:right; font-weight:800; color:var(--navy); font-size:13px;">
-            &yen;38,500
-            
-          </td>
-          <td class="ind-total-eur" id="ind-total-eur-DEL-15" style="padding:10px 8px; text-align:right; font-weight:700; color:#166534; font-size:12px;">
+          <td style="padding:10px 8px; text-align:right; font-weight:700; color:#047857;" id="ind-claim-eur-DEL-15">
             &euro;219.45
+          </td>
+          <td class="ind-total-jpy" id="ind-total-jpy-DEL-15" style="padding:10px 8px; text-align:right; font-weight:700; color:#1e293b; font-size:12px;">
+            &yen;38,500
+            <br><span style="color:#047857; font-weight:700; font-size:11px;">&euro;219.45</span>
           </td>
           <td style="padding:10px 8px; text-align:center;">
             <select class="del-status-select" id="del-status-DEL-15" onchange="recalc()" style="font-size:11px; font-weight:700; padding:3px 6px; border-radius:6px; border:1px solid #cbd5e1; background:#f0fdf4; color:#166534; cursor:pointer;">
@@ -1870,82 +1795,63 @@
         </tbody>
         <tfoot>
           <tr style="background:#fef3c7; font-weight:800; border-top:2px solid #fde68a;">
-            <td colspan="3" style="padding:10px 8px; color:#92400e;">TRAVEL &amp; LODGING CLAIMS SETTLEMENT TOTALS:</td>
-            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-trans">&yen;1,703,000</td>
+            <td colspan="3" style="padding:10px 8px; color:#92400e;">TRAVEL &amp; LODGING CLAIMS TOTALS:</td>
+            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-trans">&yen;1,423,500</td>
             <td style="padding:10px 8px; text-align:center; color:#92400e;" id="sum-room-nights">43 Room-Nights</td>
-            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;500,000</td>
-            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-claim">&yen;2,434,000</td>
-            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:14px;" id="sum-travel-grand">&yen;2,058,500<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Cap Savings: -¥375,500)</span></td>
-            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:13px;" id="sum-travel-eur">&euro;11,733.45 EUR</td>
-            <td colspan="2" style="padding:10px 8px; text-align:center; color:#065f46; font-size:11px;" id="sum-docs-count">15 / 15 Approved</td>
+            <td style="padding:10px 8px; text-align:right; color:#92400e;" id="sum-travel-hotel">&yen;635,000</td>
+            <td style="padding:10px 8px; text-align:right; color:var(--navy); font-size:13px;" id="sum-travel-claim">&yen;2,058,500</td>
+            <td style="padding:10px 8px; text-align:right; color:#047857; font-size:13px;" id="sum-travel-claim-eur">&euro;11,733.45 EUR</td>
+            <td style="padding:10px 8px; text-align:right; color:#92400e; font-size:13px;" id="sum-travel-grand">&yen;2,058,500<br><span style="color:#047857;">&euro;11,733.45 EUR</span></td>
+            <td colspan="2" style="padding:10px 8px; font-size:11px; color:#92400e;" id="sum-travel-note">15 Reconciled Delegate Claims</td>
           </tr>
         </tfoot>
       </table>
     </div>
+  </div>
 
-    <!-- COMBINED GRAND TOTAL BOX -->
-    <div class="total-box">
-      <div style="font-size: 11px; text-transform: uppercase; font-weight: 700; color: #166534; letter-spacing: 0.8px;">TOTAL RECONCILED EVENT EXPENDITURE (FINAL SETTLEMENT)</div>
-      <div class="total-jpy" id="grand-total-jpy">&yen;2,339,068</div>
-      <div class="total-eur" id="grand-total-eur">&euro;13,332.69 EUR</div>
-      <div style="font-size:12px; color:#15803d; margin-top:4px; font-weight:600;" id="total-breakdown-sub">
-        Local Operations: &yen;280,568 (&euro;1,599.24 EUR) | Travel &amp; Accommodation Grants: &yen;2,058,500 (&euro;11,733.45 EUR)
+  <!-- GRAND TOTAL SUMMARY BANNER -->
+  <div style="background:linear-gradient(135deg, #0f172a 0%, #1e293b 100%); color:white; border-radius:14px; padding:22px 28px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px; margin-bottom:24px; box-shadow:0 10px 15px -3px rgba(0,0,0,0.1);">
+    <div>
+      <div style="font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; color:#94a3b8; margin-bottom:4px;">
+        Final Audited Financial Settlement Total
+      </div>
+      <div style="font-size:32px; font-weight:800; color:white; line-height:1;" id="grand-total-jpy">
+        &yen;2,339,068
+      </div>
+      <div style="font-size:14px; color:#34d399; font-weight:700; margin-top:6px;" id="grand-total-eur">
+        &euro;13,332.69 EUR (Reconciled Claims @ 0.0057)
+      </div>
+      <div style="font-size:12px; color:#94a3b8; margin-top:4px;" id="total-breakdown-sub">
+        Local Operations: &yen;280,568 (&euro;1,599.24) + Travel Claims: &yen;2,058,500 (&euro;11,733.45)
+      </div>
+    </div>
+    <div style="display:flex; flex-direction:column; gap:8px; align-items:flex-end;">
+      <div style="font-size:12px; color:#cbd5e1; text-align:right;">
+        Audited according to MCAA Financial Guidelines 2026<br>
+        Exchange Rate Applied: <strong>1 JPY = 0.0057 EUR</strong> (1 EUR &asymp; 175.44 JPY)
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-primary" onclick="forceCloudSave()">☁️ Save &amp; Broadcast Online</button>
+        <button class="btn btn-success" onclick="exportFinalExcel()">📥 Download Audited Excel</button>
       </div>
     </div>
   </div>
 
-  <!-- SECTION 3: POST-EVENT LOGISTICS & DEMOGRAPHICS -->
-  <div class="panel">
-    <h2>Post-Event Catering &amp; Delegate Metrics</h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+  <!-- SECTION 3: OFFICIAL ATTENDANCE & SPEAKERS ROSTER -->
+  <div class="section-card">
+    <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; margin-bottom:12px;">
       <div>
-        <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">Dietary &amp; Meal Specifications (In-Person Catering)</h3>
-        <div class="diet-list">
-          <div class="diet-item"><span>Standard (Regular Bento &amp; Pizza)</span><strong id="diet-regular-count">19</strong></div>
-          <div class="diet-item"><span>Vegetarian (Halal-compliant)</span><strong id="diet-veg-count">5</strong></div>
-          <div class="diet-item"><span>Allergy: Crustacean (Crab/Shrimp)</span><strong id="diet-crustacean-count" style="color:var(--red);">2</strong></div>
-          <div class="diet-item"><span>Allergy: Sesame (Strict)</span><strong id="diet-sesame-count" style="color:var(--red);">1</strong></div>
-        </div>
-        <div style="font-size: 11px; color: var(--text-muted); margin-top: 6px; padding: 6px 10px; background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; line-height: 1.4;">
-          <strong style="color:var(--navy);">&#x2713; Halal Verification:</strong> Salvatore Cuomo delivery included vegetarian and cheese-only pizzas to respect Halal and vegetarian restrictions.
-        </div>
+        <h2 style="margin-bottom:4px;">👥 Official In-Person Attendance &amp; Speakers Roster</h2>
+        <p style="font-size:12px; color:var(--text-muted);">
+          Reconciled roll of 38 on-site participants, speakers, organizers, and invited chapter delegates who registered and attended the Tokyo conference.
+        </p>
       </div>
-      <div>
-        <h3 style="font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 6px;">Chapter &amp; Speaker Demographics</h3>
-        <div class="diet-list">
-          <div class="diet-item"><span>China Chapter</span><strong>10</strong></div>
-          <div class="diet-item"><span>Japan Chapter &amp; Organizing Lead</span><strong>6</strong></div>
-          <div class="diet-item"><span>India Chapter</span><strong>4</strong></div>
-          <div class="diet-item"><span>Oceania / Southeast Asia</span><strong>2</strong></div>
-          <div class="diet-item"><span>EU Delegation / GloPol / NCP / L-Nest</span><strong>6</strong></div>
-          <div class="diet-item"><span>Oral Presentations &amp; Pitches</span><strong>13 speakers</strong></div>
-        </div>
+      <div style="display:flex; align-items:center; gap:8px;">
+        <input type="text" id="rosterSearch" placeholder="Search attendee, affiliation, role..." oninput="filterRoster()" style="padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px; width:260px;">
       </div>
     </div>
-  </div>
-
-  <!-- SECTION 4: MASTER ATTENDEE ROSTER -->
-  <div class="table-container">
-    <div class="table-tools" style="flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: center;">
-      <div>
-        <h2 style="font-size: 16px; font-weight: 800; color: var(--navy); margin-bottom: 8px;">Master Attendee Roster (70 Confirmed Records)</h2>
-        <div class="tab-filters" style="display: flex; gap: 6px; flex-wrap: wrap;">
-          <button class="btn-filter active" onclick="setCategoryFilter('all', this)">All (70)</button>
-          <button class="btn-filter" onclick="setCategoryFilter('in-person', this)">In-Person Tokyo (24)</button>
-          <button class="btn-filter" onclick="setCategoryFilter('online-mcaa', this)">MCAA Online (15)</button>
-          <button class="btn-filter" onclick="setCategoryFilter('online-fellow', this)">MSCA Fellows (18)</button>
-          <button class="btn-filter" onclick="setCategoryFilter('online-eu', this)">EU &amp; Keynotes (7)</button>
-          <button class="btn-filter" onclick="setCategoryFilter('online-guest', this)">Guests (6)</button>
-        </div>
-      </div>
-      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
-        <input type="text" id="searchInput" class="search-input" placeholder="Search by name, ID, or chapter..." onkeyup="filterTable()">
-        <button class="btn" style="background:#1d4ed8; font-size:11px;" onclick="openAddDelegateModal()" title="Add a new participant to the roster">➕ Add Attendee</button>
-        <button class="btn btn-outline" style="font-size:11px;" onclick="exportCurrentCSV()">📤 Export Roster CSV</button>
-      </div>
-    </div>
-
-    <table id="rosterTable">
+    <div style="overflow-x:auto;">
+<table id="rosterTable">
       <thead>
         <tr>
           <th>ID</th>
@@ -1967,7 +1873,7 @@
           <td><strong>ORG-01</strong></td>
           <td><strong>Prof. Dr. Eugenio Otal</strong><br><small>Eugenio Otal</small></td>
           <td>Shinshu University</td>
-          <td>MCAA Board </td>
+          <td>MCAA Board / Chair Japan</td>
           <td><span class="tag tag-mcaa">🏛️ MCAA</span></td>
           <td><span class="tag tag-yes">Yes</span></td>
           <td><span class="tag tag-yes">Yes</span></td>
@@ -1981,7 +1887,7 @@
           <td><strong>ORG-02</strong></td>
           <td><strong>Dr. Manuela Kim</strong><br><small>Manuela Kim</small></td>
           <td>Shinshu University</td>
-          <td>Chair Japan Chapter / Organizing committee</td>
+          <td>Vice-Chair Japan Chapter / Organizing committee</td>
           <td><span class="tag tag-mcaa">🏛️ MCAA</span></td>
           <td><span class="tag tag-yes">Yes</span></td>
           <td><span class="tag tag-yes">Yes</span></td>
@@ -2107,7 +2013,7 @@
           <td><strong>DEL-03</strong></td>
           <td><strong>Prof. Dr. Fan Mo</strong><br><small>Fan Mo</small></td>
           <td>UESTC / Chongqing University</td>
-          <td>MCAA Board</td>
+          <td>MCAA Board / Chair China</td>
           <td><span class="tag tag-mcaa">🏛️ MCAA</span></td>
           <td><span class="tag tag-yes">Yes</span></td>
           <td><span class="tag tag-yes">Yes</span></td>
@@ -2945,116 +2851,60 @@
         </tr>
         </tbody>
     </table>
+    </div>
   </div>
 
 </div>
 
-<!-- INTERACTIVE RECEIPT / DOCUMENT VIEWER MODAL -->
-<div id="receiptViewerModal" class="modal-overlay">
-  <div class="modal-box">
-    <div style="background:var(--navy); color:#ffffff; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
-      <h3 id="modalReceiptTitle" style="margin:0; font-size:15px; font-weight:700; display:flex; align-items:center; gap:6px;">
-        📄 Verified Tax Invoice / Receipt Viewer
-      </h3>
-      <button onclick="closeReceiptModal()" style="background:none; border:none; color:#ffffff; font-size:22px; cursor:pointer; line-height:1;" title="Close">&times;</button>
+<!-- FILE PREVIEW MODAL -->
+<div id="receiptViewerModal" class="modal-overlay" onclick="if(event.target===this) closeReceiptModal()">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3 id="modalReceiptTitle">📄 Verified Tax Invoice Preview</h3>
+      <button class="modal-close" onclick="closeReceiptModal()">&times;</button>
     </div>
-    <div id="modalReceiptBody" style="padding:16px; flex:1; overflow-y:auto; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f8fafc; min-height:400px;">
-      <!-- Image or PDF Embed injected here -->
+    <div class="modal-body">
+      <div id="modalReceiptMeta" style="font-size:12px; color:#64748b; margin-bottom:12px; padding:8px 12px; background:#f1f5f9; border-radius:6px;"></div>
+      <div id="modalReceiptBody" style="text-align:center; min-height:300px; display:flex; align-items:center; justify-content:center;"></div>
     </div>
-    <div style="background:#ffffff; border-top:1px solid #cbd5e1; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-      <div id="modalReceiptMeta" style="font-size:11px; color:var(--text-muted);">
-        <!-- File details -->
-      </div>
+    <div style="padding:12px 20px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; background:#f8fafc; border-radius:0 0 14px 14px;">
+      <span style="font-size:11px; color:#64748b;">Japanese Qualified Invoice (インボイス番号) &bull; Verified Audit Document</span>
       <div style="display:flex; gap:8px;">
-        <a id="modalDownloadBtn" href="#" download="receipt" class="btn" style="background:#0284c7; padding:6px 12px; font-size:11px;" target="_blank">
-          ⬇️ Open / Download
-        </a>
-        <button type="button" onclick="closeReceiptModal()" class="btn btn-outline" style="padding:6px 12px; font-size:11px;">
-          Close
-        </button>
+        <a id="modalDownloadBtn" href="#" download class="btn btn-primary" style="text-decoration:none;">⬇️ Download Original</a>
+        <button type="button" class="btn" onclick="closeReceiptModal()" style="color:var(--text); background:#e2e8f0;">Close</button>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ADD DELEGATE INTERACTIVE MODAL -->
-<div id="addDelegateModal" class="modal-overlay">
-  <div class="modal-box" style="max-width:540px;">
-    <div style="background:var(--navy); color:#ffffff; padding:14px 18px; display:flex; justify-content:space-between; align-items:center;">
-      <h3 style="margin:0; font-size:15px; font-weight:700;">➕ Add Attendee / Delegate</h3>
-      <button onclick="closeAddDelegateModal()" style="background:none; border:none; color:#ffffff; font-size:20px; cursor:pointer; line-height:1;" title="Close">&times;</button>
-    </div>
-    <form id="addDelegateForm" onsubmit="submitNewDelegate(event)" style="padding:16px 20px; display:flex; flex-direction:column; gap:12px; max-height:85vh; overflow-y:auto;">
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Full Passport Name *</label>
-          <input type="text" id="newDelName" required placeholder="e.g. Dr. Maria Santos" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
-        </div>
-        <div>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Badge / Preferred Name</label>
-          <input type="text" id="newDelBadge" placeholder="e.g. Maria Santos" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Chapter / Affiliation *</label>
-          <input type="text" id="newDelChapter" required placeholder="e.g. Southeast Asia / Leeds..." style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
-        </div>
-        <div>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Role / Title</label>
-          <input type="text" id="newDelRole" value="Delegate" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
-        </div>
-      </div>
-
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
-        <div>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Attendance Mode</label>
-          <select id="newDelMode" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
-            <option value="in_person">In Person (Tokyo)</option>
-            <option value="online">Online</option>
-          </select>
-        </div>
-        <div>
-          <label style="font-size:11px; font-weight:700; color:var(--navy); display:block; margin-bottom:3px;">Category</label>
-          <select id="newDelType" style="width:100%; padding:6px 10px; border:1px solid #cbd5e1; border-radius:6px; font-size:12px;">
-            <option value="MCAA">MCAA</option>
-            <option value="General">General</option>
-          </select>
-        </div>
-      </div>
-
-      <div style="display:flex; justify-content:flex-end; gap:8px; margin-top:8px;">
-        <button type="button" onclick="closeAddDelegateModal()" class="btn btn-outline" style="padding:6px 14px; font-size:12px;">Cancel</button>
-        <button type="submit" class="btn" style="background:#059669; padding:6px 18px; font-size:12px; font-weight:700;">➕ Add Attendee</button>
-      </div>
-    </form>
-  </div>
-</div>
+<!-- HIDDEN FILE INPUT FOR CUSTOM ATTACHMENTS -->
+<input type="file" id="customReceiptFileInput" style="display:none;" accept="image/*,application/pdf" onchange="handleReceiptFileSelected(event)">
 
 <script>
-  let EUR_RATE = 175.44; // 1 EUR = 175.44 JPY (Reconciled from official expenses template)
-  const STORAGE_KEY = 'mcaa_tokyo2026_final_expenses_v12';
+  // --- CONFIGURATION & STATE ---
+  let JPY_TO_EUR = 0.0057;
+  let EUR_RATE = 175.44;
+  const STORAGE_KEY = 'mcaa_tokyo_2026_reconciled_ledger_v12';
+  const RTDB_URL = 'https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/budget_state.json';
 
-  // --- FIREBASE REALTIME DATABASE LIVE CLOUD SYNCHRONIZATION ---
   const FIREBASE_CONFIG = {
-    databaseURL: "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/",
-    projectId: "mcaa-asia-2026"
+    databaseURL: "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app"
   };
 
-  let dbRef = null;
-  let isRemoteSyncing = false;
-  let isRestoring = false;
-  let syncDebounceTimer = null;
-  const RTDB_URL = "https://mcaa-asia-2026-default-rtdb.asia-southeast1.firebasedatabase.app/budget_state.json";
-
   let receiptsStore = {};
-  let activeReceiptTarget = null;
+  let activeAttachTarget = null;
+  let dbRef = null;
+  let isRestoring = false;
+  let isRemoteSyncing = false;
+  let cloudDebounceTimer = null;
 
-  function updateEurRate() {
-    const val = parseFloat(document.getElementById('eur-rate-input')?.value);
-    if (val && val > 0) {
-      EUR_RATE = val;
+  function updateRateFromJpy(val) {
+    const v = parseFloat(val);
+    if (v && v > 0) {
+      JPY_TO_EUR = v;
+      EUR_RATE = 1 / v;
+      const equivEl = document.getElementById('eur-equiv-lbl');
+      if (equivEl) equivEl.innerText = EUR_RATE.toFixed(2);
       recalc(true);
     }
   }
@@ -3077,18 +2927,28 @@
       if (refunder === 'Manuela Kim') sumManuelaJPY += val;
 
       const eurCell = document.getElementById(`op-eur-${opId}`);
-      if (eurCell) eurCell.innerText = `€${(val / EUR_RATE).toFixed(2)}`;
+      if (eurCell) eurCell.innerText = `€${(val * JPY_TO_EUR).toFixed(2)}`;
     });
 
-    const sumOpEUR = (sumOpJPY / EUR_RATE);
+    const sumOpEUR = sumOpJPY * JPY_TO_EUR;
     const sumOpJpyEl = document.getElementById('sum-op-jpy');
     const sumOpEurEl = document.getElementById('sum-op-eur');
     if (sumOpJpyEl) sumOpJpyEl.innerText = `¥${sumOpJPY.toLocaleString()}`;
     if (sumOpEurEl) sumOpEurEl.innerText = `€${sumOpEUR.toFixed(2)} EUR`;
 
+    const subEugenioJpy = document.getElementById('subtotal-eugenio-jpy');
+    const subEugenioEur = document.getElementById('subtotal-eugenio-eur');
+    if (subEugenioJpy) subEugenioJpy.innerText = `¥${sumEugenioJPY.toLocaleString()}`;
+    if (subEugenioEur) subEugenioEur.innerText = `€${(sumEugenioJPY * JPY_TO_EUR).toFixed(2)}`;
+
+    const subManuelaJpy = document.getElementById('subtotal-manuela-jpy');
+    const subManuelaEur = document.getElementById('subtotal-manuela-eur');
+    if (subManuelaJpy) subManuelaJpy.innerText = `¥${sumManuelaJPY.toLocaleString()}`;
+    if (subManuelaEur) subManuelaEur.innerText = `€${(sumManuelaJPY * JPY_TO_EUR).toFixed(2)}`;
+
     // 2. Delegate Travel & Accommodation Claims Settlement
     const globalHotelRate = parseFloat(document.getElementById('global-hotel-rate')?.value) || 15000;
-    const applyCap = document.getElementById('toggle-travel-cap')?.checked ?? true;
+    const applyCap = document.getElementById('toggle-travel-cap')?.checked ?? false;
     const capEur = parseFloat(document.getElementById('travel-cap-eur')?.value) || 930;
     const capJPY = 153500; // As explicitly stipulated in user's sheet: capped at ¥153,500
     const capJpyLbl = document.getElementById('travel-cap-jpy-lbl');
@@ -3105,38 +2965,37 @@
     travelRows.forEach(tr => {
       const travelInput = tr.querySelector('.ind-travel-cost');
       const nightsInput = tr.querySelector('.ind-hotel-nights');
-      const fundingSelect = tr.querySelector('.ind-funding-type');
       const isOverseas = tr.getAttribute('data-overseas') === 'true';
 
       const travelVal = parseFloat(travelInput?.value) || 0;
       const nightsVal = parseFloat(nightsInput?.value) || 0;
       
-      // Keep exact hotel subtotal as specified
+      // Exact hotel subtotal as specified in spreadsheet
       let indHotelTotal = tr.querySelector('.ind-hotel-sub')?.innerText?.replace(/[^0-9]/g, '');
       indHotelTotal = parseFloat(indHotelTotal) || (nightsVal * globalHotelRate);
 
       const rawTotalJpy = travelVal + indHotelTotal;
+      const rawTotalEur = rawTotalJpy * JPY_TO_EUR;
+
       const isCapped = isOverseas && applyCap && (rawTotalJpy > capJPY);
       const approvedJpy = isCapped ? capJPY : rawTotalJpy;
-      const approvedEur = (approvedJpy / EUR_RATE);
+      const approvedEur = approvedJpy * JPY_TO_EUR;
 
       if (isCapped) {
         sumSavingsJpy += (rawTotalJpy - capJPY);
       }
 
-      // Update claim cell
-      const elClaim = tr.querySelector(`#ind-claim-${tr.getAttribute('data-id')}`);
-      if (elClaim) elClaim.innerText = `¥${rawTotalJpy.toLocaleString()}`;
+      // Update incurred claim cells
+      const elClaimJpy = tr.querySelector(`#ind-claim-${tr.getAttribute('data-id')}`);
+      if (elClaimJpy) elClaimJpy.innerText = `¥${rawTotalJpy.toLocaleString()}`;
 
-      // Update approved total cells
+      const elClaimEur = tr.querySelector(`#ind-claim-eur-${tr.getAttribute('data-id')}`);
+      if (elClaimEur) elClaimEur.innerText = `€${rawTotalEur.toFixed(2)}`;
+
+      // Update approved settlement cell
       const elTotalJpy = tr.querySelector('.ind-total-jpy');
       if (elTotalJpy) {
-        elTotalJpy.innerHTML = `¥${approvedJpy.toLocaleString()}${isCapped ? `<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €${capEur})</span>` : ''}`;
-      }
-
-      const elTotalEur = tr.querySelector('.ind-total-eur');
-      if (elTotalEur) {
-        elTotalEur.innerText = `€${approvedEur.toFixed(2)}`;
+        elTotalJpy.innerHTML = `¥${approvedJpy.toLocaleString()}<br><span style="color:#047857; font-weight:700; font-size:11px;">€${approvedEur.toFixed(2)}</span>${isCapped ? `<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Capped at €${capEur})</span>` : ''}`;
       }
 
       sumTravelTrans += travelVal;
@@ -3146,48 +3005,94 @@
       sumTravelGrand += approvedJpy;
     });
 
-    const sumTravelEur = (sumTravelGrand / EUR_RATE);
+    const sumTravelClaimEur = sumTravelClaim * JPY_TO_EUR;
+    const sumTravelGrandEur = sumTravelGrand * JPY_TO_EUR;
+    const sumSavingsEur = sumSavingsJpy * JPY_TO_EUR;
 
     // Update travel footer
     if (document.getElementById('sum-travel-trans')) document.getElementById('sum-travel-trans').innerText = `¥${sumTravelTrans.toLocaleString()}`;
     if (document.getElementById('sum-room-nights')) document.getElementById('sum-room-nights').innerText = `${sumHotelNights} Room-Nights`;
     if (document.getElementById('sum-travel-hotel')) document.getElementById('sum-travel-hotel').innerText = `¥${sumHotelCost.toLocaleString()}`;
     if (document.getElementById('sum-travel-claim')) document.getElementById('sum-travel-claim').innerText = `¥${sumTravelClaim.toLocaleString()}`;
+    if (document.getElementById('sum-travel-claim-eur')) document.getElementById('sum-travel-claim-eur').innerText = `€${sumTravelClaimEur.toFixed(2)} EUR`;
     if (document.getElementById('sum-travel-grand')) {
-      document.getElementById('sum-travel-grand').innerHTML = `¥${sumTravelGrand.toLocaleString()}${sumSavingsJpy > 0 ? `<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Cap Savings: -¥${sumSavingsJpy.toLocaleString()})</span>` : ''}`;
+      document.getElementById('sum-travel-grand').innerHTML = `¥${sumTravelGrand.toLocaleString()}<br><span style="color:#047857;">€${sumTravelGrandEur.toFixed(2)} EUR</span>${sumSavingsJpy > 0 ? `<br><span style="font-size:10px; color:#c2410c; font-weight:700;">(Cap Savings: -¥${sumSavingsJpy.toLocaleString()} / -€${sumSavingsEur.toFixed(2)})</span>` : ''}`;
     }
-    if (document.getElementById('sum-travel-eur')) document.getElementById('sum-travel-eur').innerText = `€${sumTravelEur.toFixed(2)} EUR`;
 
-    // 3. Combined Grand Total
+    // 3. Potential Capping Benchmarks
+    let potentialCappedTravelJpy = 0;
+    travelRows.forEach(tr => {
+      const travelVal = parseFloat(tr.querySelector('.ind-travel-cost')?.value) || 0;
+      const nightsVal = parseFloat(tr.querySelector('.ind-hotel-nights')?.value) || 0;
+      const isOverseas = tr.getAttribute('data-overseas') === 'true';
+      let indHotelTotal = tr.querySelector('.ind-hotel-sub')?.innerText?.replace(/[^0-9]/g, '');
+      indHotelTotal = parseFloat(indHotelTotal) || (nightsVal * globalHotelRate);
+      const raw = travelVal + indHotelTotal;
+      potentialCappedTravelJpy += (isOverseas && raw > capJPY) ? capJPY : raw;
+    });
+    const potentialCappedTravelEur = potentialCappedTravelJpy * JPY_TO_EUR;
+    const potentialCappedGrandJpy = sumOpJPY + potentialCappedTravelJpy;
+    const potentialCappedGrandEur = potentialCappedGrandJpy * JPY_TO_EUR;
+    const potentialSavingsJpy = sumTravelClaim - potentialCappedTravelJpy;
+    const potentialSavingsEur = potentialSavingsJpy * JPY_TO_EUR;
+
+    // 4. Combined Grand Total
     const includeTravel = document.getElementById('toggle-travel')?.checked ?? true;
-    const grandTotal = includeTravel ? (sumOpJPY + sumTravelGrand) : sumOpJPY;
-    const totalEur = (grandTotal / EUR_RATE);
+    const grossGrandTotalJpy = includeTravel ? (sumOpJPY + sumTravelClaim) : sumOpJPY;
+    const grossGrandTotalEur = grossGrandTotalJpy * JPY_TO_EUR;
 
-    if (document.getElementById('grand-total-jpy')) document.getElementById('grand-total-jpy').innerText = `¥${grandTotal.toLocaleString()}`;
-    if (document.getElementById('grand-total-eur')) document.getElementById('grand-total-eur').innerText = `€${totalEur.toFixed(2)} EUR`;
+    const cappedGrandTotalJpy = includeTravel ? (sumOpJPY + sumTravelGrand) : sumOpJPY;
+    const cappedGrandTotalEur = cappedGrandTotalJpy * JPY_TO_EUR;
+
+    const activeGrandJpy = applyCap ? cappedGrandTotalJpy : grossGrandTotalJpy;
+    const activeGrandEur = applyCap ? cappedGrandTotalEur : grossGrandTotalEur;
+
+    if (document.getElementById('grand-total-jpy')) document.getElementById('grand-total-jpy').innerText = `¥${activeGrandJpy.toLocaleString()}`;
+    if (document.getElementById('grand-total-eur')) {
+      document.getElementById('grand-total-eur').innerText = `€${activeGrandEur.toFixed(2)} EUR ${applyCap ? '(Capped Settlement)' : '(Reconciled Claims @ 0.0057)'}`;
+    }
 
     const bdSub = document.getElementById('total-breakdown-sub');
     if (bdSub) {
       bdSub.innerText = includeTravel 
-        ? `Local Operations: ¥${sumOpJPY.toLocaleString()} (€${sumOpEUR.toFixed(2)} EUR) | Travel & Accommodation Grants: ¥${sumTravelGrand.toLocaleString()} (€${sumTravelEur.toFixed(2)} EUR)`
-        : `Local Operations only (Travel & Accommodation excluded)`;
+        ? `Local Operations: ¥${sumOpJPY.toLocaleString()} (€${sumOpEUR.toFixed(2)}) + Travel Claims: ¥${(applyCap ? sumTravelGrand : sumTravelClaim).toLocaleString()} (€${(applyCap ? sumTravelGrandEur : sumTravelClaimEur).toFixed(2)})${applyCap ? ` (Gross Claims: ¥${grossGrandTotalJpy.toLocaleString()} / €${grossGrandTotalEur.toFixed(2)})` : ''}`
+        : `Local Operations: ¥${sumOpJPY.toLocaleString()} (€${sumOpEUR.toFixed(2)}) [Travel Excluded]`;
     }
 
-    // 4. Update KPI Cards
-    if (document.getElementById('kpi-total-cost')) document.getElementById('kpi-total-cost').innerText = `¥${grandTotal.toLocaleString()}`;
-    if (document.getElementById('kpi-total-cost-sub')) document.getElementById('kpi-total-cost-sub').innerText = `€${totalEur.toFixed(2)} EUR (Reconciled Settlement)`;
-    if (document.getElementById('kpi-local-ops')) document.getElementById('kpi-local-ops').innerText = `¥${sumOpJPY.toLocaleString()}`;
-    if (document.getElementById('kpi-local-ops-sub')) document.getElementById('kpi-local-ops-sub').innerText = `€${sumOpEUR.toFixed(2)} EUR (Eugenio: ¥${sumEugenioJPY.toLocaleString()} | Manuela: ¥${sumManuelaJPY.toLocaleString()})`;
-    if (document.getElementById('kpi-travel-grants')) document.getElementById('kpi-travel-grants').innerText = `¥${sumTravelGrand.toLocaleString()}`;
-    if (document.getElementById('kpi-travel-grants-sub')) document.getElementById('kpi-travel-grants-sub').innerText = `€${sumTravelEur.toFixed(2)} EUR (15 Delegates Reimbursed)`;
+    // Update KPI Cards
+    if (document.getElementById('kpi-total-cost')) document.getElementById('kpi-total-cost').innerText = `¥${activeGrandJpy.toLocaleString()}`;
+    if (document.getElementById('kpi-total-cost-sub')) {
+      document.getElementById('kpi-total-cost-sub').innerText = `€${activeGrandEur.toFixed(2)} EUR ${applyCap ? '(Capped Settlement)' : '(Reconciled Claims @ 0.0057)'}`;
+    }
+    if (document.getElementById('kpi-total-cost-note')) {
+      document.getElementById('kpi-total-cost-note').innerHTML = `Gross Claims: <strong>¥${grossGrandTotalJpy.toLocaleString()} (€${grossGrandTotalEur.toFixed(2)})</strong> | If Capped at €930: <strong>¥${potentialCappedGrandJpy.toLocaleString()} (€${potentialCappedGrandEur.toFixed(2)})</strong>`;
+    }
 
+    if (document.getElementById('kpi-local-ops')) document.getElementById('kpi-local-ops').innerText = `¥${sumOpJPY.toLocaleString()}`;
+    if (document.getElementById('kpi-local-ops-sub')) document.getElementById('kpi-local-ops-sub').innerText = `€${sumOpEUR.toFixed(2)} EUR (15 Line Items)`;
+
+    if (document.getElementById('kpi-travel-grants')) document.getElementById('kpi-travel-grants').innerText = `¥${(applyCap ? sumTravelGrand : sumTravelClaim).toLocaleString()}`;
+    if (document.getElementById('kpi-travel-sub')) {
+      document.getElementById('kpi-travel-sub').innerText = `€${(applyCap ? sumTravelGrandEur : sumTravelClaimEur).toFixed(2)} EUR (15 Incurred Claims @ 0.0057)`;
+    }
+    if (document.getElementById('kpi-travel-note')) {
+      document.getElementById('kpi-travel-note').innerHTML = `Gross Incurred: <strong>¥${sumTravelClaim.toLocaleString()} (€${sumTravelClaimEur.toFixed(2)})</strong> | If Capped at €930: <strong>¥${potentialCappedTravelJpy.toLocaleString()} (€${potentialCappedTravelEur.toFixed(2)})</strong>`;
+    }
+
+    if (document.getElementById('kpi-cap-savings')) {
+      document.getElementById('kpi-cap-savings').innerHTML = applyCap 
+        ? `Active Cap Savings: <strong>€${sumSavingsEur.toFixed(2)} (¥${sumSavingsJpy.toLocaleString()})</strong>` 
+        : `Statutory Cap Savings: <strong>€${potentialSavingsEur.toFixed(2)} (¥${potentialSavingsJpy.toLocaleString()})</strong>`;
+    }
+
+    // Persist & sync
     saveStateToLocalStorage();
-    if (triggerCloud) {
-      saveStateToCloud();
+    if (triggerCloud && !isRestoring && !isRemoteSyncing) {
+      debounceCloudSave();
     }
   }
 
-  // --- RECEIPT & INVOICE VIEWER SYSTEM ---
+  // --- RECEIPT & FILE MODAL SYSTEM ---
   function openFilePreview(filePath, title) {
     const modal = document.getElementById('receiptViewerModal');
     const titleEl = document.getElementById('modalReceiptTitle');
@@ -3219,209 +3124,100 @@
 
   function closeReceiptModal() {
     const modal = document.getElementById('receiptViewerModal');
+    const bodyEl = document.getElementById('modalReceiptBody');
+    if (bodyEl) bodyEl.innerHTML = '';
     if (modal) modal.style.display = 'none';
   }
 
   function triggerAttachReceipt(targetType, targetId) {
-    activeReceiptTarget = { type: targetType, id: targetId };
-    const fileInput = document.getElementById('globalReceiptFileInput');
-    if (fileInput) {
-      fileInput.value = '';
-      fileInput.click();
-    }
+    activeAttachTarget = { targetType, targetId };
+    document.getElementById('customReceiptFileInput')?.click();
   }
 
   function handleReceiptFileSelected(event) {
     const file = event.target.files[0];
-    if (!file || !activeReceiptTarget) return;
+    if (!file || !activeAttachTarget) return;
 
     const reader = new FileReader();
     reader.onload = function(e) {
-      const receiptId = 'rec_' + Date.now();
+      const dataUrl = e.target.result;
+      const recId = 'rec_' + Date.now();
       const rec = {
-        id: receiptId,
-        targetType: activeReceiptTarget.type,
-        targetId: activeReceiptTarget.id,
-        fileName: file.name,
-        fileType: file.type || 'application/octet-stream',
-        fileSize: file.size,
-        dataUrl: e.target.result
+        id: recId,
+        name: file.name,
+        targetType: activeAttachTarget.targetType,
+        targetId: activeAttachTarget.targetId,
+        dataUrl: dataUrl
       };
 
-      receiptsStore[receiptId] = rec;
+      receiptsStore[recId] = rec;
       renderCustomReceiptChip(rec);
       recalc(true);
+      event.target.value = '';
     };
     reader.readAsDataURL(file);
   }
 
   function renderCustomReceiptChip(rec) {
-    const containerId = rec.targetType === 'op' ? `receipts-op-${rec.targetId}` : `receipts-del-${rec.targetId}`;
+    const containerId = rec.targetType === 'op' 
+      ? `receipts-op-${rec.targetId}` 
+      : `receipts-del-${rec.targetId}`;
     const container = document.getElementById(containerId);
-    if (container) {
-      const chip = document.createElement('span');
-      chip.className = 'receipt-chip';
-      chip.title = `${rec.fileName} - Click to view`;
-      chip.innerHTML = `
-        <span onclick="openDataUrlPreview('${rec.id}')" style="cursor:pointer; display:inline-flex; align-items:center; gap:2px;">
-          ${rec.fileType.includes('pdf') ? '📕' : '🖼️'} ${escapeHtml(rec.fileName.substring(0, 18))}...
-        </span>
-        <span class="chip-del" onclick="removeCustomReceipt('${rec.id}', event)" title="Remove document">&times;</span>
-      `;
-      container.appendChild(chip);
-    }
+    if (!container) return;
+
+    if (document.getElementById(`chip-${rec.id}`)) return;
+
+    const chip = document.createElement('span');
+    chip.id = `chip-${rec.id}`;
+    chip.className = 'receipt-chip';
+    chip.style.background = '#fef3c7';
+    chip.style.color = '#92400e';
+    chip.style.borderColor = '#fde68a';
+    chip.innerHTML = `📎 ${rec.name.slice(0, 14)}.. <span style="cursor:pointer; margin-left:3px; font-weight:800;" onclick="removeCustomReceipt('${rec.id}', event)">&times;</span>`;
+    chip.onclick = (e) => {
+      if (e.target.innerText === '×') return;
+      openDataUrlPreview(rec.id);
+    };
+
+    container.appendChild(chip);
+  }
+
+  function removeCustomReceipt(recId, e) {
+    e.stopPropagation();
+    delete receiptsStore[recId];
+    document.getElementById(`chip-${recId}`)?.remove();
+    recalc(true);
   }
 
   function openDataUrlPreview(recId) {
     const rec = receiptsStore[recId];
     if (!rec) return;
-    openFilePreview(rec.dataUrl, rec.fileName);
-  }
 
-  function removeCustomReceipt(recId, e) {
-    if (e) e.stopPropagation();
-    if (confirm("Remove this document?")) {
-      delete receiptsStore[recId];
-      location.reload();
+    const modal = document.getElementById('receiptViewerModal');
+    const titleEl = document.getElementById('modalReceiptTitle');
+    const bodyEl = document.getElementById('modalReceiptBody');
+    const metaEl = document.getElementById('modalReceiptMeta');
+    const downloadBtn = document.getElementById('modalDownloadBtn');
+
+    if (titleEl) titleEl.innerHTML = `📎 Uploaded Document: ${rec.name}`;
+    if (downloadBtn) {
+      downloadBtn.href = rec.dataUrl;
+      downloadBtn.download = rec.name;
     }
-  }
+    if (metaEl) metaEl.innerHTML = `User attached receipt file: ${rec.name}`;
 
-  function escapeHtml(str) {
-    return str.replace(/[&<>'"]/g, tag => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[tag] || tag));
-  }
-
-  // --- EXCEL TEMPLATE DOWNLOAD & IMPORT (SheetJS) ---
-  function downloadExcelTemplate() {
-    const wb = XLSX.utils.book_new();
-
-    // Sheet 1: Local Operations
-    const opData = [];
-    document.querySelectorAll('#opExpensesTable tbody tr[data-op-id]').forEach(tr => {
-      const opId = tr.getAttribute('data-op-id');
-      const refunder = tr.getAttribute('data-refunder');
-      const cat = tr.cells[0]?.querySelector('strong')?.innerText || '';
-      const notes = tr.cells[0]?.querySelector('small')?.innerText || '';
-      const vendor = document.getElementById(`op-vendor-${opId}`)?.value || '';
-      const invoiceNo = document.getElementById(`op-inv-${opId}`)?.value || '';
-      const date = document.getElementById(`op-date-${opId}`)?.value || '';
-      const cost = parseFloat(document.getElementById(`op-cost-${opId}`)?.value) || 0;
-      const status = document.getElementById(`op-status-${opId}`)?.value || 'Paid';
-
-      opData.push({
-        "Item ID": opId,
-        "Expense Item & Category": cat,
-        "Vendor / Payee": vendor,
-        "Invoice / Receipt No": invoiceNo,
-        "Date": date,
-        "Incurred Cost (JPY)": cost,
-        "Incurred Cost (EUR)": parseFloat((cost / EUR_RATE).toFixed(4)),
-        "Payment Status": status,
-        "Notes": notes,
-        "WHO REFUNDS": refunder.toUpperCase()
-      });
-    });
-    const ws1 = XLSX.utils.json_to_sheet(opData);
-    XLSX.utils.book_append_sheet(wb, ws1, "Local_Operations");
-
-    // Sheet 2: Travel Claims Settlement
-    const travelData = [];
-    document.querySelectorAll('#travelSimTable tbody tr').forEach(tr => {
-      const name = tr.getAttribute('data-delegate-name') || '';
-      const route = tr.cells[1]?.querySelector('span')?.innerText || '';
-      const notes = tr.cells[1]?.querySelector('small')?.innerText || '';
-      const funding = tr.querySelector('.ind-funding-type')?.value === 'migt' ? 'Grant MIGT' : 'Grant Funded';
-      const travelCost = parseFloat(tr.querySelector('.ind-travel-cost')?.value) || 0;
-      const hotelNights = parseFloat(tr.querySelector('.ind-hotel-nights')?.value) || 0;
-      const hotelCost = parseFloat(tr.querySelector('.ind-hotel-sub')?.innerText?.replace(/[^0-9]/g, '')) || 0;
-      const totalClaim = travelCost + hotelCost;
-      const approved = parseFloat(tr.querySelector('.ind-total-jpy')?.innerText?.replace(/[^0-9]/g, '')) || 0;
-      const status = tr.querySelector('.del-status-select')?.value || 'Approved for Payment';
-
-      travelData.push({
-        "Delegate Name": name,
-        "Chapter / Route": route,
-        "Funding Model": funding,
-        "Actual Travel Cost (JPY)": travelCost,
-        "Billed Hotel Nights": hotelNights,
-        "Hotel Cost (JPY)": hotelCost,
-        "Total Incurred Claim (JPY)": totalClaim,
-        "Approved Settlement (JPY)": approved,
-        "Payment Status": status,
-        "Notes": notes
-      });
-    });
-    const ws2 = XLSX.utils.json_to_sheet(travelData);
-    XLSX.utils.book_append_sheet(wb, ws2, "Travel_Claims_Settlement");
-
-    XLSX.writeFile(wb, "MCAA_Tokyo2026_Final_Audited_Expenses.xlsx");
-  }
-
-  function handleExcelUpload(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onload = function(evt) {
-      try {
-        const data = new Uint8Array(evt.target.result);
-        const wb = XLSX.read(data, { type: 'array' });
-
-        let updatedOp = 0;
-        let updatedDel = 0;
-
-        wb.SheetNames.forEach(sheetName => {
-          const rows = XLSX.utils.sheet_to_json(wb.Sheets[sheetName]);
-          rows.forEach(row => {
-            const opId = row["Item ID"] || row["ID"];
-            if (opId && document.getElementById(`op-cost-${opId}`)) {
-              const cost = row["Incurred Cost (JPY)"] || row["Cost"] || row["Amount"];
-              const vendor = row["Vendor / Payee"] || row["Vendor"];
-              const inv = row["Invoice / Receipt No"] || row["Invoice No"];
-              const date = row["Date"];
-              const status = row["Payment Status"] || row["Status"];
-
-              if (cost !== undefined) document.getElementById(`op-cost-${opId}`).value = cost;
-              if (vendor !== undefined && document.getElementById(`op-vendor-${opId}`)) document.getElementById(`op-vendor-${opId}`).value = vendor;
-              if (inv !== undefined && document.getElementById(`op-inv-${opId}`)) document.getElementById(`op-inv-${opId}`).value = inv;
-              if (date !== undefined && document.getElementById(`op-date-${opId}`)) document.getElementById(`op-date-${opId}`).value = date;
-              if (status !== undefined && document.getElementById(`op-status-${opId}`)) document.getElementById(`op-status-${opId}`).value = status;
-              updatedOp++;
-            }
-
-            const delName = (row["Delegate Name"] || row["Name"] || "").toString().trim().toUpperCase();
-            if (delName) {
-              const tr = Array.from(document.querySelectorAll('#travelSimTable tbody tr')).find(r => {
-                return (r.getAttribute('data-delegate-name') || '').toUpperCase().includes(delName) || delName.includes((r.getAttribute('data-delegate-name') || '').toUpperCase());
-              });
-              if (tr) {
-                const travelCost = row["Actual Travel Cost (JPY)"] || row["Travel Cost"];
-                const nights = row["Billed Hotel Nights"] || row["Nights"];
-                const funding = row["Funding Model"] || row["Funding"];
-
-                const costInput = tr.querySelector('.ind-travel-cost');
-                const nightsInput = tr.querySelector('.ind-hotel-nights');
-                const fundSelect = tr.querySelector('.ind-funding-type');
-
-                if (travelCost !== undefined && costInput) costInput.value = travelCost;
-                if (nights !== undefined && nightsInput) nightsInput.value = nights;
-                if (funding !== undefined && fundSelect) fundSelect.value = funding.toLowerCase().includes('migt') ? 'migt' : 'grant';
-                updatedDel++;
-              }
-            }
-          });
-        });
-
-        recalc(true);
-        alert(`Successfully imported Excel data!\n• ${updatedOp} operational items updated\n• ${updatedDel} delegate claims updated`);
-      } catch (err) {
-        console.error("Excel import failed:", err);
-        alert("Error reading Excel: " + err.message);
+    if (bodyEl) {
+      bodyEl.innerHTML = '';
+      if (rec.dataUrl.startsWith('data:application/pdf')) {
+        bodyEl.innerHTML = `<iframe src="${rec.dataUrl}" style="width:100%; height:65vh; border:1px solid #cbd5e1; border-radius:8px;"></iframe>`;
+      } else {
+        bodyEl.innerHTML = `<img src="${rec.dataUrl}" alt="Uploaded Receipt" style="max-width:100%; max-height:65vh; object-fit:contain; border-radius:8px;">`;
       }
-    };
-    reader.readAsArrayBuffer(file);
+    }
+    modal.style.display = 'flex';
   }
 
-  // --- CLOUD PERSISTENCE ---
+  // --- STATE PERSISTENCE & CLOUD SYNC ---
   function getDashboardState() {
     const operationalCosts = {};
     document.querySelectorAll('#opExpensesTable tbody tr[data-op-id]').forEach(tr => {
@@ -3449,9 +3245,9 @@
     });
 
     return {
-      version: 12,
+      version: 13,
       savedAt: new Date().toISOString(),
-      eurRate: EUR_RATE,
+      jpyToEurRate: JPY_TO_EUR,
       operationalCosts,
       travelClaims,
       receipts: receiptsStore
@@ -3462,10 +3258,13 @@
     if (!state) return;
     isRestoring = true;
     try {
-      if (state.eurRate) {
-        EUR_RATE = state.eurRate;
-        const rateInput = document.getElementById('eur-rate-input');
-        if (rateInput) rateInput.value = EUR_RATE;
+      if (state.jpyToEurRate) {
+        JPY_TO_EUR = state.jpyToEurRate;
+        EUR_RATE = 1 / state.jpyToEurRate;
+        const rateInput = document.getElementById('jpy-eur-rate');
+        if (rateInput) rateInput.value = JPY_TO_EUR;
+        const equivEl = document.getElementById('eur-equiv-lbl');
+        if (equivEl) equivEl.innerText = EUR_RATE.toFixed(2);
       }
 
       if (state.operationalCosts) {
@@ -3590,32 +3389,39 @@
       });
   }
 
-  function saveStateToCloud() {
-    if (isRestoring) return;
-    if (syncDebounceTimer) clearTimeout(syncDebounceTimer);
-
-    syncDebounceTimer = setTimeout(() => {
-      const state = getDashboardState();
-      isRemoteSyncing = true;
-
-      if (dbRef) {
-        dbRef.set(state)
-          .then(() => {
-            isRemoteSyncing = false;
-            updateSaveBadge(`🟢 Cloud Synchronized (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
-          })
-          .catch((err) => {
-            isRemoteSyncing = false;
-            console.warn("WebSocket save failed, trying REST PUT fallback:", err);
-            putStateViaREST(state);
-          });
-      } else {
-        putStateViaREST(state);
-      }
-    }, 600);
+  function debounceCloudSave() {
+    clearTimeout(cloudDebounceTimer);
+    updateSaveBadge("Saving to Cloud...");
+    cloudDebounceTimer = setTimeout(() => {
+      pushStateToCloud();
+    }, 800);
   }
 
-  function putStateViaREST(state, showAlert = false) {
+  function forceCloudSave() {
+    pushStateToCloud(true);
+  }
+
+  function pushStateToCloud(isManual = false) {
+    const state = getDashboardState();
+    isRemoteSyncing = true;
+
+    if (dbRef) {
+      dbRef.set(state)
+        .then(() => {
+          isRemoteSyncing = false;
+          updateSaveBadge(`🟢 Cloud Saved (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+          if (isManual) alert("Reconciled financial ledger successfully broadcasted to Cloud Database!");
+        })
+        .catch(err => {
+          console.warn("WebSocket save failed, trying REST:", err);
+          pushStateViaRest(state, isManual);
+        });
+    } else {
+      pushStateViaRest(state, isManual);
+    }
+  }
+
+  function pushStateViaRest(state, isManual = false) {
     fetch(RTDB_URL, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -3624,161 +3430,106 @@
     .then(res => res.json())
     .then(() => {
       isRemoteSyncing = false;
-      updateSaveBadge(`🟢 Cloud Synchronized (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
-      if (showAlert) alert("All final expenses and verified tax receipts successfully saved to the cloud!");
+      updateSaveBadge(`🟢 Cloud Saved (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
+      if (isManual) alert("Reconciled financial ledger successfully saved to Cloud!");
     })
     .catch(err => {
       isRemoteSyncing = false;
-      console.warn("REST sync failed:", err);
-      updateSaveBadge("🔴 Cloud Sync Error", true);
-      if (showAlert) alert("Failed to connect to the cloud: " + (err.message || err));
+      console.error("Cloud REST save failed:", err);
+      updateSaveBadge("Cloud Save Failed", true);
     });
   }
 
-  function manualSaveToCloud() {
-    updateSaveBadge("⏳ Saving to Cloud...", false);
-    const state = getDashboardState();
-    if (dbRef) {
-      dbRef.set(state)
-        .then(() => {
-          updateSaveBadge(`🟢 Cloud Synchronized (${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})})`);
-          alert("All final expenses and verified tax receipts successfully saved to the cloud!");
-        })
-        .catch((err) => {
-          console.warn("WebSocket save failed, trying REST:", err);
-          putStateViaREST(state, true);
-        });
-    } else {
-      putStateViaREST(state, true);
+  // --- EXCEL & JSON EXPORT ---
+  function exportFinalExcel() {
+    if (typeof XLSX === 'undefined') {
+      alert('SheetJS (XLSX) library is loading. Please try again in a few seconds.');
+      return;
     }
-  }
-  window.manualSaveToCloud = manualSaveToCloud;
 
-  function exportBackupJSON() {
+    const wb = XLSX.utils.book_new();
+
+    // 1. Local Operations Worksheet
+    const opRows = [
+      ["Item ID", "Expense Item & Category", "Vendor / Payee", "Invoice / Receipt No", "Date", "Incurred Cost (JPY)", "Incurred Cost (EUR)", "Payment Status", "Notes", "WHO REFUNDS"]
+    ];
+
+    document.querySelectorAll('#opExpensesTable tbody tr[data-op-id]').forEach(tr => {
+      const opId = tr.getAttribute('data-op-id');
+      const refunder = tr.getAttribute('data-refunder');
+      const cat = tr.querySelector('strong')?.innerText || '';
+      const notes = tr.querySelector('small')?.innerText || '';
+      const vendor = document.getElementById(`op-vendor-${opId}`)?.value || '';
+      const invNo = document.getElementById(`op-inv-${opId}`)?.value || '';
+      const dateVal = document.getElementById(`op-date-${opId}`)?.value || '';
+      const cost = parseFloat(document.getElementById(`op-cost-${opId}`)?.value) || 0;
+      const status = document.getElementById(`op-status-${opId}`)?.value || 'Paid';
+
+      opRows.push([
+        opId, cat, vendor, invNo, dateVal, cost, parseFloat((cost * JPY_TO_EUR).toFixed(4)), status, notes, refunder
+      ]);
+    });
+
+    const wsOp = XLSX.utils.aoa_to_sheet(opRows);
+    XLSX.utils.book_append_sheet(wb, wsOp, "Local_Operations");
+
+    // 2. Travel Claims Worksheet
+    const travelRows = [
+      ["Delegate Name", "Chapter / Route", "Funding Model", "Actual Travel Cost (JPY)", "Billed Hotel Nights", "Hotel Cost (JPY)", "Total Incurred Claim (JPY)", "Total Incurred Claim (EUR)", "Approved Settlement (JPY)", "Approved Settlement (EUR)", "Payment Status"]
+    ];
+
+    document.querySelectorAll('#travelSimTable tbody tr').forEach(tr => {
+      const id = tr.getAttribute('data-id');
+      const name = tr.getAttribute('data-delegate-name');
+      const route = tr.querySelector('td:nth-child(2) span')?.innerText || '';
+      const funding = tr.querySelector('.ind-funding-type')?.value || 'grant';
+      const travelCost = parseFloat(tr.querySelector('.ind-travel-cost')?.value) || 0;
+      const nights = parseFloat(tr.querySelector('.ind-hotel-nights')?.value) || 0;
+      const hotelCost = parseFloat(tr.querySelector('.ind-hotel-sub')?.innerText?.replace(/[^0-9]/g, '')) || 0;
+      const totalClaimJpy = travelCost + hotelCost;
+      const totalClaimEur = parseFloat((totalClaimJpy * JPY_TO_EUR).toFixed(2));
+      const status = tr.querySelector('.del-status-select')?.value || 'Approved';
+
+      travelRows.push([
+        name, route, funding, travelCost, nights, hotelCost, totalClaimJpy, totalClaimEur, totalClaimJpy, totalClaimEur, status
+      ]);
+    });
+
+    const wsTravel = XLSX.utils.aoa_to_sheet(travelRows);
+    XLSX.utils.book_append_sheet(wb, wsTravel, "Travel_Claims_Settlement");
+
+    XLSX.writeFile(wb, "MCAA_Tokyo2026_Final_Reconciled_Ledger.xlsx");
+  }
+
+  function exportJsonBackup() {
     const state = getDashboardState();
-    const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
+    const a = document.createElement('a');
     a.href = url;
-    a.download = `MCAA_Tokyo2026_Final_Settlement_${new Date().toISOString().slice(0,10)}.json`;
+    a.download = `MCAA_Tokyo2026_Ledger_${new Date().toISOString().slice(0,10)}.json`;
     a.click();
-    updateSaveBadge("Backup Exported");
+    URL.revokeObjectURL(url);
   }
 
-  function importBackupJSON(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      try {
-        const state = JSON.parse(e.target.result);
-        applyState(state);
-        recalc(true);
-        alert("Financial backup successfully restored and synchronized!");
-      } catch (err) {
-        alert("Invalid backup file: " + err.message);
-      }
-    };
-    reader.readAsText(file);
-  }
-
-  // --- ROSTER FILTERING & SEARCH ---
-  let currentCategoryFilter = 'all';
-
-  function setCategoryFilter(cat, btn) {
-    currentCategoryFilter = cat;
-    document.querySelectorAll('.tab-filters .btn-filter').forEach(b => b.classList.remove('active'));
-    if (btn) btn.classList.add('active');
-    filterTable();
-  }
-
-  function filterTable() {
-    const input = document.getElementById("searchInput").value.toLowerCase();
-    const rows = document.querySelectorAll("#rosterTable tbody tr");
-    rows.forEach(row => {
-      const cat = row.getAttribute('data-category') || (row.getAttribute('data-mode') === 'in-person' ? 'in-person' : 'online');
-      const matchesCat = (currentCategoryFilter === 'all') || (cat === currentCategoryFilter);
-      const text = row.innerText.toLowerCase();
-      const matchesSearch = text.includes(input);
-      row.style.display = (matchesCat && matchesSearch) ? "" : "none";
+  // --- ATTENDANCE ROSTER FILTER ---
+  function filterRoster() {
+    const query = document.getElementById('rosterSearch')?.value.toLowerCase() || '';
+    document.querySelectorAll('#rosterTable tbody tr').forEach(tr => {
+      const text = tr.innerText.toLowerCase();
+      tr.style.display = text.includes(query) ? '' : 'none';
     });
   }
 
-  function exportCurrentCSV() {
-    const rows = [];
-    const headers = [];
-    document.querySelectorAll("#rosterTable thead th").forEach(th => headers.push(`"${th.innerText.trim().replace(/"/g, '""')}"`));
-    rows.push(headers.join(","));
+  // --- INITIALIZATION ---
+  document.addEventListener('DOMContentLoaded', () => {
+    initFirebase();
+    restoreStateFromLocalStorage();
+    recalc(false);
+  });
 
-    document.querySelectorAll("#rosterTable tbody tr").forEach(tr => {
-      if (tr.style.display !== 'none') {
-        const row = [];
-        tr.querySelectorAll("td").forEach(td => row.push(`"${td.innerText.trim().replace(/"/g, '""')}"`));
-        rows.push(row.join(","));
-      }
-    });
-
-    const blob = new Blob([rows.join("\n")], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `MCAA_Tokyo2026_Master_Roster_${new Date().toISOString().slice(0,10)}.csv`;
-    a.click();
-  }
-
-  // --- ADD ATTENDEE MODAL ---
-  function openAddDelegateModal() {
-    const modal = document.getElementById('addDelegateModal');
-    if (modal) modal.style.display = 'flex';
-  }
-
-  function closeAddDelegateModal() {
-    const modal = document.getElementById('addDelegateModal');
-    if (modal) modal.style.display = 'none';
-  }
-
-  function submitNewDelegate(e) {
-    e.preventDefault();
-    const name = document.getElementById('newDelName').value.trim();
-    const badge = document.getElementById('newDelBadge').value.trim() || name;
-    const chapter = document.getElementById('newDelChapter').value.trim();
-    const role = document.getElementById('newDelRole').value.trim() || 'Delegate';
-    const mode = document.getElementById('newDelMode').value;
-    const type = document.getElementById('newDelType').value;
-
-    const rosterTbody = document.querySelector("#rosterTable tbody");
-    const count = rosterTbody ? rosterTbody.querySelectorAll("tr").length + 1 : 1;
-    const newId = `ATT-${String(count).padStart(2, '0')}`;
-
-    const tr = document.createElement('tr');
-    tr.setAttribute('data-mode', mode === 'in_person' ? 'in-person' : 'online');
-    tr.setAttribute('data-category', mode === 'in_person' ? 'in-person' : 'online-guest');
-    tr.style.borderBottom = '1px solid var(--border)';
-    tr.innerHTML = `
-      <td><strong>${newId}</strong></td>
-      <td><strong>${name}</strong><br><small style="color:var(--text-muted);">${badge}</small></td>
-      <td>${chapter}</td>
-      <td>${role}</td>
-      <td><span class="tag tag-gen">${type}</span></td>
-      <td><span class="tag ${mode === 'in_person' ? 'tag-yes' : 'tag-no'}">${mode === 'in_person' ? 'Yes' : 'No'}</span></td>
-      <td><span class="tag ${mode === 'in_person' ? 'tag-yes' : 'tag-no'}">${mode === 'in_person' ? 'Regular' : 'None'}</span></td>
-      <td><span class="tag ${mode === 'in_person' ? 'tag-yes' : 'tag-no'}">${mode === 'in_person' ? 'Yes' : 'No'}</span></td>
-      <td><span class="tag ${mode === 'in_person' ? 'tag-yes' : 'tag-no'}">${mode === 'in_person' ? 'Yes' : 'No'}</span></td>
-      <td><span class="tag ${mode === 'in_person' ? 'tag-yes' : 'tag-no'}">${mode === 'in_person' ? 'Yes' : 'No'}</span></td>
-      <td><span class="tag ${mode === 'in_person' ? 'tag-yes' : 'tag-no'}">${mode === 'in_person' ? 'Yes' : 'No'}</span></td>
-      <td>None</td>
-    `;
-    rosterTbody.appendChild(tr);
-
-    closeAddDelegateModal();
-    recalc(true);
-    alert(`Attendee ${name} (${newId}) successfully added to roster.`);
-  }
-
-  // Startup
-  restoreStateFromLocalStorage();
+  // Direct fallback
   recalc(false);
-  initFirebase();
 </script>
 
 </body>
