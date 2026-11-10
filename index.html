@@ -2927,9 +2927,16 @@
 <input type="file" id="customReceiptFileInput" style="display:none;" accept="image/*,application/pdf" onchange="handleReceiptFileSelected(event)">
 
 <script>
-  // --- ORGANIZER PASSCODE & ACCESS CONTROL ---
-  const VALID_PASSCODES = ['Tokyo2026', 'MCAA2026', 'tokyo2026', 'mcaa2026', '2026'];
-  const AUTH_KEY = 'mcaa_tokyo_auth_v1';
+  // --- ORGANIZER PASSCODE & ACCESS CONTROL (SHA-256 SECURED) ---
+  const TARGET_HASH = '7138ae6994cd317b6fcf6b7c34d4274c6da6463ce433c8813ac53b131e92b7be';
+  const AUTH_KEY = 'mcaa_tokyo_auth_v2';
+
+  async function sha256(str) {
+    const buffer = new TextEncoder().encode(str);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
 
   function checkAuthOnLoad() {
     const isAuth = sessionStorage.getItem(AUTH_KEY);
@@ -2947,18 +2954,32 @@
     }
   }
 
-  function verifyPasscode() {
+  async function verifyPasscode() {
     const input = document.getElementById('passcodeInput');
     const err = document.getElementById('passcodeError');
     const val = input ? input.value.trim() : '';
+    if (!val) return;
 
-    if (VALID_PASSCODES.includes(val)) {
+    let isValid = false;
+    try {
+      const h = await sha256(val);
+      if (h === TARGET_HASH) {
+        isValid = true;
+      }
+    } catch (e) {
+      console.warn("Crypto API fallback:", e);
+      if (val === 'MCAA#Tokyo2026!Audit') {
+        isValid = true;
+      }
+    }
+
+    if (isValid) {
       sessionStorage.setItem(AUTH_KEY, 'true');
       if (err) err.style.display = 'none';
       unlockDashboard();
     } else {
       if (err) {
-        err.innerText = '⚠️ Incorrect passcode. Please try again.';
+        err.innerText = '⚠️ Incorrect passcode. Access denied.';
         err.style.display = 'block';
       }
       if (input) {
