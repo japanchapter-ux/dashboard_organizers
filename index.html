@@ -193,10 +193,52 @@
     .modal-header h3 { font-size: 16px; font-weight: 800; color: var(--navy); }
     .modal-close { background: none; border: none; font-size: 20px; color: #64748b; cursor: pointer; }
     .modal-body { padding: 20px; overflow-y: auto; }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-8px); }
+      40%, 80% { transform: translateX(8px); }
+    }
+    .shake { animation: shake 0.4s ease-in-out; border-color: #ef4444 !important; }
   </style>
 </head>
 <body>
 
+<!-- PASSCODE ACCESS LOCK SCREEN -->
+<div id="lockScreen" style="position:fixed; inset:0; background:linear-gradient(135deg, #091e3e 0%, #0e3672 100%); z-index:99999; display:flex; justify-content:center; align-items:center; padding:20px;">
+  <div style="background:white; border-radius:18px; max-width:440px; width:100%; padding:36px 30px; box-shadow:0 25px 50px -12px rgba(0,0,0,0.4); text-align:center;">
+    <div style="width:68px; height:68px; background:#eff6ff; border:2px solid #bfdbfe; border-radius:50%; display:inline-flex; align-items:center; justify-content:center; font-size:32px; margin-bottom:16px;">
+      🔒
+    </div>
+    <div style="font-size:11px; font-weight:800; text-transform:uppercase; letter-spacing:1px; color:#c38214; margin-bottom:6px;">
+      Restricted Internal Access
+    </div>
+    <h2 style="font-size:22px; font-weight:800; color:#0e3672; margin-bottom:8px; line-height:1.2;">
+      MCAA Tokyo 2026<br>Organizer Portal
+    </h2>
+    <p style="font-size:13px; color:#64748b; margin-bottom:24px; line-height:1.4;">
+      This portal contains audited event expenses, tax invoices, and delegate travel claims. Please enter the organizer passcode to view.
+    </p>
+
+    <div style="margin-bottom:18px; text-align:left;">
+      <label style="display:block; font-size:11px; font-weight:700; color:#334155; margin-bottom:6px; text-transform:uppercase;">Organizer Passcode</label>
+      <div style="position:relative; display:flex; align-items:center;">
+        <input type="password" id="passcodeInput" placeholder="Enter organizer passcode..." style="width:100%; padding:12px 42px 12px 14px; font-size:14px; border:2px solid #cbd5e1; border-radius:10px; font-weight:600; outline:none; transition:border-color 0.15s;" onkeydown="if(event.key==='Enter') verifyPasscode()">
+        <button type="button" onclick="togglePasswordVisibility()" style="position:absolute; right:10px; background:none; border:none; color:#64748b; cursor:pointer; font-size:16px; padding:4px;" title="Show/Hide Passcode">👁️</button>
+      </div>
+      <div id="passcodeError" style="display:none; color:#dc2626; font-size:12px; font-weight:700; margin-top:8px;"></div>
+    </div>
+
+    <button type="button" onclick="verifyPasscode()" style="width:100%; background:linear-gradient(135deg, #0e3672 0%, #1e40af 100%); color:white; border:none; padding:13px; border-radius:10px; font-size:14px; font-weight:700; cursor:pointer; box-shadow:0 4px 12px rgba(14,54,114,0.3); transition:all 0.15s;">
+      🔓 Unlock Dashboard
+    </button>
+
+    <div style="margin-top:20px; font-size:11px; color:#94a3b8; border-top:1px solid #f1f5f9; padding-top:14px;">
+      Marie Curie Alumni Association &bull; Japan Chapter &bull; Confidential
+    </div>
+  </div>
+</div>
+
+<div id="dashboardApp" style="display:none;">
 <div class="container">
 
   <!-- HEADER -->
@@ -225,6 +267,9 @@
       </button>
       <button class="btn" onclick="window.print()" title="Print audited report or save to PDF">
         🖨️ Print / PDF Report
+      </button>
+      <button class="btn" onclick="lockDashboard()" title="Lock dashboard and return to passcode screen" style="background:rgba(239,68,68,0.2); border-color:rgba(239,68,68,0.4);">
+        🔒 Lock
       </button>
     </div>
   </div>
@@ -2855,6 +2900,7 @@
   </div>
 
 </div>
+</div>
 
 <!-- FILE PREVIEW MODAL -->
 <div id="receiptViewerModal" class="modal-overlay" onclick="if(event.target===this) closeReceiptModal()">
@@ -2881,6 +2927,74 @@
 <input type="file" id="customReceiptFileInput" style="display:none;" accept="image/*,application/pdf" onchange="handleReceiptFileSelected(event)">
 
 <script>
+  // --- ORGANIZER PASSCODE & ACCESS CONTROL ---
+  const VALID_PASSCODES = ['Tokyo2026', 'MCAA2026', 'tokyo2026', 'mcaa2026', '2026'];
+  const AUTH_KEY = 'mcaa_tokyo_auth_v1';
+
+  function checkAuthOnLoad() {
+    const isAuth = sessionStorage.getItem(AUTH_KEY);
+    if (isAuth === 'true') {
+      unlockDashboard();
+    } else {
+      showLockScreen();
+    }
+  }
+
+  function togglePasswordVisibility() {
+    const input = document.getElementById('passcodeInput');
+    if (input) {
+      input.type = input.type === 'password' ? 'text' : 'password';
+    }
+  }
+
+  function verifyPasscode() {
+    const input = document.getElementById('passcodeInput');
+    const err = document.getElementById('passcodeError');
+    const val = input ? input.value.trim() : '';
+
+    if (VALID_PASSCODES.includes(val)) {
+      sessionStorage.setItem(AUTH_KEY, 'true');
+      if (err) err.style.display = 'none';
+      unlockDashboard();
+    } else {
+      if (err) {
+        err.innerText = '⚠️ Incorrect passcode. Please try again.';
+        err.style.display = 'block';
+      }
+      if (input) {
+        input.value = '';
+        input.focus();
+        input.classList.add('shake');
+        setTimeout(() => input.classList.remove('shake'), 450);
+      }
+    }
+  }
+
+  function unlockDashboard() {
+    const lockScreen = document.getElementById('lockScreen');
+    const app = document.getElementById('dashboardApp');
+    if (lockScreen) lockScreen.style.display = 'none';
+    if (app) app.style.display = 'block';
+    recalc(false);
+  }
+
+  function showLockScreen() {
+    const lockScreen = document.getElementById('lockScreen');
+    const app = document.getElementById('dashboardApp');
+    if (lockScreen) lockScreen.style.display = 'flex';
+    if (app) app.style.display = 'none';
+    setTimeout(() => {
+      document.getElementById('passcodeInput')?.focus();
+    }, 120);
+  }
+
+  function lockDashboard() {
+    sessionStorage.removeItem(AUTH_KEY);
+    showLockScreen();
+    const input = document.getElementById('passcodeInput');
+    if (input) input.value = '';
+  }
+
   // --- CONFIGURATION & STATE ---
   let JPY_TO_EUR = 0.0057;
   let EUR_RATE = 175.44;
@@ -3523,13 +3637,10 @@
 
   // --- INITIALIZATION ---
   document.addEventListener('DOMContentLoaded', () => {
+    checkAuthOnLoad();
     initFirebase();
     restoreStateFromLocalStorage();
-    recalc(false);
   });
-
-  // Direct fallback
-  recalc(false);
 </script>
 
 </body>
